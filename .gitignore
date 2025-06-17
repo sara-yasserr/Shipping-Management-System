@@ -1,0 +1,94 @@
+# ===== .NET Core (.NET 6/7/8/...) =====
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+*.exe
+*.dll
+*.app
+*.log
+*.vspscc
+
+# Visual Studio
+.vs/
+.vscode/
+*.dbmdl
+
+# ASP.NET Core secrets
+secrets.json
+
+# User-specific files
+*.rsuser
+*.sln.docstates
+*.userprefs
+
+# Rider IDE
+.idea/
+*.sln.iml
+
+# Logs
+*.log
+
+# NuGet packages
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# DotCover
+*.dotCover
+
+# Test results
+TestResults/
+
+# Entity Framework
+Migrations/
+
+# Local database
+*.mdf
+*.ldf
+*.db
+
+# ===== Angular 19 =====
+# Node modules
+node_modules/
+
+# Environment files
+src/environments/environment*.ts
+
+# Build output
+dist/
+out-tsc/
+.angular/
+
+# IDEs
+.idea/
+.vscode/
+*.sublime*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# NPM logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Compiled JS files (in case you use JavaScript in any part)
+*.js
+*.js.map
+
+# Cache
+.cache/
+.husky/_/
+.nx/
+
+# Angular cache
+.angular/cache/
