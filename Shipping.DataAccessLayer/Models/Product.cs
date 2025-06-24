@@ -23,9 +23,11 @@ namespace Shipping.DataAccessLayer.Models
         [Required(ErrorMessage = "Product weight is required")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Weight must be a positive number")]
         public decimal Weight { get; set; }
+        public decimal Price { get; set; }
 
         [ForeignKey("Order")]
-        public int? OrderId { get; set; }
+        public int OrderId { get; set; }
+
 
         // Navigation property
         public virtual Order? Order { get; set; }
