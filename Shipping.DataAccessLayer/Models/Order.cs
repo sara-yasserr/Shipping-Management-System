@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shipping.DataAccessLayer.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,38 +9,6 @@ using System.Threading.Tasks;
 
 namespace Shipping.DataAccessLayer.Models
 {
-    public enum ShippingType
-    {
-        [Display(Name = "Standard (5-7 days)")]
-        Standard,
-
-        [Display(Name = "Express (24h)")]
-        Express24h,
-
-        [Display(Name = "Economy (15 days)")]
-        Economy15d,
-
-        [Display(Name = "Priority (89h)")] //3-4 days
-        Priority89h
-    }
-    public enum PaymentType
-    {
-        [Display(Name = "Cash on Delivery")]
-        CashOnDelivery,  // واجبة التحصيل
-
-        [Display(Name = "Prepaid")]
-        Prepaid,         // دفع مقدم
-
-        [Display(Name = "Parcel Exchange")]
-        ParcelExchange   // طرد مقابل طرد
-    }
-    public enum OrderType
-    {
-        [Display(Name = "Normal")]
-        Normal,
-        [Display(Name = "Pickup")]
-        Pickup 
-    }
     public class Order
     {
         [Key]
