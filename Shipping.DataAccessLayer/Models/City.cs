@@ -23,6 +23,7 @@ namespace Shipping.DataAccessLayer.Models
         // Navigation Properties
         public virtual List<Branch>? Branches { get; set; }
         public virtual List<DeliveryAgent>? DeliveryAgents { get; set; }
+        public virtual List<Seller>? Sellers { get; set; }
 
     }
 }
