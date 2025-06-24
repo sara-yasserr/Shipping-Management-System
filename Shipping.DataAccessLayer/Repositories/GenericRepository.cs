@@ -34,9 +34,5 @@ namespace Shipping.DataAccessLayer.Repositories
         {
             db.Set<TEntity>().Remove(entity);
         }
-        public void Save()
-        {
-            db.SaveChanges();
-        }
     }
 }
