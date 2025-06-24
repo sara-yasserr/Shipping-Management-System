@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shipping.BusinessLogicLayer.Helper;
 using Shipping.DataAccessLayer.Models;
+using Shipping.DataAccessLayer.Repositories;
+using Shipping.DataAccessLayer.UnitOfWorks;
 using System.Text;
 
 namespace Shipping.API
@@ -61,6 +63,8 @@ namespace Shipping.API
                            .AllowAnyHeader();
                 });
             });
+
+            builder.Services.AddScoped<UnitOfWork>();
 
             var app = builder.Build();
 

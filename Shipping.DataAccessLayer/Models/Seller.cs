@@ -9,7 +9,7 @@ namespace Shipping.DataAccessLayer.Models
 {
     public class Seller
     {
-        [key]
+        [Key]
         public int Id { get; set; }
         [Required]
         public string StoreName { get; set; }

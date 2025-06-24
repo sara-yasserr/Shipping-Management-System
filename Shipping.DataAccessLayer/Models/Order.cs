@@ -82,6 +82,9 @@ namespace Shipping.DataAccessLayer.Models
 
         public bool IsActive { get; set; } = true;
         public bool IsDeleted { get; set; } = false;
+        [Range(0, int.MaxValue)]
+        [Column(TypeName = "decimal(18, 2)")]
+        public int ShippingCost { get; set; }
 
         [Range(0, int.MaxValue)]
         [Column(TypeName = "decimal(18, 2)")]
