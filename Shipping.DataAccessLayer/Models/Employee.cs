@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shipping.DataAccessLayer.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,7 +19,8 @@ namespace Shipping.DataAccessLayer.Models
         [ForeignKey("GeneralSetting")]
         public int? GeneralSettingId { get; set; }
         //Navigation Properties
-        public Branch Branch { get; set; }
+        public virtual Branch Branch { get; set; }
         public virtual GeneralSetting? GeneralSetting { get; set; }
     }
 }
+

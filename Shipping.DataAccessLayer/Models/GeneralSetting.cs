@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shipping.DataAccessLayer.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,9 +24,15 @@ namespace Shipping.DataAccessLayer.Models
         [Column(TypeName = "decimal(18, 2)")]
         public decimal ExtraPriceVillage { get; set; }
         public DateTime ModifiedAt { get; set; } = DateTime.Now;
+        [Range(0.0, 1.0, ErrorMessage = "The value must be between 0.0 and 1.0.")]
+        public decimal Fast { get; set; } = 0.2M;
+        [Range(0.0, 1.0, ErrorMessage = "The value must be between 0.0 and 1.0.")]
+        public decimal Express { get; set; } = 0.5M;
         //Foreign keys
-        [ForeignKey("Admin")]
-        public int AdminId { get; set; }
-        public virtual Admin Admin { get; set; }
+        [ForeignKey("Employee")]
+        public int EmployeeId { get; set; }
+
+        //Navigation properties
+        public virtual Employee Employee { get; set; }
     }
 }

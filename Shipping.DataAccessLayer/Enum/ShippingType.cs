@@ -9,16 +9,14 @@ namespace Shipping.DataAccessLayer.Enum
 {
     public enum ShippingType
     {
-        [Display(Name = "Standard (5-7 days)")]
+        [Display(Name = "Standard (5-7 days)")] //100%
         Standard = 1,
 
-        [Display(Name = "Express (24h)")]
-        Express24h,
 
-        [Display(Name = "Economy (15 days)")]
-        Economy15d,
+        [Display(Name = "Priority (3 - 4 Days)")] //3-4 days //120%
+        Fast,
 
-        [Display(Name = "Priority (89h)")] //3-4 days
-        Priority89h
+        [Display(Name = "Express (24 H)")] //150%
+        Express24h
     }
 }
