@@ -1,13 +1,12 @@
 
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shipping.BusinessLogicLayer.Helper;
 using Shipping.DataAccessLayer.Models;
-using Shipping.DataAccessLayer.Repositories;
 using Shipping.DataAccessLayer.UnitOfWorks;
-using System.Text;
 
 namespace Shipping.API
 {
@@ -17,12 +16,12 @@ namespace Shipping.API
         {
             var builder = WebApplication.CreateBuilder(args);
             string AllowAllOrigins = "AllowAll";
-            // Add services to the container.
+
 
             builder.Services.AddDbContext<ShippingDBContext>(options =>
                 options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("ShippingCS")));
 
-            builder.Services.AddIdentity<ApplicationUser , IdentityRole>()
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ShippingDBContext>()
                 .AddDefaultTokenProviders();
 
@@ -63,12 +62,12 @@ namespace Shipping.API
                            .AllowAnyHeader();
                 });
             });
-
+            builder.Services.AddScoped<JwtHelper>();
             builder.Services.AddScoped<UnitOfWork>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
