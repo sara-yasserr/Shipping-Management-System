@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shipping.DataAccessLayer.Models;
+﻿using Shipping.DataAccessLayer.Models;
 
 namespace Shipping.DataAccessLayer.Repositories
 {
     public class GenericRepository<TEntity> where TEntity : class
     {
-        private readonly ShippingDBContext db;
-        public GenericRepository(ShippingDBContext db) {
-        this.db = db;
+        protected readonly ShippingDBContext db;
+        public GenericRepository(ShippingDBContext db)
+        {
+            this.db = db;
         }
 
         public List<TEntity> GetAll()
         {
-           return db.Set<TEntity>().ToList();
+            return db.Set<TEntity>().ToList();
         }
         public TEntity? GetById(int id)
         {
@@ -34,5 +30,6 @@ namespace Shipping.DataAccessLayer.Repositories
         {
             db.Set<TEntity>().Remove(entity);
         }
+
     }
 }
