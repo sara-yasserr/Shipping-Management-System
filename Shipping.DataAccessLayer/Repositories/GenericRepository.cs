@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Shipping.DataAccessLayer.Models;
 
 namespace Shipping.DataAccessLayer.Repositories

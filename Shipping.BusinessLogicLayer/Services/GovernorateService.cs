@@ -26,7 +26,6 @@ namespace Shipping.BusinessLogicLayer.Services
             try
             {
                 var governorate = _mapper.Map<Governorate>(dto);
-                governorate.IsActive = true;
                 _unitOfWork.GovernorateRepo.Add(governorate);
                 _unitOfWork.Save();
             }
@@ -76,7 +75,7 @@ namespace Shipping.BusinessLogicLayer.Services
                 if (foundGovernorate == null)
                     return false;
 
-                foundGovernorate.IsActive = false; // أو لو عندك IsDeleted استخدمها
+                foundGovernorate.IsDeleted = true; // أو لو عندك IsDeleted استخدمها
                 _unitOfWork.GovernorateRepo.Update(foundGovernorate);
                 _unitOfWork.Save();
             }

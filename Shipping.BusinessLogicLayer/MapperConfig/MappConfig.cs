@@ -16,10 +16,10 @@ namespace Shipping.BusinessLogicLayer.Helper
         {
             #region Branch
             CreateMap<Branch, ReadBranch>()
-                .AfterMap((src, dest) =>
-                {
-                    dest.Governorate = src.Governorate.Name;
-                });
+               .AfterMap((src, dest) =>
+               {
+                   dest.Governorate = src.City.Governorate.Name;
+               });
 
             CreateMap<AddBranch, Branch>().AfterMap((src, dest) =>
             {
