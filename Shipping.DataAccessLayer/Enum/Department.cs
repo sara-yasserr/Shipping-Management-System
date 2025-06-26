@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shipping.DataAccessLayer.Enum
 {
-    public enum Groups
+    public enum Department
     {
         Employees = 1,
         DeliveryMen,
@@ -15,6 +15,7 @@ namespace Shipping.DataAccessLayer.Enum
         Governments,
         Cities,
         Orders,
+        OrdersReports,
         GeneralSetting
     }
 }

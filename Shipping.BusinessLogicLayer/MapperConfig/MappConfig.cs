@@ -18,7 +18,7 @@ namespace Shipping.BusinessLogicLayer.Helper
             CreateMap<Branch, ReadBranch>()
                .AfterMap((src, dest) =>
                {
-                   dest.Governorate = src.Governorate.Name;
+                   dest.Governorate = src.City.Governorate.Name;
                });
 
             CreateMap<AddBranch, Branch>().AfterMap((src, dest) =>

@@ -25,14 +25,16 @@ namespace Shipping.DataAccessLayer.Models
         public decimal ExtraPriceVillage { get; set; }
         public DateTime ModifiedAt { get; set; } = DateTime.Now;
         [Range(0.0, 1.0, ErrorMessage = "The value must be between 0.0 and 1.0.")]
+        [Column(TypeName = "decimal(4, 2)")]
         public decimal Fast { get; set; } = 0.2M;
+        [Column(TypeName = "decimal(4, 2)")]
         [Range(0.0, 1.0, ErrorMessage = "The value must be between 0.0 and 1.0.")]
         public decimal Express { get; set; } = 0.5M;
         //Foreign keys
-        [ForeignKey("Employee")]
         public int EmployeeId { get; set; }
 
         //Navigation properties
+        [ForeignKey(nameof(EmployeeId))]
         public virtual Employee Employee { get; set; }
     }
 }
