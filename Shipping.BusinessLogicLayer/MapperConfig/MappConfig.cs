@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Shipping.BusinessLogicLayer.DTOs.BranchDTOs;
+using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Shipping.DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,13 @@ namespace Shipping.BusinessLogicLayer.Helper
             {
                 dest.CreationDate = DateTime.Now;
             });
+            #endregion
+
+
+
+            #region Governorate
+            CreateMap<Governorate, ReadGovernorateDto>();
+            CreateMap<AddGovernorateDto, Governorate>();
             #endregion
         }
     }

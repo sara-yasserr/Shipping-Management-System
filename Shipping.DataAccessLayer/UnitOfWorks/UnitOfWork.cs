@@ -9,8 +9,8 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         private readonly ShippingDBContext db;
         private readonly UserManager<ApplicationUser> _userManager;
         private GenericRepository<Branch> _branchRepo;
-
-        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager)
+        private GenericRepository<Governorate> _governorateRepo;
+        public UnitOfWork(ShippingDBContext db) 
         {
             this.db = db;
             _userManager = userManager;
@@ -29,6 +29,21 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         }
         public UserManager<ApplicationUser> UserManager => _userManager;
         #endregion
+
+        #region Governorate
+        public GenericRepository<Governorate> GovernorateRepo
+        {
+            get
+            {
+                if(_governorateRepo == null)
+                {
+                    _governorateRepo = new GenericRepository<Governorate>(db);
+                }
+                return _governorateRepo;
+            }
+        }
+        #endregion
+        
         public int Save()
         {
             return db.SaveChanges();
