@@ -12,10 +12,24 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
     {
         private readonly ShippingDBContext db;
         private GenericRepository<Branch> _branchRepo;
+        private GenericRepository<City> _cityRepo;
         public UnitOfWork(ShippingDBContext db) 
         {
             this.db = db;
         }
+
+        public GenericRepository<City> CityRepo
+        {
+            get
+            {
+                if (_cityRepo == null)
+                {
+                    _cityRepo = new GenericRepository<City>(db);
+                }
+                return _cityRepo;
+            }
+        }
+
         #region Props
         public GenericRepository<Branch> BranchRepo
         {

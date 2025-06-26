@@ -16,8 +16,8 @@ namespace Shipping.DataAccessLayer.Models
         [ForeignKey("Branch")]
         public int BranchId { get; set; }
 
-        [ForeignKey("GeneralSetting")]
-        public int? GeneralSettingId { get; set; }
+        //[ForeignKey("GeneralSetting")]
+        //public int? GeneralSettingId { get; set; }
         //Navigation Properties
         public virtual Branch Branch { get; set; }
         public virtual GeneralSetting? GeneralSetting { get; set; }

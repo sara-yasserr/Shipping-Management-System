@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shipping.BusinessLogicLayer.Helper;
+using Shipping.BusinessLogicLayer.Services;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.Repositories;
 using Shipping.DataAccessLayer.UnitOfWorks;
@@ -26,25 +27,25 @@ namespace Shipping.API
                 .AddEntityFrameworkStores<ShippingDBContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                };
-            });
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateLifetime = true,
+            //        ValidateIssuerSigningKey = true,
+            //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            //        ValidAudience = builder.Configuration["Jwt:Audience"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(
+            //            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            //    };
+            //});
 
             builder.Services.AddAuthorization();
 
@@ -65,6 +66,9 @@ namespace Shipping.API
             });
 
             builder.Services.AddScoped<UnitOfWork>();
+            builder.Services.AddScoped<CityService>();
+
+
 
             var app = builder.Build();
 

@@ -16,7 +16,7 @@ namespace Shipping.DataAccessLayer.Models
         public int GovernorateId { get; set; }
         //Navigation
         [ForeignKey("GovernrateId")]
-        public Governorate Governorate { get; set; }
+        public virtual Governorate Governorate { get; set; }
         public virtual List<DeliveryAgent> DeliveryAgents { get; set; } = new List<DeliveryAgent>();
         public virtual List<Employee> Employees { get; set; } = new List<Employee>();
     }
