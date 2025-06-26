@@ -10,7 +10,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         private readonly UserManager<ApplicationUser> _userManager;
         private GenericRepository<Branch> _branchRepo;
         private GenericRepository<Governorate> _governorateRepo;
-        public UnitOfWork(ShippingDBContext db) 
+        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager) 
         {
             this.db = db;
             _userManager = userManager;
