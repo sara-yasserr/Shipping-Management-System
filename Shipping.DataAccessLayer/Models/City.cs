@@ -22,7 +22,7 @@ namespace Shipping.DataAccessLayer.Models
         public virtual Governorate Governorate { get; set; }
         // Navigation Properties
         public virtual List<Branch>? Branches { get; set; }
-        public virtual List<DeliveryAgent>? DeliveryAgents { get; set; }
+        public virtual List<DeliveryAgentCities>? DeliveryAgentCities { get; set; }
         public virtual List<Seller>? Sellers { get; set; }
 
     }

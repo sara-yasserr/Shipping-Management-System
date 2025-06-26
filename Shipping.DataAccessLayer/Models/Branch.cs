@@ -13,10 +13,10 @@ namespace Shipping.DataAccessLayer.Models
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreationDate { get; set; }
-        public int GovernorateId { get; set; }
+        [ForeignKey("City")]
+        public int CityId { get; set; }
         //Navigation
-        [ForeignKey("GovernrateId")]
-        public Governorate Governorate { get; set; }
+        public virtual City City { get; set; }
         public virtual List<DeliveryAgent> DeliveryAgents { get; set; } = new List<DeliveryAgent>();
         public virtual List<Employee> Employees { get; set; } = new List<Employee>();
     }

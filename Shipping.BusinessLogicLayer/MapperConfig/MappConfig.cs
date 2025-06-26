@@ -14,11 +14,11 @@ namespace Shipping.BusinessLogicLayer.Helper
         public MappConfig()
         {
             #region Branch
-            CreateMap<Branch, ReadBranch>()
-                .AfterMap((src, dest) =>
-                {
-                    dest.Governorate = src.Governorate.Name;
-                });
+            //CreateMap<Branch, ReadBranch>()
+            //    .AfterMap((src, dest) =>
+            //    {
+            //        dest.Governorate = src.Governorate.Name;
+            //    });
 
             CreateMap<AddBranch, Branch>().AfterMap((src, dest) =>
             {
