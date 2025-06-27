@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,49 +12,116 @@ namespace Shipping.DataAccessLayer.Models
 {
     public class ShippingDBContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Seller> Sellers { get; set; }
+        public DbSet<DeliveryAgent> DeliveryAgent { get; set; }
+        public DbSet<RolePermissions> RolePermissions { get; set; }
+        public DbSet<Governorate> Governorates { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<GeneralSetting> GeneralSettings { get; set; }
+        
+
+
+
         public ShippingDBContext(DbContextOptions<ShippingDBContext> options): base(options)
         {
         }
 
-
-        public DbSet<Branch> Branches { get; set; }
-        public DbSet<City> Cities { get; set; }
-        public DbSet<DeliveryAgent> DeliveryAgents { get; set; }
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<GeneralSetting> GeneralSettings { get; set; }
-        public DbSet<Governorate> Governorates { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Seller> Sellers { get; set; }
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Add Employee, Seller and DeliveryAgent Role
             base.OnModelCreating(modelBuilder);
 
-            
-            modelBuilder.Entity<Employee>()
-                .HasOne(e => e.GeneralSetting)
-                .WithOne(g => g.Employee)
-                .HasForeignKey<GeneralSetting>(g => g.EmployeeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            string EmployeeRoleId = "Employee-ROLE-001";
+            //string AdminRoleId = "Admin-ROLE-001";
+            string SellerRoleId = "Seller-ROLE-001";
+            string DeliveryAgentRoleId = "DeliveryAgent-ROLE-001";
 
+            string EmployeeUserId = "Employee-USER-001";
 
-            // حل سريع لمنع Multiple Cascade Paths
-            foreach (var relationship in modelBuilder.Model.GetEntityTypes()
-                .SelectMany(e => e.GetForeignKeys()))
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
-                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+                Id = EmployeeRoleId,
+                Name = "Employee",
+                NormalizedName = "EMPLOYEE"
+            },
+            new IdentityRole
+            {
+                Id = SellerRoleId,
+                Name = "Seller",
+                NormalizedName = "SELLER"
+            },
+            new IdentityRole
+            {
+                Id = DeliveryAgentRoleId,
+                Name = "DeliveryAgent",
+                NormalizedName = "DELIVERYAGENT"
+            });
+
+            modelBuilder.Entity<ApplicationUser>().HasData(new ApplicationUser
+            {
+                Id = EmployeeUserId,
+                UserName = "employee",
+                NormalizedUserName = "EMPLOYEE",
+                Email = "employee@shipping.com",
+                NormalizedEmail = "EMPLOYEE@SHIPPING.COM",
+                EmailConfirmed = true,
+                //Admin@123
+                PasswordHash = "AQAAAAIAAYagAAAAEIjJh6/LXD2Bg+3MJGc+CmiaE471FJWBEmlTQ/1OhqkFw0NIgG/beU7wkTfmnuQ/sQ==",
+                SecurityStamp = "STATIC-SECURITY-STAMP-001",
+                ConcurrencyStamp = "STATIC-CONCURRENCY-STAMP-001",
+                FirstName = "Admin",
+                LastName = "User",
+                Phone = "01026299485",
+                CreatedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc),
+                IsDeleted = false
+            });
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                UserId = EmployeeUserId,
+                RoleId = EmployeeRoleId
+            }
+            );
+
+
+            modelBuilder.Entity<City>()
+            .HasMany(c => c.DeliveryAgents)
+            .WithMany(d => d.Cities)
+            .UsingEntity<Dictionary<string, object>>(
+                "CityDeliveryAgent",
+                j => j
+                    .HasOne<DeliveryAgent>()
+                    .WithMany()
+                    .HasForeignKey("DeliveryAgentsId")
+                    .OnDelete(DeleteBehavior.NoAction),
+                j => j
+                    .HasOne<City>()
+                    .WithMany()
+                    .HasForeignKey("CitiesId")
+                    .OnDelete(DeleteBehavior.NoAction)
+            );
+
+            // Seed RolePermissions for "Employee" role with full access to all departments
+            int permissionId = 1;
+            foreach (var dept in System.Enum.GetValues(typeof(Shipping.DataAccessLayer.Enum.Department)).Cast<Shipping.DataAccessLayer.Enum.Department>())
+            {
+                modelBuilder.Entity<RolePermissions>().HasData(new RolePermissions
+                {
+                    Id = permissionId++,
+                    RoleName = "Employee",
+                    Department = dept,
+                    View = true,
+                    Add = true,
+                    Edit = true,
+                    Delete = true
+                });
             }
 
-            // تعريف العلاقة Many-to-Many بين City و DeliveryAgent
-            modelBuilder.Entity<DeliveryAgent>()
-                .HasMany(d => d.Cities)
-                .WithMany(c => c.DeliveryAgents)
-                .UsingEntity(j => j.ToTable("CityDeliveryAgent")); // اسم الجدول الوسيط
-        
-        
-        }
 
+        }
     }
 }
