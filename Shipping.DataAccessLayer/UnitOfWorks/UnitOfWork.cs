@@ -16,12 +16,28 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
         public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager) 
+        private GenericRepository<City> _cityRepo;
+        public UnitOfWork(ShippingDBContext db) 
         {
             this.db = db;
             _userManager = userManager;
             _roleManager = roleManager;
         }
         #region Branch
+
+        public GenericRepository<City> CityRepo
+        {
+            get
+            {
+                if (_cityRepo == null)
+                {
+                    _cityRepo = new GenericRepository<City>(db);
+                }
+                return _cityRepo;
+            }
+        }
+
+        #region Props
         public GenericRepository<Branch> BranchRepo
         {
             get
