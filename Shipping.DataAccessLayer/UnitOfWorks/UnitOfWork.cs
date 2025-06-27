@@ -65,7 +65,6 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
             }
         }
         #endregion
-
         //public GenericRepository<RolePermissions> RolePermissionsRepo
         //{
         //    get
