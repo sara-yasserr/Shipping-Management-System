@@ -35,5 +35,9 @@ namespace Shipping.DataAccessLayer.Repositories
         {
             db.Set<TEntity>().Remove(entity);
         }
+        public async Task AddAsync(TEntity entity)
+        {
+            await db.Set<TEntity>().AddAsync(entity);
+        }
     }
 }

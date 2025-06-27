@@ -14,13 +14,14 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         private GenericRepository<Governorate> _governorateRepo;
         private RolePermissionsRepository _rolePermissionsRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
+        private GenericRepository<Employee> _employeeRepo;
         public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager) 
         {
             this.db = db;
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        #region Props
+        #region Branch
         public GenericRepository<Branch> BranchRepo
         {
             get
@@ -48,6 +49,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
             }
         }
         #endregion
+
         //public GenericRepository<RolePermissions> RolePermissionsRepo
         //{
         //    get
@@ -59,6 +61,8 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         //        return _rolePermissionsRepo;
         //    }
         //}
+
+        #region RolePermissions
         public RolePermissionsRepository RolePermissionsRepo
         {
             get
@@ -70,6 +74,21 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
                 return _rolePermissionsRepo;
             }
         }
+        #endregion
+
+        #region Employee
+        public GenericRepository<Employee> EmployeeRepo
+        {
+            get
+            {
+                if(_employeeRepo == null)
+                {
+                 _employeeRepo = new GenericRepository<Employee>(db);
+                }
+                return _employeeRepo;
+            }
+        }
+        #endregion
         public int Save()
         {
             return db.SaveChanges();
