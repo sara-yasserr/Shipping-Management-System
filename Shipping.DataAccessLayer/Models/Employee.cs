@@ -13,6 +13,8 @@ namespace Shipping.DataAccessLayer.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
+        public string SpecificRole { get; set; } // e.g. "Manager", "Staff", etc.
         [ForeignKey("Branch")]
         public int? BranchId { get; set; }
         //[ForeignKey("GeneralSetting")]
