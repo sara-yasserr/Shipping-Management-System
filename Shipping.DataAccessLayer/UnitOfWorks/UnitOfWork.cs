@@ -16,7 +16,8 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
         private GenericRepository<City> _cityRepo;
-        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager)  
+        private GeneralSettingsRepository _generalSettingsRepo;
+        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.db = db;
             _userManager = userManager;
@@ -57,7 +58,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         {
             get
             {
-                if(_governorateRepo == null)
+                if (_governorateRepo == null)
                 {
                     _governorateRepo = new GenericRepository<Governorate>(db);
                 }
@@ -65,26 +66,9 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
             }
         }
         #endregion
-<<<<<<< HEAD
-=======
 
->>>>>>> bba3836fb50c6398b06f172ff81153e50a8b62a4
-        //public GenericRepository<RolePermissions> RolePermissionsRepo
-        //{
-        //    get
-        //    {
-        //        if(_rolePermissionsRepo == null)
-        //        {
-        //            _rolePermissionsRepo = new GenericRepository<RolePermissions>(db);
-        //        }
-        //        return _rolePermissionsRepo;
-        //    }
-        //}
-<<<<<<< HEAD
-=======
-
+        
         #region RolePermissions
->>>>>>> bba3836fb50c6398b06f172ff81153e50a8b62a4
         public RolePermissionsRepository RolePermissionsRepo
         {
             get
@@ -96,8 +80,6 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
                 return _rolePermissionsRepo;
             }
         }
-<<<<<<< HEAD
-=======
         #endregion
 
         #region Employee
@@ -105,15 +87,28 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         {
             get
             {
-                if(_employeeRepo == null)
+                if (_employeeRepo == null)
                 {
-                 _employeeRepo = new GenericRepository<Employee>(db);
+                    _employeeRepo = new GenericRepository<Employee>(db);
                 }
                 return _employeeRepo;
             }
         }
         #endregion
->>>>>>> bba3836fb50c6398b06f172ff81153e50a8b62a4
+
+        #region GeneralSettings
+        public GeneralSettingsRepository GeneralSettingsRepo
+        {
+            get
+            {
+                if (_generalSettingsRepo == null)
+                {
+                    _generalSettingsRepo = new GeneralSettingsRepository(db);
+                }
+                return _generalSettingsRepo;
+            }
+        }
+        #endregion
         public int Save()
         {
             return db.SaveChanges();
