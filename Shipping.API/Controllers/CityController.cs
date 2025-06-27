@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shipping.BusinessLogicLayer.DTOs.City;
 using Shipping.BusinessLogicLayer.Services;
-using Shipping.DataAccessLayer.Models;
-using Shipping.DataAccessLayer.UnitOfWorks;
 
 namespace Shipping.API.Controllers
 {
@@ -13,24 +10,23 @@ namespace Shipping.API.Controllers
     public class CityController : ControllerBase
     {
 
-        private readonly UnitOfWork unitOfWork;
-        private readonly IMapper mapper;
-        public CityController(UnitOfWork unitOfWork, IMapper mapper)
+        private readonly CityService _cityService;
+
+        public CityController(CityService cityService)
         {
-            this.mapper = mapper;
-            this.unitOfWork = unitOfWork;
+            _cityService = cityService;
         }
 
         [HttpGet]
         public ActionResult<List<CityDTO>> GetAll()
         {
-            return Ok(unitOfWork.CityRepo.GetAll());
+            return Ok(_cityService.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<CityDTO> GetById(int id)
         {
-            var city = unitOfWork.CityRepo.GetById(id);
+            var city = _cityService.GetById(id);
             if (city == null) return NotFound();
             return Ok(city);
         }
@@ -38,34 +34,28 @@ namespace Shipping.API.Controllers
         [HttpPost]
         public IActionResult Add(CreateCityDTO dto)
         {
-            var city = mapper.Map<City>(dto);
-            unitOfWork.CityRepo.Add(city);
-            unitOfWork.Save();
+            _cityService.Add(dto);
 
-            return Ok();     
+            return Ok();
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id,UpdateCityDTO dto)
+        public IActionResult Update(int id, UpdateCityDTO dto)
         {
             if (id != dto.Id)
                 return BadRequest();
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var city = unitOfWork.CityRepo.GetById(id);
-            mapper.Map(dto, city);
-            unitOfWork.CityRepo.Update(city);
-            unitOfWork.Save();
+
+            _cityService.Update(dto);
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var city = unitOfWork.CityRepo.GetById(id);
+            var city = _cityService.GetById(id);
             if (city == null) return NotFound();
-            unitOfWork.CityRepo.Delete(city);
-            return NoContent(); 
+            _cityService.Delete(id);
+            return NoContent();
         }
 
     }
