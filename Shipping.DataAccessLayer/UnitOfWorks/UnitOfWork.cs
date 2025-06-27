@@ -15,16 +15,15 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         private RolePermissionsRepository _rolePermissionsRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
-        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager) 
         private GenericRepository<City> _cityRepo;
-        public UnitOfWork(ShippingDBContext db) 
+        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager)  
         {
             this.db = db;
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        #region Branch
 
+        #region City
         public GenericRepository<City> CityRepo
         {
             get
@@ -36,8 +35,9 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
                 return _cityRepo;
             }
         }
+        #endregion
 
-        #region Props
+        #region Branch
         public GenericRepository<Branch> BranchRepo
         {
             get

@@ -11,7 +11,7 @@ namespace Shipping.BusinessLogicLayer.DTOs.BranchDTOs
     public class AddBranch
     {
         public string Name { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public int CityId { get; set; }
     }
 }

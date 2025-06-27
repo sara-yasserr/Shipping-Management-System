@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Shipping.BusinessLogicLayer.DTOs.BranchDTOs;
+using Shipping.BusinessLogicLayer.DTOs.City;
 using Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Shipping.DataAccessLayer.Models;
@@ -20,7 +21,10 @@ namespace Shipping.BusinessLogicLayer.Helper
                .AfterMap((src, dest) =>
                {
                    dest.City = src.City.Name;
-               });
+
+                   dest.DeliverAgents = src.DeliveryAgents.Select(d => d.User.UserName).ToList();
+                   dest.Employees = src.Employees.Select(e => e.User.UserName).ToList();
+               }).ReverseMap();
 
             CreateMap<AddBranch, Branch>().AfterMap((src, dest) =>
             {
@@ -69,6 +73,9 @@ namespace Shipping.BusinessLogicLayer.Helper
             });
             #endregion
 
+            #region City
+            CreateMap<CreateCityDTO, City>();
+            #endregion
         }
     }
 }

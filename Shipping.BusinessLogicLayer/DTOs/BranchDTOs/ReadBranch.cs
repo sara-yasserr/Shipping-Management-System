@@ -12,7 +12,7 @@ namespace Shipping.BusinessLogicLayer.DTOs.BranchDTOs
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }
         public string City { get; set; }
-        public List<string> DeliverAgents { get; set; }
-        public List<string> Employees { get; set; }
+        public List<string>? DeliverAgents { get; set; }
+        public List<string>? Employees { get; set; }
     }
 }

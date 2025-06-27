@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shipping.BusinessLogicLayer.DTOs.City;
 using Shipping.BusinessLogicLayer.Services;
+using Shipping.DataAccessLayer.Models;
+using Shipping.DataAccessLayer.UnitOfWorks;
 
 namespace Shipping.API.Controllers
 {
@@ -10,23 +13,24 @@ namespace Shipping.API.Controllers
     public class CityController : ControllerBase
     {
 
-        private readonly CityService _cityService;
-
-        public CityController(CityService cityService)
+        private readonly UnitOfWork unitOfWork;
+        private readonly IMapper mapper;
+        public CityController(UnitOfWork unitOfWork, IMapper mapper)
         {
-            _cityService = cityService;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public ActionResult<List<CityDTO>> GetAll()
         {
-            return Ok(_cityService.GetAll());
+            return Ok(unitOfWork.CityRepo.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<CityDTO> GetById(int id)
         {
-            var city = _cityService.GetById(id);
+            var city = unitOfWork.CityRepo.GetById(id);
             if (city == null) return NotFound();
             return Ok(city);
         }
@@ -34,7 +38,9 @@ namespace Shipping.API.Controllers
         [HttpPost]
         public IActionResult Add(CreateCityDTO dto)
         {
-            _cityService.Add(dto);
+            var city = mapper.Map<City>(dto);
+            unitOfWork.CityRepo.Add(city);
+            unitOfWork.Save();
 
             return Ok();     
         }
@@ -44,17 +50,21 @@ namespace Shipping.API.Controllers
         {
             if (id != dto.Id)
                 return BadRequest();
-
-            _cityService.Update(dto);
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var city = unitOfWork.CityRepo.GetById(id);
+            mapper.Map(dto, city);
+            unitOfWork.CityRepo.Update(city);
+            unitOfWork.Save();
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var city = _cityService.GetById(id);
+            var city = unitOfWork.CityRepo.GetById(id);
             if (city == null) return NotFound();
-            _cityService.Delete(id);
+            unitOfWork.CityRepo.Delete(city);
             return NoContent(); 
         }
 
