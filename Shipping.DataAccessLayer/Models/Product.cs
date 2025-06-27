@@ -22,7 +22,10 @@ namespace Shipping.DataAccessLayer.Models
         public int Quantity { get; set; } = 1;  // Default to 1
         [Required(ErrorMessage = "Product weight is required")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Weight must be a positive number")]
+        [Column(TypeName = "decimal(18,2)")]
+
         public decimal Weight { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
         [ForeignKey("Order")]

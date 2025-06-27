@@ -60,7 +60,6 @@ namespace Shipping.API.Controllers
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Phone = dto.Phone,
-                IsActive = true,
                 CreatedAt = DateTime.Now
             };
 
@@ -71,7 +70,7 @@ namespace Shipping.API.Controllers
             }
 
 
-            var defaultRole = "User";
+            var defaultRole = "Seller";
             if (!await _roleManager.RoleExistsAsync(defaultRole))
             {
                 await _roleManager.CreateAsync(new IdentityRole(defaultRole));

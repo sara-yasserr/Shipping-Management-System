@@ -13,7 +13,7 @@ namespace Shipping.DataAccessLayer.Models
         [Required(ErrorMessage = "Governorate name is required")]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Governorate name must be between 2 and 100 characters")]
         public string Name { get; set; }
-        public bool IsActive { get; set; } = true;
+        public bool IsDeleted { get; set; } = false;
 
         //Navigaion
         public virtual List<City> Cities { get; set; } = new List<City>();

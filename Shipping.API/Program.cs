@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shipping.BusinessLogicLayer.Helper;
+using Shipping.BusinessLogicLayer.Interfaces;
+using Shipping.BusinessLogicLayer.Services;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
 
@@ -64,6 +66,9 @@ namespace Shipping.API
             });
             builder.Services.AddScoped<JwtHelper>();
             builder.Services.AddScoped<UnitOfWork>();
+
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
 
             var app = builder.Build();
 

@@ -1,19 +1,24 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.Repositories;
+using Shipping.DataAccessLayer.Repositories.Custom;
 
 namespace Shipping.DataAccessLayer.UnitOfWorks
 {
     public class UnitOfWork
     {
-        private readonly ShippingDBContext db;
-        private readonly UserManager<ApplicationUser> _userManager;
+        public readonly ShippingDBContext db;
+        public readonly UserManager<ApplicationUser> _userManager;
+        public RoleManager<IdentityRole> _roleManager;
         private GenericRepository<Branch> _branchRepo;
         private GenericRepository<Governorate> _governorateRepo;
-        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager) 
+        private RolePermissionsRepository _rolePermissionsRepo;
+        //private GenericRepository<RolePermissions> _rolePermissionsRepo;
+        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager) 
         {
             this.db = db;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
         #region Props
         public GenericRepository<Branch> BranchRepo
@@ -43,7 +48,28 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
             }
         }
         #endregion
-        
+        //public GenericRepository<RolePermissions> RolePermissionsRepo
+        //{
+        //    get
+        //    {
+        //        if(_rolePermissionsRepo == null)
+        //        {
+        //            _rolePermissionsRepo = new GenericRepository<RolePermissions>(db);
+        //        }
+        //        return _rolePermissionsRepo;
+        //    }
+        //}
+        public RolePermissionsRepository RolePermissionsRepo
+        {
+            get
+            {
+                if (_rolePermissionsRepo == null)
+                {
+                    _rolePermissionsRepo = new RolePermissionsRepository(db);
+                }
+                return _rolePermissionsRepo;
+            }
+        }
         public int Save()
         {
             return db.SaveChanges();
