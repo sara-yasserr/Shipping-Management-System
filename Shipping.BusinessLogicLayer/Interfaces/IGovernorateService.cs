@@ -13,6 +13,7 @@ namespace Shipping.BusinessLogicLayer.Interfaces
         List<ReadGovernorateDto> GetAll();
         ReadGovernorateDto GetById(int id);
         bool EditGovernorate(int id, AddGovernorateDto dto);
-        bool DeleteGovernorate(int id);
+        bool SoftDeleteGovernorate(int id);
+        bool HardDeleteGovernorate(int id);
     }
 }
