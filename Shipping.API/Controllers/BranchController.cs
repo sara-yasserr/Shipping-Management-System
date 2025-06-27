@@ -19,9 +19,10 @@ namespace Shipping.API.Controllers
             this.mapper = mapper;
         }
         [HttpGet]
-        public List<Branch> GetAll()
+        public ActionResult<List<ReadBranch>> GetAll()
         {
-            return unitOfWork.BranchRepo.GetAll();
+            var branches = unitOfWork.BranchRepo.GetAll();
+            return Ok(mapper.Map<List<ReadBranch>>(branches));
         }
         [HttpGet("{id:int}")]
         public ActionResult<Branch> GetById(int id)
@@ -35,14 +36,16 @@ namespace Shipping.API.Controllers
             return Ok(branch);
         }
         [HttpPost]
-        public ActionResult<ReadBranch> Post(AddBranch branchDTO)
+        public ActionResult<AddBranch> Post(AddBranch branchDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var branch = mapper.Map<Branch>(branchDTO);
-            return CreatedAtAction(nameof(GetById), new { id = branch.Id }, mapper.Map<ReadBranch>(branch));
+            unitOfWork.BranchRepo.Add(branch);
+            unitOfWork.Save();
+            return CreatedAtAction(nameof(GetById), new { id = branch.Id }, branchDTO);
         }
         [HttpPut("{id:int}")]
         public ActionResult<ReadBranch> Put(int id, AddBranch branchDTO)

@@ -36,7 +36,7 @@ namespace Shipping.DataAccessLayer.Models
             base.OnModelCreating(modelBuilder);
 
             string EmployeeRoleId = "Employee-ROLE-001";
-            //string AdminRoleId = "Admin-ROLE-001";
+            string AdminRoleId = "Admin-ROLE-001";
             string SellerRoleId = "Seller-ROLE-001";
             string DeliveryAgentRoleId = "DeliveryAgent-ROLE-001";
 
@@ -59,6 +59,12 @@ namespace Shipping.DataAccessLayer.Models
                 Id = DeliveryAgentRoleId,
                 Name = "DeliveryAgent",
                 NormalizedName = "DELIVERYAGENT"
+            },
+            new IdentityRole
+            {
+                Id = AdminRoleId,
+                Name = "Admin",
+                NormalizedName = "ADMIN"
             });
 
             modelBuilder.Entity<ApplicationUser>().HasData(new ApplicationUser
@@ -75,17 +81,28 @@ namespace Shipping.DataAccessLayer.Models
                 ConcurrencyStamp = "STATIC-CONCURRENCY-STAMP-001",
                 FirstName = "Admin",
                 LastName = "User",
-                Phone = "01026299485",
+                PhoneNumber = "01026299485",
                 CreatedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc),
-                IsDeleted = false
+                IsDeleted = false,
+                Role = "Admin"
             });
 
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             {
                 UserId = EmployeeUserId,
                 RoleId = EmployeeRoleId
-            }
-            );
+            },
+            new IdentityUserRole<string>
+            {
+                UserId = EmployeeUserId,
+                RoleId = AdminRoleId
+            });
+
+            modelBuilder.Entity<Employee>().HasData(new Employee
+            {
+                Id = 1,
+                UserId = EmployeeUserId
+            });
 
 
             modelBuilder.Entity<City>()
