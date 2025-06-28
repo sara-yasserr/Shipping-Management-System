@@ -12,7 +12,9 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         public RoleManager<IdentityRole> _roleManager;
         private GenericRepository<Branch> _branchRepo;
         private GenericRepository<City> _cityRepo;
-        public UnitOfWork(ShippingDBContext db) 
+        private GenericRepository<Seller> _sellerRepo;
+
+        //public UnitOfWork(ShippingDBContext db) 
         private GenericRepository<Governorate> _governorateRepo;
         private RolePermissionsRepository _rolePermissionsRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
@@ -47,6 +49,27 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
                 return _branchRepo;
             }
         }
+
+
+        public GenericRepository<Seller> SellerRepo
+        {
+            get
+            {
+                if (_sellerRepo == null)
+                {
+                    _sellerRepo = new GenericRepository<Seller>(db);
+                }
+                return _sellerRepo;
+            }
+        }
+
+
+
+
+
+
+
+
         public UserManager<ApplicationUser> UserManager => _userManager;
         #endregion
 

@@ -105,6 +105,39 @@ namespace Shipping.DataAccessLayer.Models
                     .OnDelete(DeleteBehavior.NoAction)
             );
 
+
+
+
+            modelBuilder.Entity<Order>()
+               .HasOne(o => o.City)
+               .WithMany()
+               .HasForeignKey(o => o.CityId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Seller)
+                .WithMany()
+                .HasForeignKey(o => o.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.DeliveryAgent)
+                .WithMany()
+                .HasForeignKey(o => o.DeliveryAgentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Branch)
+                .WithMany()
+                .HasForeignKey(o => o.BranchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+
+
+
+
+
             // Seed RolePermissions for "Employee" role with full access to all departments
             int permissionId = 1;
             foreach (var dept in System.Enum.GetValues(typeof(Shipping.DataAccessLayer.Enum.Department)).Cast<Shipping.DataAccessLayer.Enum.Department>())
