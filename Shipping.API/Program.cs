@@ -1,4 +1,3 @@
-
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -23,10 +22,12 @@ namespace Shipping.API
             builder.Services.AddDbContext<ShippingDBContext>(options =>
                 options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("ShippingCS")));
 
+            // Identity 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ShippingDBContext>()
                 .AddDefaultTokenProviders();
 
+            // Authentication by Jwt
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,6 +70,10 @@ namespace Shipping.API
 
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
+            
+            builder.Services.AddScoped<IGovernorateService, GovernorateService>();
+            builder.Services.AddScoped<IDeliveryManService, DeliveryManService>();
+            
 
             var app = builder.Build();
 

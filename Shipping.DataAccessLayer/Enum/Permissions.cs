@@ -8,7 +8,7 @@ namespace Shipping.DataAccessLayer.Enum
 {
     public enum Permissions
     {
-        View = 1,
+        View = 1,  
         Add,
         Edit,
         Delete

@@ -10,9 +10,10 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         public readonly ShippingDBContext db;
         public readonly UserManager<ApplicationUser> _userManager;
         public RoleManager<IdentityRole> _roleManager;
+        private RolePermissionsRepository _rolePermissionsRepo;
         private GenericRepository<Branch> _branchRepo;
         private GenericRepository<Governorate> _governorateRepo;
-        private RolePermissionsRepository _rolePermissionsRepo;
+        private GenericRepository<DeliveryAgent> _deliveryManRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager) 
         {
@@ -68,6 +69,17 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
                     _rolePermissionsRepo = new RolePermissionsRepository(db);
                 }
                 return _rolePermissionsRepo;
+            }
+        }
+        public GenericRepository<DeliveryAgent> DeliveryManRepo
+        {
+            get
+            {
+                if (_deliveryManRepo == null)
+                {
+                    _deliveryManRepo = new GenericRepository<DeliveryAgent>(db);
+                }
+                return _deliveryManRepo;
             }
         }
         public int Save()
