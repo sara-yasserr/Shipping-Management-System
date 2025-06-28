@@ -6,105 +6,122 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using AutoMapper;
 
 namespace Shipping.BusinessLogicLayer.Services
 {
     public class DeliveryManService : IDeliveryManService
     {
         private readonly UnitOfWork _unitOfWork;
-        public DeliveryManService(UnitOfWork unitOfWork)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IRoleService _roleService;
+        private readonly IMapper _mapper;
+        
+        public DeliveryManService(UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager,
+            IRoleService roleService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
+            _roleService = roleService;
+            _mapper = mapper;
         }
 
         public async Task<List<ReadDeliveryMan>> GetAllAsync()
         {
-            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAll();
-            var result = deliveryMen.Select(deliveryMan => new ReadDeliveryMan
-            {
-                Id = deliveryMan.Id,
-                FullName = deliveryMan.User != null ? deliveryMan.User.FirstName + " " + deliveryMan.User.LastName : null,
-                UserName = deliveryMan.User?.UserName,
-                Email = deliveryMan.User?.Email,
-                PhoneNumber = deliveryMan.User?.PhoneNumber,
-                BranchName = deliveryMan.Branch?.Name,
-                Cities = deliveryMan.Cities != null ? string.Join(", ", deliveryMan.Cities.Select(c => c.Name)) : null
-            }).ToList();
-            return await Task.FromResult(result);
+            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes();
+            return _mapper.Map<List<ReadDeliveryMan>>(deliveryMen);
         }
 
         public async Task<ReadDeliveryMan> GetByIdAsync(int id)
         {
-            var deliveryMan = _unitOfWork.DeliveryManRepo.GetById(id);
+            var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
             if (deliveryMan == null) return null;
-            var dto = new ReadDeliveryMan
-            {
-                Id = deliveryMan.Id,
-                FullName = deliveryMan.User != null ? deliveryMan.User.FirstName + " " + deliveryMan.User.LastName : null,
-                UserName = deliveryMan.User?.UserName,
-                Email = deliveryMan.User?.Email,
-                PhoneNumber = deliveryMan.User?.PhoneNumber,
-                BranchName = deliveryMan.Branch?.Name,
-                Cities = deliveryMan.Cities != null ? string.Join(", ", deliveryMan.Cities.Select(c => c.Name)) : null
-            };
-            return await Task.FromResult(dto);
+            
+            return _mapper.Map<ReadDeliveryMan>(deliveryMan);
         }
 
-        public async Task AddAsync(AddDeliveryMan dto)
+        public async Task<(bool success, int deliveryManId)> AddAsync(AddDeliveryMan dto)
         {
-            // Create ApplicationUser
-            var user = new ApplicationUser
+            try
             {
-                UserName = dto.UserName,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-                FirstName = dto.Name?.Split(' ').FirstOrDefault() ?? dto.Name,
-                LastName = dto.Name?.Contains(' ') == true ? dto.Name.Substring(dto.Name.IndexOf(' ') + 1) : string.Empty
-            };
-            var result = await _unitOfWork.UserManager.CreateAsync(user, dto.Password);
-            if (!result.Succeeded)
-            {
-                throw new System.Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
+                var deliveryMan = _mapper.Map<DeliveryAgent>(dto);
+
+                await _unitOfWork.DeliveryManRepo.AddAsync(deliveryMan);
+                await _unitOfWork.SaveAsync();
+
+                // Add cities
+                if (dto.CityIds?.Any() == true)
+                {
+                    await _unitOfWork.DeliveryManRepo.UpdateDeliveryManCities(deliveryMan.Id, dto.CityIds);
+                }
+
+                // Add user role "DeliveryMan" by Default
+                await _userManager.AddToRoleAsync(deliveryMan.User, "DeliveryMan");
+
+                return (true, deliveryMan.Id);
             }
-            // Create DeliveryMan
-            var deliveryMan = new DeliveryAgent
+            catch
             {
-                BranchId = dto.BranchId,
-                UserId = user.Id,
-                Cities = dto.CityIds?.Select(id => _unitOfWork.db.Cities.Find(id)).ToList()
-            };
-            _unitOfWork.DeliveryManRepo.Add(deliveryMan);
-            await _unitOfWork.SaveAsync();
-        }
-
-        public async Task UpdateAsync(int id, AddDeliveryMan dto)
-        {
-            var deliveryMan = _unitOfWork.DeliveryManRepo.GetById(id);
-            if (deliveryMan == null) return;
-            // Update user info
-            var user = await _unitOfWork.UserManager.FindByIdAsync(deliveryMan.UserId);
-            if (user != null)
-            {
-                user.UserName = dto.UserName;
-                user.Email = dto.Email;
-                user.PhoneNumber = dto.PhoneNumber;
-                user.FirstName = dto.Name?.Split(' ').FirstOrDefault() ?? dto.Name;
-                user.LastName = dto.Name?.Contains(' ') == true ? dto.Name.Substring(dto.Name.IndexOf(' ') + 1) : string.Empty;
-                await _unitOfWork.UserManager.UpdateAsync(user);
-                // Password update is not handled here for security reasons
+                return (false, 0);
             }
-            deliveryMan.BranchId = dto.BranchId;
-            deliveryMan.Cities = dto.CityIds?.Select(cid => _unitOfWork.db.Cities.Find(cid)).ToList();
-            _unitOfWork.DeliveryManRepo.Update(deliveryMan);
-            await _unitOfWork.SaveAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> UpdateAsync(int id, UpdateDeliveryMan dto)
         {
-            var deliveryMan = _unitOfWork.DeliveryManRepo.GetById(id);
-            if (deliveryMan == null) return;
-            _unitOfWork.DeliveryManRepo.Delete(deliveryMan);
-            await _unitOfWork.SaveAsync();
+            try
+            {
+                var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
+                if (deliveryMan == null) return false;
+                
+                // Update delivery man using mapping
+                _mapper.Map(dto, deliveryMan);
+                
+                // Update cities
+                await _unitOfWork.DeliveryManRepo.UpdateDeliveryManCities(id, dto.CityIds);
+                
+                _unitOfWork.DeliveryManRepo.Update(deliveryMan);
+                await _unitOfWork.SaveAsync();
+                
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> SoftDeleteAsync(int id)
+        {
+            try
+            {
+                var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
+                if (deliveryMan == null) return false;
+
+                await _unitOfWork.DeliveryManRepo.SoftDeleteDeliveryMan(id);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> HardDeleteAsync(int id)
+        {
+            try
+            {
+                var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
+                if (deliveryMan == null) return false;
+
+                _unitOfWork.DeliveryManRepo.Delete(deliveryMan);
+                await _unitOfWork.SaveAsync();
+                
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 } 

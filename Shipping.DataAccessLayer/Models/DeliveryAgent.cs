@@ -17,12 +17,11 @@ namespace Shipping.DataAccessLayer.Models
         public int BranchId { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
+        
         // Navigation Properties
-
         public virtual Branch Branch { get; set; }
         public virtual List<Order> Orders { get; set; } = new List<Order>();
         public virtual List<City> Cities { get; set; }
         public virtual ApplicationUser User { get; set; }
-
     }
 }

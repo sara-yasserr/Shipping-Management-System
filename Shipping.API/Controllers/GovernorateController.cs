@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Messaging;
 
 namespace Shipping.API.Controllers
 {
@@ -76,7 +77,7 @@ namespace Shipping.API.Controllers
 
         //hard delete
         //api/Governorate/HardDelete/5
-        [Authorize(Roles = "Admin")] //delete from DB only if he is adminnn
+        //[Authorize(Roles = "Admin")] //delete from DB only if he is adminnn
         [HttpDelete("HardDelete/{id}")]
         public IActionResult HardDeleteGovernorate(int id)
         {

@@ -463,6 +463,19 @@ namespace Shipping.DataAccessLayer.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("GeneralSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DefaultWeight = 10m,
+                            EmployeeId = 1,
+                            Express = 0.5m,
+                            ExtraPriceKg = 5m,
+                            ExtraPriceVillage = 20m,
+                            Fast = 0.2m,
+                            ModifiedAt = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Utc)
+                        });
                 });
 
             modelBuilder.Entity("Shipping.DataAccessLayer.Models.Governorate", b =>
@@ -610,11 +623,11 @@ namespace Shipping.DataAccessLayer.Migrations
 
             modelBuilder.Entity("Shipping.DataAccessLayer.Models.RolePermissions", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("RoleName")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("Department")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Add")
                         .HasColumnType("bit");
@@ -622,23 +635,16 @@ namespace Shipping.DataAccessLayer.Migrations
                     b.Property<bool>("Delete")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Department")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Edit")
                         .HasColumnType("bit");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("RoleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("View")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                    b.HasKey("RoleName", "Department");
 
                     b.HasIndex("RoleId");
 
@@ -647,92 +653,83 @@ namespace Shipping.DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            Add = true,
-                            Delete = true,
+                            RoleName = "Employee",
                             Department = 1,
+                            Add = true,
+                            Delete = true,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         },
                         new
                         {
-                            Id = 2,
-                            Add = true,
-                            Delete = true,
+                            RoleName = "Employee",
                             Department = 2,
+                            Add = true,
+                            Delete = true,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         },
                         new
                         {
-                            Id = 3,
-                            Add = true,
-                            Delete = true,
+                            RoleName = "Employee",
                             Department = 3,
+                            Add = true,
+                            Delete = true,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         },
                         new
                         {
-                            Id = 4,
-                            Add = true,
-                            Delete = true,
+                            RoleName = "Employee",
                             Department = 4,
+                            Add = true,
+                            Delete = true,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         },
                         new
                         {
-                            Id = 5,
-                            Add = true,
-                            Delete = true,
+                            RoleName = "Employee",
                             Department = 5,
+                            Add = true,
+                            Delete = true,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         },
                         new
                         {
-                            Id = 6,
-                            Add = true,
-                            Delete = true,
+                            RoleName = "Employee",
                             Department = 6,
+                            Add = true,
+                            Delete = true,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         },
                         new
                         {
-                            Id = 7,
-                            Add = true,
-                            Delete = true,
+                            RoleName = "Employee",
                             Department = 7,
+                            Add = true,
+                            Delete = true,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         },
                         new
                         {
-                            Id = 8,
-                            Add = true,
-                            Delete = true,
+                            RoleName = "Employee",
                             Department = 8,
+                            Add = true,
+                            Delete = true,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         },
                         new
                         {
-                            Id = 9,
+                            RoleName = "Employee",
+                            Department = 9,
                             Add = true,
                             Delete = true,
-                            Department = 9,
                             Edit = true,
-                            RoleName = "Employee",
                             View = true
                         });
                 });

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Shipping.BusinessLogicLayer.DTOs.BranchDTOs;
 using Shipping.BusinessLogicLayer.DTOs.City;
+using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
 using Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GeneralSettingsDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
@@ -96,6 +97,7 @@ namespace Shipping.BusinessLogicLayer.Helper
 
             #endregion
 
+           
             #region Role Permissions
             CreateMap<RolePermissions, PermissionDTO>()
             .ForMember(dest => dest.DepartmentName,
@@ -105,6 +107,53 @@ namespace Shipping.BusinessLogicLayer.Helper
                        opt => opt.MapFrom(src => src.Department));
 
             #endregion
+       
+             #region DeliveryMan
+             CreateMap<DeliveryAgent, ReadDeliveryMan>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => 
+                    src.User != null ? src.User.FirstName + " " + src.User.LastName : null))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+                .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch.Name))
+                .ForMember(dest => dest.BranchId, opt => opt.MapFrom(src => src.BranchId))
+                .ForMember(dest => dest.Cities, opt => opt.MapFrom(src => 
+                    src.Cities != null ? string.Join(", ", src.Cities.Select(c => c.Name)) : null))
+                .ForMember(dest => dest.CityIds, opt => opt.MapFrom(src => 
+                    src.Cities != null ? src.Cities.Select(c => c.Id).ToList() : null))
+                .ForMember(dest => dest.ActiveOrdersCount, opt => opt.MapFrom(src => 
+                    src.Orders != null ? src.Orders.Count(o => o.IsActive) : 0));
+
+            CreateMap<AddDeliveryMan, DeliveryAgent>().AfterMap((src, dest) =>
+            {
+                dest.BranchId = src.BranchId;
+ 
+                dest.User = new ApplicationUser
+                {
+                    UserName = src.UserName,
+                    Email = src.Email,
+                    PasswordHash = src.Password,
+                    FirstName = src.Name?.Split(' ').FirstOrDefault() ?? src.Name,
+                    LastName = src.Name?.Contains(' ') == true ? src.Name.Substring(src.Name.IndexOf(' ') + 1) : string.Empty,
+                    PhoneNumber = src.PhoneNumber
+                };
+                dest.UserId = dest.User.Id;
+            });
+
+            CreateMap<UpdateDeliveryMan, DeliveryAgent>().AfterMap((src, dest) =>
+            {
+                dest.BranchId = src.BranchId;
+                
+                if (dest.User != null)
+                {
+                    dest.User.UserName = src.UserName;
+                    dest.User.Email = src.Email;
+                    dest.User.PhoneNumber = src.PhoneNumber;
+                    dest.User.FirstName = src.Name?.Split(' ').FirstOrDefault() ?? src.Name;
+                    dest.User.LastName = src.Name?.Contains(' ') == true ? src.Name.Substring(src.Name.IndexOf(' ') + 1) : string.Empty;
+                }
+            });
+             #endregion
         }
     }
 }

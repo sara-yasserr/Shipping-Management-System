@@ -13,7 +13,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         private RolePermissionsRepository _rolePermissionsRepo;
         private GenericRepository<Branch> _branchRepo;
         private GenericRepository<Governorate> _governorateRepo;
-        private GenericRepository<DeliveryAgent> _deliveryManRepo;
+        private DeliveryManRepository _deliveryManRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
         private GenericRepository<City> _cityRepo;
@@ -121,17 +121,20 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
             }
         }
         #endregion
-        public GenericRepository<DeliveryAgent> DeliveryManRepo
+        
+        #region DeliveryMan
+        public DeliveryManRepository DeliveryManRepo
         {
             get
             {
                 if (_deliveryManRepo == null)
                 {
-                    _deliveryManRepo = new GenericRepository<DeliveryAgent>(db);
+                    _deliveryManRepo = new DeliveryManRepository(db);
                 }
                 return _deliveryManRepo;
             }
         }
+        #endregion
         public int Save()
         {
             return db.SaveChanges();
