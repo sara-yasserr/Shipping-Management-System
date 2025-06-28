@@ -9,7 +9,7 @@ namespace Shipping.DataAccessLayer.Enum
     public enum Department
     {
         Employees = 1,
-        DeliveryMen,
+        DeliveryAgents,
         Sellers,
         Branches,
         Governorates,

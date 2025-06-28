@@ -27,6 +27,25 @@ namespace Shipping.API
                 .AddEntityFrameworkStores<ShippingDBContext>()
                 .AddDefaultTokenProviders();
 
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateLifetime = true,
+            //        ValidateIssuerSigningKey = true,
+            //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            //        ValidAudience = builder.Configuration["Jwt:Audience"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(
+            //            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            //    };
+            //});
             // Authentication by Jwt
             builder.Services.AddAuthentication(options =>
             {
@@ -67,9 +86,18 @@ namespace Shipping.API
             });
             builder.Services.AddScoped<JwtHelper>();
             builder.Services.AddScoped<UnitOfWork>();
+            builder.Services.AddScoped<CityService>();
+            builder.Services.AddScoped<IGovernorateService,GovernorateService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
+            builder.Services.AddScoped<IBranchService, BranchService>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
+
+            builder.Services.AddScoped<GeneralSettingsService>();
+
             
             builder.Services.AddScoped<IGovernorateService, GovernorateService>();
             builder.Services.AddScoped<IDeliveryManService, DeliveryManService>();
