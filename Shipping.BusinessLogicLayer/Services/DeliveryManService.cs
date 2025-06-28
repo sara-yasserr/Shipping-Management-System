@@ -113,6 +113,52 @@ namespace Shipping.BusinessLogicLayer.Services
                 var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
                 if (deliveryMan == null) return false;
 
+                // Set DeliveryAgentId = null for all related orders
+                var orders = _unitOfWork.db.Orders.Where(o => o.DeliveryAgentId == id).ToList();
+                foreach (var order in orders)
+                {
+                    order.DeliveryAgentId = null;
+                }
+                await _unitOfWork.SaveAsync();
+
+                // Delete the delivery man
+                _unitOfWork.DeliveryManRepo.Delete(deliveryMan);
+                await _unitOfWork.SaveAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            try
+            {
+                var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
+                if (deliveryMan == null) return false;
+                
+                // Check if delivery man has active orders
+                var activeOrders = deliveryMan.Orders?.Where(o => o.IsActive).ToList();
+                if (activeOrders?.Any() == true)
+                {
+                    throw new System.Exception($"Cannot delete delivery man. There are {activeOrders.Count} active orders assigned to this delivery man. Please reassign or complete these orders first.");
+                }
+                
+                // Check if delivery man has any orders (even deleted ones)
+                var totalOrders = deliveryMan.Orders?.Count ?? 0;
+                if (totalOrders > 0)
+                {
+                    // Just clear cities and return (no hard delete)
+                    deliveryMan.Cities.Clear();
+                    _unitOfWork.DeliveryManRepo.Update(deliveryMan);
+                    await _unitOfWork.SaveAsync();
+                    throw new System.Exception($"Delivery man has {totalOrders} orders in history. The delivery man was not deleted but cities were cleared.");
+                }
+                
+                // No orders found - safe to hard delete
                 _unitOfWork.DeliveryManRepo.Delete(deliveryMan);
                 await _unitOfWork.SaveAsync();
                 
@@ -120,7 +166,7 @@ namespace Shipping.BusinessLogicLayer.Services
             }
             catch
             {
-                return false;
+                throw;
             }
         }
     }
