@@ -83,8 +83,7 @@ namespace Shipping.DataAccessLayer.Models
                 LastName = "User",
                 PhoneNumber = "01026299485",
                 CreatedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc),
-                IsDeleted = false,
-                Role = "Admin"
+                IsDeleted = false
             });
 
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
@@ -101,7 +100,8 @@ namespace Shipping.DataAccessLayer.Models
             modelBuilder.Entity<Employee>().HasData(new Employee
             {
                 Id = 1,
-                UserId = EmployeeUserId
+                UserId = EmployeeUserId,
+                SpecificRole = "Admin"
             });
 
 

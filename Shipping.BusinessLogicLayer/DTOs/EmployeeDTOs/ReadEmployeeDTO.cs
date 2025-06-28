@@ -17,5 +17,6 @@ namespace Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string SpecificRole { get; set; }  
     }
 }

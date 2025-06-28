@@ -62,6 +62,7 @@ namespace Shipping.BusinessLogicLayer.Helper
             CreateMap<AddEmployeeDTO, Employee>().AfterMap((src, dest) =>
             {
                 dest.BranchId = src.BranchId;
+ 
                 dest.User = new ApplicationUser
                 {
                     UserName = src.UserName,
@@ -69,9 +70,9 @@ namespace Shipping.BusinessLogicLayer.Helper
                     PasswordHash = src.Password,
                     FirstName = src.FirstName,
                     LastName = src.LastName,
-                    PhoneNumber = src.PhoneNumber,
-                    Role = src.Role
+                    PhoneNumber = src.PhoneNumber
                 };
+                dest.UserId = dest.User.Id;
             });
             #endregion
 

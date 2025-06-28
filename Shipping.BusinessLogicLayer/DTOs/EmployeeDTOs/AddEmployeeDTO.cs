@@ -31,6 +31,6 @@ namespace Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs
         [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
         [Required(ErrorMessage = "Role is required")]
-        public string? Role { get; set; } = "Admin";
+        public string? SpecificRole { get; set; } = "Admin";
     }
 }
