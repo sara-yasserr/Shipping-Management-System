@@ -16,7 +16,8 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
         private GenericRepository<City> _cityRepo;
-        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager)  
+        private GeneralSettingsRepository _generalSettingsRepo;
+        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.db = db;
             _userManager = userManager;
@@ -57,7 +58,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         {
             get
             {
-                if(_governorateRepo == null)
+                if (_governorateRepo == null)
                 {
                     _governorateRepo = new GenericRepository<Governorate>(db);
                 }
@@ -77,6 +78,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         //    }
         //}
 
+        
         #region RolePermissions
         public RolePermissionsRepository RolePermissionsRepo
         {
@@ -96,11 +98,25 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         {
             get
             {
-                if(_employeeRepo == null)
+                if (_employeeRepo == null)
                 {
-                 _employeeRepo = new GenericRepository<Employee>(db);
+                    _employeeRepo = new GenericRepository<Employee>(db);
                 }
                 return _employeeRepo;
+            }
+        }
+        #endregion
+
+        #region GeneralSettings
+        public GeneralSettingsRepository GeneralSettingsRepo
+        {
+            get
+            {
+                if (_generalSettingsRepo == null)
+                {
+                    _generalSettingsRepo = new GeneralSettingsRepository(db);
+                }
+                return _generalSettingsRepo;
             }
         }
         #endregion

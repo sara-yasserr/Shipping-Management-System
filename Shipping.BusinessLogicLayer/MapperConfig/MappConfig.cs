@@ -2,7 +2,9 @@
 using Shipping.BusinessLogicLayer.DTOs.BranchDTOs;
 using Shipping.BusinessLogicLayer.DTOs.City;
 using Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs;
+using Shipping.BusinessLogicLayer.DTOs.GeneralSettingsDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
+using Shipping.BusinessLogicLayer.DTOs.PermissionDTOs;
 using Shipping.DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
@@ -76,6 +78,32 @@ namespace Shipping.BusinessLogicLayer.Helper
 
             #region City
             CreateMap<CreateCityDTO, City>();
+            #endregion
+
+            #region General Settings
+            CreateMap<GeneralSetting, ReadGeneralSettingsDTO>()
+            .ForMember(dest => dest.Employee, opt => opt.MapFrom(src => src.Employee.User.FirstName + " " + src.Employee.User.LastName)).ReverseMap();
+
+            CreateMap<UpdateGeneralSettingsDTO, GeneralSetting>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => 1))
+            .ForMember(dest => dest.ModifiedAt, opt => opt.MapFrom(_ => DateTime.Now))
+            .ForMember(dest => dest.Fast, opt => opt.MapFrom(src => (decimal)src.Fast))
+            .ForMember(dest => dest.Express, opt => opt.MapFrom(src => (decimal)src.Express))
+            .ForMember(dest => dest.DefaultWeight, opt => opt.MapFrom(src => (decimal)src.DefaultWeight))
+            .ForMember(dest => dest.ExtraPriceKg, opt => opt.MapFrom(src => (decimal)src.ExtraPriceKg))
+            .ForMember(dest => dest.ExtraPriceVillage, opt => opt.MapFrom(src => (decimal)src.ExtraPriceVillage))
+            .ForMember(dest => dest.EmployeeId, opt => opt.MapFrom(src => src.EmployeeId)).ReverseMap();
+
+            #endregion
+
+            #region Role Permissions
+            CreateMap<RolePermissions, PermissionDTO>()
+            .ForMember(dest => dest.DepartmentName,
+                       opt => opt.MapFrom(src => DepartmentMapper.GetDepartmentName(src.Department)))
+            .ReverseMap()
+            .ForMember(dest => dest.Department,
+                       opt => opt.MapFrom(src => src.Department));
+
             #endregion
         }
     }

@@ -121,14 +121,18 @@ namespace Shipping.DataAccessLayer.Models
                     .HasForeignKey("CitiesId")
                     .OnDelete(DeleteBehavior.NoAction)
             );
+            //Seed General Settings
 
-            // Seed RolePermissions for "Employee" role with full access to all departments
-            int permissionId = 1;
+            modelBuilder.Entity<GeneralSetting>().HasData(
+                new GeneralSetting { Id = 1, DefaultWeight = 10, ExtraPriceKg = 5, ExtraPriceVillage = 20,
+                    ModifiedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc), Fast = .2m, Express = .5m , EmployeeId = 1 }
+                );
+
+            
             foreach (var dept in System.Enum.GetValues(typeof(Shipping.DataAccessLayer.Enum.Department)).Cast<Shipping.DataAccessLayer.Enum.Department>())
             {
                 modelBuilder.Entity<RolePermissions>().HasData(new RolePermissions
                 {
-                    Id = permissionId++,
                     RoleName = "Employee",
                     Department = dept,
                     View = true,
@@ -138,6 +142,9 @@ namespace Shipping.DataAccessLayer.Models
                 });
             }
 
+            //composite key Role Permissions
+            modelBuilder.Entity<RolePermissions>()
+                .HasKey(rp => new { rp.RoleName, rp.Department });
 
         }
     }

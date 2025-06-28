@@ -76,6 +76,8 @@ namespace Shipping.API
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
 
+            builder.Services.AddScoped<GeneralSettingsService>();
+
             var app = builder.Build();
 
 
