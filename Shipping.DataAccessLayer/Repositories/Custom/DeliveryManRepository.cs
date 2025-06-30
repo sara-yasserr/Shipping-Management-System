@@ -34,7 +34,7 @@ namespace Shipping.DataAccessLayer.Repositories.Custom
                 .FirstOrDefault(d => d.Id == id);
         }
 
-        public async Task SoftDeleteDeliveryMan(int deliveryManId)
+         public async Task SoftDeleteDeliveryMan(int deliveryManId)
         {
             var deliveryMan = await _db.DeliveryAgent
                 .Include(d => d.User)

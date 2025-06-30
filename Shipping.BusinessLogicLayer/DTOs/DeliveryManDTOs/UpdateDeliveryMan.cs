@@ -30,5 +30,11 @@ namespace Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs
         [Required(ErrorMessage = "At least one city must be selected.")]
         [MinLength(1, ErrorMessage = "At least one city must be selected.")]
         public List<int> CityIds { get; set; }
+
+        // Password is optional for update - can be null, empty, or valid password
+        public string? Password { get; set; }
+
+        // Status is optional for update
+        public bool IsDeleted { get; set; } = true;
     }
 } 

@@ -13,6 +13,9 @@ namespace Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs
         public int? BranchId { get; set; }
         public string? Cities { get; set; }
         public List<int>? CityIds { get; set; }
+
         public int? ActiveOrdersCount { get; set; }
+        public bool IsDeleted {get; set;}
+     
     }
 } 

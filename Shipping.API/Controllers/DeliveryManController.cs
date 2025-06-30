@@ -53,10 +53,10 @@ namespace Shipping.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddDeliveryMan dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new { error = "Validation failed", details = ModelState });
-            }
+            // if (!ModelState.IsValid)
+            // {
+            //     return BadRequest(new { error = "Validation failed", details = ModelState });
+            // }
 
             try
             {
@@ -70,7 +70,7 @@ namespace Shipping.API.Controllers
             {
                 if (ex.Message.Contains("already taken") || ex.Message.Contains("already registered"))
                     return Conflict(new { error = ex.Message });
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new { error = ex.Message, details = ex.StackTrace });
             }
         }
 
@@ -80,6 +80,20 @@ namespace Shipping.API.Controllers
             if (id <= 0)
             {
                 return BadRequest(new { error = "Invalid ID. ID must be greater than 0." });
+            }
+
+            // Handle password validation manually
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                // Only validate password if it's provided
+                if (dto.Password.Length < 8)
+                {
+                    ModelState.AddModelError("Password", "Password must be at least 8 characters long.");
+                }
+                else if (!System.Text.RegularExpressions.Regex.IsMatch(dto.Password, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-={}:;<>.,?]).+$"))
+                {
+                    ModelState.AddModelError("Password", "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+                }
             }
 
             if (!ModelState.IsValid)
@@ -105,7 +119,7 @@ namespace Shipping.API.Controllers
             }
         }
 
-        [HttpDelete("{id}/soft")]
+           [HttpDelete("{id}/soft")]
         public async Task<IActionResult> SoftDelete(int id)
         {
             if (id <= 0)

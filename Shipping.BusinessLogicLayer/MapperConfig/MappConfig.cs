@@ -116,13 +116,16 @@ namespace Shipping.BusinessLogicLayer.Helper
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
                 .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch.Name))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.User.IsDeleted))  
                 .ForMember(dest => dest.BranchId, opt => opt.MapFrom(src => src.BranchId))
                 .ForMember(dest => dest.Cities, opt => opt.MapFrom(src => 
                     src.Cities != null ? string.Join(", ", src.Cities.Select(c => c.Name)) : null))
+                   
                 .ForMember(dest => dest.CityIds, opt => opt.MapFrom(src => 
                     src.Cities != null ? src.Cities.Select(c => c.Id).ToList() : null))
                 .ForMember(dest => dest.ActiveOrdersCount, opt => opt.MapFrom(src => 
-                    src.Orders != null ? src.Orders.Count(o => o.IsActive) : 0));
+                    src.Orders != null ? src.Orders.Count(o => o.IsActive) : 0))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.User.IsDeleted));
 
             CreateMap<AddDeliveryMan, DeliveryAgent>().AfterMap((src, dest) =>
             {
@@ -132,12 +135,11 @@ namespace Shipping.BusinessLogicLayer.Helper
                 {
                     UserName = src.UserName,
                     Email = src.Email,
-                    PasswordHash = src.Password,
                     FirstName = src.Name?.Split(' ').FirstOrDefault() ?? src.Name,
                     LastName = src.Name?.Contains(' ') == true ? src.Name.Substring(src.Name.IndexOf(' ') + 1) : string.Empty,
                     PhoneNumber = src.PhoneNumber
                 };
-                dest.UserId = dest.User.Id;
+                
             });
 
             CreateMap<UpdateDeliveryMan, DeliveryAgent>().AfterMap((src, dest) =>
@@ -151,6 +153,7 @@ namespace Shipping.BusinessLogicLayer.Helper
                     dest.User.PhoneNumber = src.PhoneNumber;
                     dest.User.FirstName = src.Name?.Split(' ').FirstOrDefault() ?? src.Name;
                     dest.User.LastName = src.Name?.Contains(' ') == true ? src.Name.Substring(src.Name.IndexOf(' ') + 1) : string.Empty;
+                    dest.User.IsDeleted = !src.IsDeleted;
                 }
             });
              #endregion

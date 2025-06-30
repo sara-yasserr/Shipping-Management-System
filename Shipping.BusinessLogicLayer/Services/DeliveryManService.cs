@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
+using System;
 
 namespace Shipping.BusinessLogicLayer.Services
 {
@@ -44,25 +45,36 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             try
             {
+              
                 var deliveryMan = _mapper.Map<DeliveryAgent>(dto);
 
+              
+                var user = deliveryMan.User;
+                var result = await _userManager.CreateAsync(user, dto.Password);
+                if (!result.Succeeded)
+                    throw new Exception("Failed to create user: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                
+                deliveryMan.UserId = user.Id;
+
+                
                 await _unitOfWork.DeliveryManRepo.AddAsync(deliveryMan);
                 await _unitOfWork.SaveAsync();
 
-                // Add cities
+             
                 if (dto.CityIds?.Any() == true)
                 {
                     await _unitOfWork.DeliveryManRepo.UpdateDeliveryManCities(deliveryMan.Id, dto.CityIds);
                 }
 
-                // Add user role "DeliveryMan" by Default
-                await _userManager.AddToRoleAsync(deliveryMan.User, "DeliveryMan");
+                
+                await _userManager.AddToRoleAsync(user, "DeliveryAgent");
 
                 return (true, deliveryMan.Id);
             }
-            catch
+            catch (Exception ex)
             {
-                return (false, 0);
+                throw new Exception("AddDeliveryMan Error: " + ex.Message, ex);
             }
         }
 
@@ -79,6 +91,16 @@ namespace Shipping.BusinessLogicLayer.Services
                 // Update cities
                 await _unitOfWork.DeliveryManRepo.UpdateDeliveryManCities(id, dto.CityIds);
                 
+                // Update password only if a new password is provided
+                if (!string.IsNullOrEmpty(dto.Password))
+                {
+                    var user = deliveryMan.User;
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+                    if (!result.Succeeded)
+                        throw new Exception("Failed to update password: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+                
                 _unitOfWork.DeliveryManRepo.Update(deliveryMan);
                 await _unitOfWork.SaveAsync();
                 
@@ -90,6 +112,7 @@ namespace Shipping.BusinessLogicLayer.Services
             }
         }
 
+      
         public async Task<bool> SoftDeleteAsync(int id)
         {
             try
