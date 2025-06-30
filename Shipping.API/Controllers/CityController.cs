@@ -36,11 +36,13 @@ namespace Shipping.API.Controllers
         {
             _cityService.Add(dto);
 
+
             return Ok();     
         }
 
+
         [HttpPut("{id}")]
-        public IActionResult Update(int id,UpdateCityDTO dto)
+        public IActionResult Update(int id, UpdateCityDTO dto)
         {
             if (id != dto.Id)
                 return BadRequest();
@@ -60,3 +62,5 @@ namespace Shipping.API.Controllers
 
     }
 }
+
+

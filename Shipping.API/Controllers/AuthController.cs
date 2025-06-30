@@ -59,6 +59,8 @@ namespace Shipping.API.Controllers
                 Email = dto.Email,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
+                PhoneNumber = dto.Phone,
+
                 CreatedAt = DateTime.Now
             };
 

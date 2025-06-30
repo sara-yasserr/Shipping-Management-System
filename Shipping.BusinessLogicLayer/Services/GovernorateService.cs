@@ -11,7 +11,7 @@ using Shipping.DataAccessLayer.Models;
 
 namespace Shipping.BusinessLogicLayer.Services
 {
-    internal class GovernorateService : IGovernorateService
+    public class GovernorateService : IGovernorateService
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

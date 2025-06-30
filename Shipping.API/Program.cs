@@ -67,12 +67,18 @@ namespace Shipping.API
             builder.Services.AddScoped<JwtHelper>();
             builder.Services.AddScoped<UnitOfWork>();
             builder.Services.AddScoped<CityService>();
+
             builder.Services.AddScoped<SellerService>();    
-
-
+            builder.Services.AddScoped<IGovernorateService,GovernorateService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
+            builder.Services.AddScoped<IBranchService, BranchService>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
+
+            builder.Services.AddScoped<GeneralSettingsService>();
 
             var app = builder.Build();
 

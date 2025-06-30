@@ -46,8 +46,6 @@ artifacts/
 # Test results
 TestResults/
 
-# Entity Framework
-Migrations/
 
 # Local database
 *.mdf

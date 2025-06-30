@@ -105,56 +105,6 @@ namespace Shipping.DataAccessLayer.Models
             });
 
 
-
-            string SellerUserId = "Seller-USER-001";
-
-            modelBuilder.Entity<ApplicationUser>().HasData(new ApplicationUser
-            {
-                Id = SellerUserId,
-                UserName = "selleruser",
-                NormalizedUserName = "SELLERUSER",
-                Email = "seller@shipping.com",
-                NormalizedEmail = "SELLER@SHIPPING.COM",
-                EmailConfirmed = true,
-                PasswordHash = "AQAAAAIAAYagAAAAEMOCKEDPASSWORD==", // تقدرِ تجيبي الباسورد من مستخدم تاني بنفس الطريقة
-                SecurityStamp = "STATIC-SECURITY-SELLER-001",
-                ConcurrencyStamp = "STATIC-CONCURRENCY-SELLER-001",
-                FirstName = "Ahmed",
-                LastName = "Seller",
-                PhoneNumber = "01012345678",
-                CreatedAt = new DateTime(2025, 6, 25),
-                IsDeleted = false
-            });
-
-
-            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-            {
-                UserId = SellerUserId,
-                RoleId = SellerRoleId
-            });
-
-
-            modelBuilder.Entity<Seller>().HasData(new Seller
-            {
-                
-                Id=1,
-                StoreName = "Seller Store 1",
-                Address = "123 Street, Cairo",
-                CancelledOrderPercentage = 0.05m,
-                CityId = 1,
-                UserId = SellerUserId
-            });
-
-
-
-
-
-
-
-
-
-
-
             modelBuilder.Entity<City>()
             .HasMany(c => c.DeliveryAgents)
             .WithMany(d => d.Cities)
