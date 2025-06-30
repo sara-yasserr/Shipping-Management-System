@@ -32,33 +32,39 @@ namespace Shipping.API.Controllers
             return Ok(seller);
         }
 
-        [HttpPost]
-        public IActionResult Add(AddSellerDTO dto)
-        {
-            _service.Add(dto);
-            return Ok();
-        }
-
        
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, UpdateSellerDTO dto)
-        {
-            if (id != dto.Id)
-                return BadRequest();
 
-            _service.Update(dto);
-            return Ok();
+        [HttpPost]
+        public async Task<IActionResult> Add(AddSellerDTO dto)
+        {
+            var result = await _service.AddAsync(dto);
+
+            if (!result)
+                return BadRequest("Failed to create seller.");
+
+            return Ok("Seller created successfully.");
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var result = _service.Delete(id);
-            if (!result) return NotFound();
-            return NoContent();
 
-            
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update(UpdateSellerDTO dto)
+        {
+            var result = await _service.UpdateAsync(dto);
+            if (!result) return NotFound("Seller not found.");
+            return Ok("✅ Seller updated successfully.");
         }
+
+        [HttpDelete("SoftDelete/{id}")]
+        public async Task<IActionResult> SoftDelete(int id)
+        {
+            var result = await _service.SoftDeleteAsync(id);
+            if (!result) return NotFound("Seller not found or already deleted.");
+            return Ok("🗑️ Seller soft-deleted successfully.");
+        }
+
+
+        
+
 
     }
 }

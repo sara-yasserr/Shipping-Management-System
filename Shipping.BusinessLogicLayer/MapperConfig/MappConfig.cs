@@ -35,6 +35,9 @@ namespace Shipping.BusinessLogicLayer.Helper
             {
                 dest.CityName = src.City.Name;
                 dest.Username = src.User.UserName;
+                dest.FullName = src.User.FirstName + " "+src.User.LastName;
+                dest.Email = src.User.Email;
+                dest.PhoneNumber = src.User.PhoneNumber;
 
             }).ReverseMap();
 

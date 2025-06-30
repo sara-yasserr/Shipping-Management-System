@@ -33,7 +33,6 @@ namespace Shipping.DataAccessLayer.Seeder
                     Email = email,
                     FirstName = "Gehad",
                     LastName = "Elbadry",
-                    Phone = "01012345678",
                     CreatedAt = DateTime.Now
                 };
 

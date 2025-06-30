@@ -36,7 +36,7 @@ namespace Shipping.DataAccessLayer.Models
             base.OnModelCreating(modelBuilder);
 
             string EmployeeRoleId = "Employee-ROLE-001";
-            //string AdminRoleId = "Admin-ROLE-001";
+            string AdminRoleId = "Admin-ROLE-001";
             string SellerRoleId = "Seller-ROLE-001";
             string DeliveryAgentRoleId = "DeliveryAgent-ROLE-001";
 
@@ -59,6 +59,12 @@ namespace Shipping.DataAccessLayer.Models
                 Id = DeliveryAgentRoleId,
                 Name = "DeliveryAgent",
                 NormalizedName = "DELIVERYAGENT"
+            },
+            new IdentityRole
+            {
+                Id = AdminRoleId,
+                Name = "Admin",
+                NormalizedName = "ADMIN"
             });
 
             modelBuilder.Entity<ApplicationUser>().HasData(new ApplicationUser
@@ -75,7 +81,7 @@ namespace Shipping.DataAccessLayer.Models
                 ConcurrencyStamp = "STATIC-CONCURRENCY-STAMP-001",
                 FirstName = "Admin",
                 LastName = "User",
-                Phone = "01026299485",
+                PhoneNumber = "01026299485",
                 CreatedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc),
                 IsDeleted = false
             });
@@ -84,8 +90,69 @@ namespace Shipping.DataAccessLayer.Models
             {
                 UserId = EmployeeUserId,
                 RoleId = EmployeeRoleId
-            }
-            );
+            },
+            new IdentityUserRole<string>
+            {
+                UserId = EmployeeUserId,
+                RoleId = AdminRoleId
+            });
+
+            modelBuilder.Entity<Employee>().HasData(new Employee
+            {
+                Id = 1,
+                UserId = EmployeeUserId,
+                SpecificRole = "Admin"
+            });
+
+
+
+            string SellerUserId = "Seller-USER-001";
+
+            modelBuilder.Entity<ApplicationUser>().HasData(new ApplicationUser
+            {
+                Id = SellerUserId,
+                UserName = "selleruser",
+                NormalizedUserName = "SELLERUSER",
+                Email = "seller@shipping.com",
+                NormalizedEmail = "SELLER@SHIPPING.COM",
+                EmailConfirmed = true,
+                PasswordHash = "AQAAAAIAAYagAAAAEMOCKEDPASSWORD==", // تقدرِ تجيبي الباسورد من مستخدم تاني بنفس الطريقة
+                SecurityStamp = "STATIC-SECURITY-SELLER-001",
+                ConcurrencyStamp = "STATIC-CONCURRENCY-SELLER-001",
+                FirstName = "Ahmed",
+                LastName = "Seller",
+                PhoneNumber = "01012345678",
+                CreatedAt = new DateTime(2025, 6, 25),
+                IsDeleted = false
+            });
+
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                UserId = SellerUserId,
+                RoleId = SellerRoleId
+            });
+
+
+            modelBuilder.Entity<Seller>().HasData(new Seller
+            {
+                
+                Id=1,
+                StoreName = "Seller Store 1",
+                Address = "123 Street, Cairo",
+                CancelledOrderPercentage = 0.05m,
+                CityId = 1,
+                UserId = SellerUserId
+            });
+
+
+
+
+
+
+
+
+
 
 
             modelBuilder.Entity<City>()
@@ -104,47 +171,18 @@ namespace Shipping.DataAccessLayer.Models
                     .HasForeignKey("CitiesId")
                     .OnDelete(DeleteBehavior.NoAction)
             );
+            //Seed General Settings
 
+            modelBuilder.Entity<GeneralSetting>().HasData(
+                new GeneralSetting { Id = 1, DefaultWeight = 10, ExtraPriceKg = 5, ExtraPriceVillage = 20,
+                    ModifiedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc), Fast = .2m, Express = .5m , EmployeeId = 1 }
+                );
 
-
-
-            modelBuilder.Entity<Order>()
-               .HasOne(o => o.City)
-               .WithMany()
-               .HasForeignKey(o => o.CityId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Seller)
-                .WithMany()
-                .HasForeignKey(o => o.SellerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.DeliveryAgent)
-                .WithMany()
-                .HasForeignKey(o => o.DeliveryAgentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Branch)
-                .WithMany()
-                .HasForeignKey(o => o.BranchId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
-
-
-
-
-
-            // Seed RolePermissions for "Employee" role with full access to all departments
-            int permissionId = 1;
+            
             foreach (var dept in System.Enum.GetValues(typeof(Shipping.DataAccessLayer.Enum.Department)).Cast<Shipping.DataAccessLayer.Enum.Department>())
             {
                 modelBuilder.Entity<RolePermissions>().HasData(new RolePermissions
                 {
-                    Id = permissionId++,
                     RoleName = "Employee",
                     Department = dept,
                     View = true,
@@ -154,6 +192,9 @@ namespace Shipping.DataAccessLayer.Models
                 });
             }
 
+            //composite key Role Permissions
+            modelBuilder.Entity<RolePermissions>()
+                .HasKey(rp => new { rp.RoleName, rp.Department });
 
         }
     }

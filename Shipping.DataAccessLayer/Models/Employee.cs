@@ -13,15 +13,16 @@ namespace Shipping.DataAccessLayer.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
+        public string SpecificRole { get; set; } // e.g. "Manager", "Staff", etc.
         [ForeignKey("Branch")]
-        public int BranchId { get; set; }
-
+        public int? BranchId { get; set; }
         //[ForeignKey("GeneralSetting")]
         //public int? GeneralSettingId { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
         //Navigation Properties
-        public virtual Branch Branch { get; set; }
+        public virtual Branch? Branch { get; set; }
         //public virtual GeneralSetting? GeneralSetting { get; set; }
         public virtual ApplicationUser User { get; set; }
     }

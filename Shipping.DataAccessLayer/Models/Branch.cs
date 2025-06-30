@@ -16,7 +16,6 @@ namespace Shipping.DataAccessLayer.Models
         [ForeignKey("City")]
         public int CityId { get; set; }
         //Navigation
-       
         public virtual City City { get; set; }
         public virtual List<DeliveryAgent> DeliveryAgents { get; set; } = new List<DeliveryAgent>();
         public virtual List<Employee> Employees { get; set; } = new List<Employee>();
