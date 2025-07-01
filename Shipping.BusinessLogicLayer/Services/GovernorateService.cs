@@ -67,7 +67,7 @@ namespace Shipping.BusinessLogicLayer.Services
             return true;
         }
 
-        public bool DeleteGovernorate(int id)
+        public bool SoftDeleteGovernorate(int id)
         {
             try
             {
@@ -75,8 +75,25 @@ namespace Shipping.BusinessLogicLayer.Services
                 if (foundGovernorate == null)
                     return false;
 
-                foundGovernorate.IsDeleted = true; // أو لو عندك IsDeleted استخدمها
+                foundGovernorate.IsDeleted = true;  //Sost delete still in DataBase
                 _unitOfWork.GovernorateRepo.Update(foundGovernorate);
+                _unitOfWork.Save();
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+        public bool HardDeleteGovernorate(int id)
+        {
+            try
+            {
+                var foundGovernorate = _unitOfWork.GovernorateRepo.GetById(id);
+                if (foundGovernorate == null)
+                    return false;
+
+                _unitOfWork.GovernorateRepo.Delete(foundGovernorate); //Hard Delete remove it feom DataBase
                 _unitOfWork.Save();
             }
             catch

@@ -64,7 +64,7 @@ namespace Shipping.DataAccessLayer.Models
         public int SellerId { get; set; }
 
         [ForeignKey("DeliveryAgent")]
-        public int DeliveryAgentId { get; set; }
+        public int? DeliveryAgentId { get; set; }
 
         [ForeignKey("City")]
         public int CityId { get; set; }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Shipping.DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -95,9 +95,7 @@ namespace Shipping.DataAccessLayer.Migrations
                 name: "RolePermissions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoleName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Department = table.Column<int>(type: "int", nullable: false),
                     View = table.Column<bool>(type: "bit", nullable: false),
                     Add = table.Column<bool>(type: "bit", nullable: false),
@@ -107,7 +105,7 @@ namespace Shipping.DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RolePermissions", x => x.Id);
+                    table.PrimaryKey("PK_RolePermissions", x => new { x.RoleName, x.Department });
                     table.ForeignKey(
                         name: "FK_RolePermissions_AspNetRoles_RoleId",
                         column: x => x.RoleId,
@@ -153,7 +151,7 @@ namespace Shipping.DataAccessLayer.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.NoAction    );
                 });
 
             migrationBuilder.CreateTable(
@@ -171,7 +169,7 @@ namespace Shipping.DataAccessLayer.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.NoAction    );
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -318,7 +316,7 @@ namespace Shipping.DataAccessLayer.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.    NoAction    );
                     table.ForeignKey(
                         name: "FK_Employees_Branches_BranchId",
                         column: x => x.BranchId,
@@ -448,8 +446,7 @@ namespace Shipping.DataAccessLayer.Migrations
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction                      
-                        );
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.InsertData(
@@ -470,18 +467,18 @@ namespace Shipping.DataAccessLayer.Migrations
 
             migrationBuilder.InsertData(
                 table: "RolePermissions",
-                columns: new[] { "Id", "Add", "Delete", "Department", "Edit", "RoleId", "RoleName", "View" },
+                columns: new[] { "Department", "RoleName", "Add", "Delete", "Edit", "RoleId", "View" },
                 values: new object[,]
                 {
-                    { 1, true, true, 1, true, null, "Employee", true },
-                    { 2, true, true, 2, true, null, "Employee", true },
-                    { 3, true, true, 3, true, null, "Employee", true },
-                    { 4, true, true, 4, true, null, "Employee", true },
-                    { 5, true, true, 5, true, null, "Employee", true },
-                    { 6, true, true, 6, true, null, "Employee", true },
-                    { 7, true, true, 7, true, null, "Employee", true },
-                    { 8, true, true, 8, true, null, "Employee", true },
-                    { 9, true, true, 9, true, null, "Employee", true }
+                    { 1, "Employee", true, true, true, null, true },
+                    { 2, "Employee", true, true, true, null, true },
+                    { 3, "Employee", true, true, true, null, true },
+                    { 4, "Employee", true, true, true, null, true },
+                    { 5, "Employee", true, true, true, null, true },
+                    { 6, "Employee", true, true, true, null, true },
+                    { 7, "Employee", true, true, true, null, true },
+                    { 8, "Employee", true, true, true, null, true },
+                    { 9, "Employee", true, true, true, null, true }
                 });
 
             migrationBuilder.InsertData(
@@ -497,6 +494,11 @@ namespace Shipping.DataAccessLayer.Migrations
                 table: "Employees",
                 columns: new[] { "Id", "BranchId", "SpecificRole", "UserId" },
                 values: new object[] { 1, null, "Admin", "Employee-USER-001" });
+
+            migrationBuilder.InsertData(
+                table: "GeneralSettings",
+                columns: new[] { "Id", "DefaultWeight", "EmployeeId", "Express", "ExtraPriceKg", "ExtraPriceVillage", "Fast", "ModifiedAt" },
+                values: new object[] { 1, 10m, 1, 0.5m, 5m, 20m, 0.2m, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Utc) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
