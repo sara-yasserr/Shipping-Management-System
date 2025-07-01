@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Shipping.DataAccessLayer\Shipping.DataAccessLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helper\" />
+  </ItemGroup>
+
 </Project>
