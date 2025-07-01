@@ -20,7 +20,6 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         private DeliveryManRepository _deliveryManRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
-        private GenericRepository<City> _cityRepo;
         private GeneralSettingsRepository _generalSettingsRepo;
         public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -174,5 +173,6 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         {
             return await db.SaveChangesAsync();
         }
+        #endregion
     }
 }

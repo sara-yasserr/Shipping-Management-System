@@ -12,16 +12,16 @@ namespace Shipping.DataAccessLayer.Models
 {
     public class ShippingDBContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Seller> Sellers { get; set; }
-        public DbSet<DeliveryAgent> DeliveryAgent { get; set; }
-        public DbSet<RolePermissions> RolePermissions { get; set; }
-        public DbSet<Governorate> Governorates { get; set; }
-        public DbSet<City> Cities { get; set; }
-        public DbSet<Branch> Branches { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<GeneralSetting> GeneralSettings { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Seller> Sellers { get; set; }
+        public virtual DbSet<DeliveryAgent> DeliveryAgent { get; set; }
+        public virtual DbSet<RolePermissions> RolePermissions { get; set; }
+        public virtual DbSet<Governorate> Governorates { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<Branch> Branches { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<GeneralSetting> GeneralSettings { get; set; }
         
 
 
