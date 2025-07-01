@@ -36,8 +36,10 @@ namespace Shipping.API.Controllers
         {
             _cityService.Add(dto);
 
-            return Ok();
+
+            return Ok();     
         }
+
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, UpdateCityDTO dto)
@@ -55,8 +57,10 @@ namespace Shipping.API.Controllers
             var city = _cityService.GetById(id);
             if (city == null) return NotFound();
             _cityService.Delete(id);
-            return NoContent();
+            return NoContent(); 
         }
 
     }
 }
+
+

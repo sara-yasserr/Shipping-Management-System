@@ -4,7 +4,11 @@ using Shipping.BusinessLogicLayer.DTOs.City;
 using Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GeneralSettingsDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
+
+using Shipping.BusinessLogicLayer.DTOs.Seller;
+
 using Shipping.BusinessLogicLayer.DTOs.PermissionDTOs;
+
 using Shipping.DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
@@ -33,6 +37,28 @@ namespace Shipping.BusinessLogicLayer.Helper
                 dest.CreationDate = DateTime.Now;
             });
             #endregion
+
+
+            #region seller
+
+            CreateMap<Seller, SellerDTO>().AfterMap((src, dest) =>
+            {
+                dest.CityName = src.City.Name;
+                dest.Username = src.User.UserName;
+                dest.FullName = src.User.FirstName + " "+src.User.LastName;
+                dest.Email = src.User.Email;
+                dest.PhoneNumber = src.User.PhoneNumber;
+
+            }).ReverseMap();
+
+
+
+            CreateMap<Seller, AddSellerDTO>().ReverseMap();
+            CreateMap<Seller, UpdateSellerDTO>().ReverseMap();
+
+
+            #endregion
+
 
             #region Governorate
             CreateMap<Governorate, ReadGovernorateDto>();
