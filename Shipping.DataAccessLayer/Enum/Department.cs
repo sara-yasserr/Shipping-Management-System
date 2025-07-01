@@ -12,7 +12,7 @@ namespace Shipping.DataAccessLayer.Enum
         DeliveryAgents,
         Sellers,
         Branches,
-        Governments,
+        Governrates,
         Cities,
         Orders,
         OrdersReports,

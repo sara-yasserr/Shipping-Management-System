@@ -15,7 +15,7 @@ namespace Shipping.BusinessLogicLayer.Helper
             { Department.DeliveryAgents, "Delivery Agents" },
             { Department.Sellers, "Sellers" },
             { Department.Branches, "Branches" },
-            { Department.Governments, "Governments" },
+            { Department.Governrates, "Governrates" },
             { Department.Cities, "Cities" },
             { Department.Orders, "Orders" },
             { Department.OrdersReports, "Orders Reports" },
