@@ -146,6 +146,7 @@ namespace Shipping.DataAccessLayer.Models
             modelBuilder.Entity<RolePermissions>()
                 .HasKey(rp => new { rp.RoleName, rp.Department });
 
+           
         }
     }
 }

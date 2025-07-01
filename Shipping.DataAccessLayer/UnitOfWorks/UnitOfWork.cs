@@ -10,13 +10,14 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         public readonly ShippingDBContext db;
         public readonly UserManager<ApplicationUser> _userManager;
         public RoleManager<IdentityRole> _roleManager;
+        private RolePermissionsRepository _rolePermissionsRepo;
         private GenericRepository<Branch> _branchRepo;
         private GenericRepository<City> _cityRepo;
         private GenericRepository<Seller> _sellerRepo;
 
         //public UnitOfWork(ShippingDBContext db) 
         private GenericRepository<Governorate> _governorateRepo;
-        private RolePermissionsRepository _rolePermissionsRepo;
+        private DeliveryManRepository _deliveryManRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
         private GeneralSettingsRepository _generalSettingsRepo;
@@ -146,6 +147,20 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
                     _generalSettingsRepo = new GeneralSettingsRepository(db);
                 }
                 return _generalSettingsRepo;
+            }
+        }
+        #endregion
+        
+        #region DeliveryMan
+        public DeliveryManRepository DeliveryManRepo
+        {
+            get
+            {
+                if (_deliveryManRepo == null)
+                {
+                    _deliveryManRepo = new DeliveryManRepository(db);
+                }
+                return _deliveryManRepo;
             }
         }
         #endregion
