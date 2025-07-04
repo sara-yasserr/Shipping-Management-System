@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shipping.BusinessLogicLayer.Helper
+namespace Shipping.BusinessLogicLayer.Helper.EnumMappers
 {
     public static class DepartmentMapper
     {

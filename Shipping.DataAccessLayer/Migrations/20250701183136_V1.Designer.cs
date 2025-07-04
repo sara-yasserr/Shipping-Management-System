@@ -12,8 +12,8 @@ using Shipping.DataAccessLayer.Models;
 namespace Shipping.DataAccessLayer.Migrations
 {
     [DbContext(typeof(ShippingDBContext))]
-    [Migration("20250628023722_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250701183136_V1")]
+    partial class V1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,6 +192,11 @@ namespace Shipping.DataAccessLayer.Migrations
                         {
                             UserId = "Employee-USER-001",
                             RoleId = "Admin-ROLE-001"
+                        },
+                        new
+                        {
+                            UserId = "Seller-USER-001",
+                            RoleId = "Seller-ROLE-001"
                         });
                 });
 
@@ -313,6 +318,27 @@ namespace Shipping.DataAccessLayer.Migrations
                             SecurityStamp = "STATIC-SECURITY-STAMP-001",
                             TwoFactorEnabled = false,
                             UserName = "employee"
+                        },
+                        new
+                        {
+                            Id = "Seller-USER-001",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "STATIC-CONCURRENCY-STAMP-001",
+                            CreatedAt = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "seller@shipping.com",
+                            EmailConfirmed = true,
+                            FirstName = "Seller",
+                            IsDeleted = false,
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SELLER@SHIPPING.COM",
+                            NormalizedUserName = "SELLER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIjJh6/LXD2Bg+3MJGc+CmiaE471FJWBEmlTQ/1OhqkFw0NIgG/beU7wkTfmnuQ/sQ==",
+                            PhoneNumber = "01026299485",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "STATIC-SECURITY-STAMP-001",
+                            TwoFactorEnabled = false,
+                            UserName = "seller"
                         });
                 });
 
@@ -342,6 +368,16 @@ namespace Shipping.DataAccessLayer.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("Branches");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CityId = 1,
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            Name = "Main Branch"
+                        });
                 });
 
             modelBuilder.Entity("Shipping.DataAccessLayer.Models.City", b =>
@@ -373,6 +409,17 @@ namespace Shipping.DataAccessLayer.Migrations
                     b.HasIndex("GovernorateId");
 
                     b.ToTable("Cities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            GovernorateId = 1,
+                            IsDeleted = false,
+                            Name = "Qalyub",
+                            NormalPrice = 50.00m,
+                            PickupPrice = 30.00m
+                        });
                 });
 
             modelBuilder.Entity("Shipping.DataAccessLayer.Models.DeliveryAgent", b =>
@@ -500,6 +547,14 @@ namespace Shipping.DataAccessLayer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Governorates");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsDeleted = false,
+                            Name = "Qaloubia"
+                        });
                 });
 
             modelBuilder.Entity("Shipping.DataAccessLayer.Models.Order", b =>
@@ -534,7 +589,7 @@ namespace Shipping.DataAccessLayer.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<int>("DeliveryAgentId")
+                    b.Property<int?>("DeliveryAgentId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -568,10 +623,9 @@ namespace Shipping.DataAccessLayer.Migrations
                     b.Property<int>("ShippingType")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalCost")
                         .HasColumnType("decimal(18, 2)");
@@ -770,6 +824,17 @@ namespace Shipping.DataAccessLayer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Sellers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "123 Main St, City Center",
+                            CancelledOrderPercentage = 0.05m,
+                            CityId = 1,
+                            StoreName = "Main Store",
+                            UserId = "Seller-USER-001"
+                        });
                 });
 
             modelBuilder.Entity("CityDeliveryAgent", b =>
@@ -923,9 +988,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasOne("Shipping.DataAccessLayer.Models.DeliveryAgent", "DeliveryAgent")
                         .WithMany("Orders")
-                        .HasForeignKey("DeliveryAgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DeliveryAgentId");
 
                     b.HasOne("Shipping.DataAccessLayer.Models.Seller", "Seller")
                         .WithMany("Orders")

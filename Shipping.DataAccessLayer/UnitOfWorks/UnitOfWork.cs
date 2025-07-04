@@ -14,13 +14,12 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         private GenericRepository<Branch> _branchRepo;
         private GenericRepository<City> _cityRepo;
         private GenericRepository<Seller> _sellerRepo;
-
-        //public UnitOfWork(ShippingDBContext db) 
         private GenericRepository<Governorate> _governorateRepo;
         private DeliveryManRepository _deliveryManRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
         private GeneralSettingsRepository _generalSettingsRepo;
+        private GenericRepository<Order> _orderRepo;
         public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.db = db;
@@ -40,6 +39,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
                 return _cityRepo;
             }
         }
+        #endregion
 
 
         #region Props
@@ -164,6 +164,21 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
             }
         }
         #endregion
+        
+
+        #region Order
+        public GenericRepository<Order> OrderRepo
+        {
+            get
+            {
+                if (_orderRepo == null)
+                {
+                    _orderRepo = new GenericRepository<Order>(db);
+                }
+                return _orderRepo;
+            }
+        }
+        #endregion
         public int Save()
         {
             return db.SaveChanges();
@@ -173,6 +188,5 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         {
             return await db.SaveChangesAsync();
         }
-        #endregion
     }
 }
