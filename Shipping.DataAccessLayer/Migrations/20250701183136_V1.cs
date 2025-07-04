@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Shipping.DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class v1 : Migration
+    public partial class V1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,7 +88,7 @@ namespace Shipping.DataAccessLayer.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -352,7 +352,7 @@ namespace Shipping.DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<int>(type: "int", maxLength: 50, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     TotalWeight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CustomerName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
@@ -369,7 +369,7 @@ namespace Shipping.DataAccessLayer.Migrations
                     ShippingCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SellerId = table.Column<int>(type: "int", nullable: false),
-                    DeliveryAgentId = table.Column<int>(type: "int", nullable: false),
+                    DeliveryAgentId = table.Column<int>(type: "int", nullable: true),
                     CityId = table.Column<int>(type: "int", nullable: false),
                     BranchId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -392,8 +392,7 @@ namespace Shipping.DataAccessLayer.Migrations
                         name: "FK_Orders_DeliveryAgent_DeliveryAgentId",
                         column: x => x.DeliveryAgentId,
                         principalTable: "DeliveryAgent",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_Sellers_SellerId",
                         column: x => x.SellerId,
@@ -463,7 +462,16 @@ namespace Shipping.DataAccessLayer.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "FirstName", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "Employee-USER-001", 0, "STATIC-CONCURRENCY-STAMP-001", new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Utc), "employee@shipping.com", true, "Admin", false, "User", false, null, "EMPLOYEE@SHIPPING.COM", "EMPLOYEE", "AQAAAAIAAYagAAAAEIjJh6/LXD2Bg+3MJGc+CmiaE471FJWBEmlTQ/1OhqkFw0NIgG/beU7wkTfmnuQ/sQ==", "01026299485", false, "STATIC-SECURITY-STAMP-001", false, "employee" });
+                values: new object[,]
+                {
+                    { "Employee-USER-001", 0, "STATIC-CONCURRENCY-STAMP-001", new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Utc), "employee@shipping.com", true, "Admin", false, "User", false, null, "EMPLOYEE@SHIPPING.COM", "EMPLOYEE", "AQAAAAIAAYagAAAAEIjJh6/LXD2Bg+3MJGc+CmiaE471FJWBEmlTQ/1OhqkFw0NIgG/beU7wkTfmnuQ/sQ==", "01026299485", false, "STATIC-SECURITY-STAMP-001", false, "employee" },
+                    { "Seller-USER-001", 0, "STATIC-CONCURRENCY-STAMP-001", new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Utc), "seller@shipping.com", true, "Seller", false, "User", false, null, "SELLER@SHIPPING.COM", "SELLER", "AQAAAAIAAYagAAAAEIjJh6/LXD2Bg+3MJGc+CmiaE471FJWBEmlTQ/1OhqkFw0NIgG/beU7wkTfmnuQ/sQ==", "01026299485", false, "STATIC-SECURITY-STAMP-001", false, "seller" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Governorates",
+                columns: new[] { "Id", "IsDeleted", "Name" },
+                values: new object[] { 1, false, "Qaloubia" });
 
             migrationBuilder.InsertData(
                 table: "RolePermissions",
@@ -487,8 +495,14 @@ namespace Shipping.DataAccessLayer.Migrations
                 values: new object[,]
                 {
                     { "Admin-ROLE-001", "Employee-USER-001" },
-                    { "Employee-ROLE-001", "Employee-USER-001" }
+                    { "Employee-ROLE-001", "Employee-USER-001" },
+                    { "Seller-ROLE-001", "Seller-USER-001" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Cities",
+                columns: new[] { "Id", "GovernorateId", "IsDeleted", "Name", "NormalPrice", "PickupPrice" },
+                values: new object[] { 1, 1, false, "Qalyub", 50.00m, 30.00m });
 
             migrationBuilder.InsertData(
                 table: "Employees",
@@ -496,9 +510,19 @@ namespace Shipping.DataAccessLayer.Migrations
                 values: new object[] { 1, null, "Admin", "Employee-USER-001" });
 
             migrationBuilder.InsertData(
+                table: "Branches",
+                columns: new[] { "Id", "CityId", "CreationDate", "IsDeleted", "Name" },
+                values: new object[] { 1, 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Main Branch" });
+
+            migrationBuilder.InsertData(
                 table: "GeneralSettings",
                 columns: new[] { "Id", "DefaultWeight", "EmployeeId", "Express", "ExtraPriceKg", "ExtraPriceVillage", "Fast", "ModifiedAt" },
                 values: new object[] { 1, 10m, 1, 0.5m, 5m, 20m, 0.2m, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Utc) });
+
+            migrationBuilder.InsertData(
+                table: "Sellers",
+                columns: new[] { "Id", "Address", "CancelledOrderPercentage", "CityId", "StoreName", "UserId" },
+                values: new object[] { 1, "123 Main St, City Center", 0.05m, 1, "Main Store", "Seller-USER-001" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

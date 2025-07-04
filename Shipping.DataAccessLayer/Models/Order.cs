@@ -16,7 +16,7 @@ namespace Shipping.DataAccessLayer.Models
 
         [Required]
         [StringLength(50)]
-        public string Status { get; set; } = "Pending"; // Default status
+        public OrderStatus Status { get; set; }
 
         [StringLength(500)]
         public string? Notes { get; set; }
@@ -37,9 +37,7 @@ namespace Shipping.DataAccessLayer.Models
         [Required]
         [StringLength(200)]
         public string Address { get; set; }
-
         public DateTime CreationDate { get; set; } = DateTime.Now;
-
         [Required]
         public ShippingType ShippingType { get; set; }
 

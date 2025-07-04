@@ -98,9 +98,11 @@ namespace Shipping.API
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
 
-            builder.Services.AddScoped<GeneralSettingsService>();
+            builder.Services.AddScoped< IGeneralSettingsService,GeneralSettingsService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
-            
+
+
             builder.Services.AddScoped<IGovernorateService, GovernorateService>();
             builder.Services.AddScoped<IDeliveryManService, DeliveryManService>();
             

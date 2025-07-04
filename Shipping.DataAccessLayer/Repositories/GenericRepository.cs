@@ -15,19 +15,19 @@ namespace Shipping.DataAccessLayer.Repositories
         this.db = db;
         }
 
-        public List<TEntity> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
-           return db.Set<TEntity>().ToList();
+           return db.Set<TEntity>();
         }
         
-        public List<TEntity> GetAllWithInclude(params string[] includes)
+        public IQueryable<TEntity> GetAllWithInclude(params string[] includes)
         {
             var query = db.Set<TEntity>().AsQueryable();
             foreach (var include in includes)
             {
                 query = query.Include(include);
             }
-            return query.ToList();
+            return query;
         }
         
         public TEntity? GetById(int id)
