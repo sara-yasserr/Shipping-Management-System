@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shipping.BusinessLogicLayer.DTOs.GeneralSettingsDTOs;
+using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.BusinessLogicLayer.Services;
 
 namespace Shipping.API.Controllers
@@ -9,8 +10,8 @@ namespace Shipping.API.Controllers
     [ApiController]
     public class GeneralSettingsController : ControllerBase
     {
-        private readonly GeneralSettingsService _generalSettingsService;
-        public GeneralSettingsController(GeneralSettingsService generalSettingsService)
+        private readonly IGeneralSettingsService _generalSettingsService;
+        public GeneralSettingsController(IGeneralSettingsService generalSettingsService)
         {
             _generalSettingsService = generalSettingsService;
         }

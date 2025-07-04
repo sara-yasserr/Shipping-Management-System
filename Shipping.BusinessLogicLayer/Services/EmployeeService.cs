@@ -23,7 +23,7 @@ namespace Shipping.BusinessLogicLayer.Services
 
         public List<ReadEmployeeDTO> GetAllEmployees()
         {
-            var employees = _unitOfWork.EmployeeRepo.GetAll();
+            var employees = _unitOfWork.EmployeeRepo.GetAll().ToList();
             return _mapper.Map<List<ReadEmployeeDTO>>(employees);
         }
         public Employee? GetEmployeeById(int id)
