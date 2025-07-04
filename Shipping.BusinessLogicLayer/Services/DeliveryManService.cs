@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using System;
+using Shipping.BusinessLogicLayer.Helper;
+using Shipping.BusinessLogicLayer.DTOs;
 
 namespace Shipping.BusinessLogicLayer.Services
 {
@@ -27,10 +29,24 @@ namespace Shipping.BusinessLogicLayer.Services
             _mapper = mapper;
         }
 
-        public async Task<List<ReadDeliveryMan>> GetAllAsync()
+        public async Task<PagedResponse<ReadDeliveryMan>> GetAllAsync(PaginationDTO pagination)
         {
-            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes();
-            return _mapper.Map<List<ReadDeliveryMan>>(deliveryMen);
+            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes().Where(dm => dm.User.IsDeleted == false);
+            var Count = deliveryMen.Count();
+            var pagedDeliveryMen = deliveryMen
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToList();
+            var data = _mapper.Map<List<ReadDeliveryMan>>(deliveryMen);
+            var result = new PagedResponse<ReadDeliveryMan>
+            {
+                Items = data,
+                TotalCount = Count,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize,
+                TotalPages = (int)Math.Ceiling((double)Count / pagination.PageSize)
+            };
+            return result;
         }
 
         public async Task<ReadDeliveryMan> GetByIdAsync(int id)

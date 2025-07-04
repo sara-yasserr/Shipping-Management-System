@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.BranchDTOs;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
@@ -19,9 +21,10 @@ namespace Shipping.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<ReadBranch>> GetAll()
+        public ActionResult<PagedResponse<ReadBranch>> GetAll([FromQuery] PaginationDTO pagination)
         {
-            return Ok(branchService.GetAllBranch());
+            var result = branchService.GetAllBranch(pagination);
+            return Ok(result);
         }
 
         [HttpGet("{id:int}")]
@@ -82,6 +85,13 @@ namespace Shipping.API.Controllers
             }
             branchService.HardDelete(branch);
             return NoContent();
+        }
+
+        [HttpPut("Activate/{id:int}")]
+        public ActionResult Activate(int id)
+        {
+            branchService.ActivateBranch(id);
+            return Ok();
         }
     }
 }

@@ -5,6 +5,7 @@ using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Messaging;
+using Shipping.BusinessLogicLayer.DTOs;
 
 namespace Shipping.API.Controllers
 {
@@ -21,10 +22,9 @@ namespace Shipping.API.Controllers
 
         // Get all gov active and not active 
         [HttpGet]
-        //   GET /api/Governorate
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] PaginationDTO pagination)
         {
-            return Ok(_governorateService.GetAll());
+            return Ok(_governorateService.GetAll(pagination));
         }
 
         //get gov by id
@@ -74,19 +74,25 @@ namespace Shipping.API.Controllers
             return Ok();
         }
 
-
+        //avtive governrate
+        [HttpPut("Activate/{id}")]
+        public IActionResult ActiveGovernorate(int id)
+        {
+            _governorateService.ActiveGovernorate(id);
+            return Ok(new { message = "Governorate activated successfully" });
+        }
         //hard delete
         //api/Governorate/HardDelete/5
         //[Authorize(Roles = "Admin")] //delete from DB only if he is adminnn
-        [HttpDelete("HardDelete/{id}")]
-        public IActionResult HardDeleteGovernorate(int id)
-        {
-            var success = _governorateService.HardDeleteGovernorate(id);
-            if (!success)
-                return NotFound();
-            return Ok();
-        }
-   
- 
+        //[HttpDelete("HardDelete/{id}")]
+        //public IActionResult HardDeleteGovernorate(int id)
+        //{
+        //    var success = _governorateService.HardDeleteGovernorate(id);
+        //    if (!success)
+        //        return NotFound();
+        //    return Ok();
+        //}
+
+
     }
 }
