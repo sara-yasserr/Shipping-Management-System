@@ -14,14 +14,14 @@ namespace Shipping.DataAccessLayer.Repositories.Custom
             _db = db;
         }
 
-        public List<DeliveryAgent> GetAllWithIncludes()
+        public IQueryable<DeliveryAgent> GetAllWithIncludes()
         {
-            return _db.DeliveryAgent
+            var result =  _db.DeliveryAgent
                 .Include(d => d.User)
                 .Include(d => d.Branch)
                 .Include(d => d.Cities)
-                .Include(d => d.Orders)
-                .ToList();
+                .Include(d => d.Orders);
+            return result;
         }
 
         public DeliveryAgent GetByIdWithIncludes(int id)

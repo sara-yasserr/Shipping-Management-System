@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.City;
 using Shipping.BusinessLogicLayer.DTOs.Seller;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.BusinessLogicLayer.Services;
 
 namespace Shipping.API.Controllers
@@ -19,9 +21,9 @@ namespace Shipping.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<SellerDTO>> GetAll()
+        public ActionResult<PagedResponse<SellerDTO>> GetAll([FromQuery] PaginationDTO pagination)
         {
-            return Ok(_service.GetAll());
+            return Ok(_service.GetAll(pagination));
         }
 
         [HttpGet("{id}")]

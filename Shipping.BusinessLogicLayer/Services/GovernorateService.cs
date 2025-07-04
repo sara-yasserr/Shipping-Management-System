@@ -8,6 +8,8 @@ using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Shipping.DataAccessLayer.UnitOfWorks;
 using AutoMapper;
 using Shipping.DataAccessLayer.Models;
+using Shipping.BusinessLogicLayer.Helper;
+using Shipping.BusinessLogicLayer.DTOs;
 
 namespace Shipping.BusinessLogicLayer.Services
 {
@@ -36,10 +38,24 @@ namespace Shipping.BusinessLogicLayer.Services
             return true;
         }
 
-        public List<ReadGovernorateDto> GetAll()
+        public PagedResponse<ReadGovernorateDto> GetAll(PaginationDTO pagination)
         {
             var governorates = _unitOfWork.GovernorateRepo.GetAll();
-            return _mapper.Map<List<Governorate>, List<ReadGovernorateDto>>(governorates.ToList());
+            var count = governorates.Count();
+            var pagedGovernorates = governorates
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToList();
+            var data = _mapper.Map<List<ReadGovernorateDto>>(pagedGovernorates);
+            var result = new PagedResponse<ReadGovernorateDto>
+            {
+                Items = data,
+                TotalCount = count,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize,
+                TotalPages = (int)Math.Ceiling((double)count / pagination.PageSize)
+            };
+            return result;
         }
 
         public ReadGovernorateDto GetById(int id)
@@ -101,6 +117,21 @@ namespace Shipping.BusinessLogicLayer.Services
                 return false;
             }
             return true;
+        }
+
+        public void ActiveGovernorate(int id)
+        {
+            var foundGovernorate = _unitOfWork.GovernorateRepo.GetById(id);
+            if (foundGovernorate != null)
+            {
+                foundGovernorate.IsDeleted = false; //Active Governorate
+                _unitOfWork.GovernorateRepo.Update(foundGovernorate);
+                _unitOfWork.Save();
+            }
+            else
+            {
+                throw new Exception("Governorate not found");
+            }
         }
     }
 }
