@@ -55,6 +55,8 @@ namespace Shipping.BusinessLogicLayer.Helper
                 dest.LastName = src.User.LastName;
                 dest.PhoneNumber = src.User.PhoneNumber;
                 dest.CreatedAt = src.User.CreatedAt;
+                dest.IsDeleted = src.User.IsDeleted;
+                dest.Password = src.User.PasswordHash;
             });
 
             CreateMap<AddEmployeeDTO, Employee>().AfterMap((src, dest) =>
