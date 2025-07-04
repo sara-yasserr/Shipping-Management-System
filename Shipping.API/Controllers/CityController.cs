@@ -28,9 +28,16 @@ namespace Shipping.API.Controllers
         [HttpGet("{id}")]
         public ActionResult<CityDTO> GetById(int id)
         {
-            var city = _cityService.GetById(id);
-            if (city == null) return NotFound();
-            return Ok(city);
+            try
+            {
+                var city = _cityService.GetById(id);
+                if (city == null) return NotFound();
+                return Ok(city);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the city.");
+            }
         }
 
         [HttpPost]
