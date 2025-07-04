@@ -12,11 +12,10 @@ namespace Shipping.DataAccessLayer.Models
 {
     public class RolePermissions
     {
-        public int Id { get; set; }
 
-        //[ForeignKey("Role")]
         [Required]
         public string RoleName { get; set; }
+        [Required]
         public Department Department { get; set; }
         public bool View { get; set; } = true;
         public bool Add { get; set; } = true;

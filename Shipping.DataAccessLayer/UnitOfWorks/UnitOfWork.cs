@@ -10,13 +10,17 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         public readonly ShippingDBContext db;
         public readonly UserManager<ApplicationUser> _userManager;
         public RoleManager<IdentityRole> _roleManager;
-        private GenericRepository<Branch> _branchRepo;
-        private GenericRepository<Governorate> _governorateRepo;
         private RolePermissionsRepository _rolePermissionsRepo;
+        private GenericRepository<Branch> _branchRepo;
+        private GenericRepository<City> _cityRepo;
+        private GenericRepository<Seller> _sellerRepo;
+        private GenericRepository<Governorate> _governorateRepo;
+        private DeliveryManRepository _deliveryManRepo;
         //private GenericRepository<RolePermissions> _rolePermissionsRepo;
         private GenericRepository<Employee> _employeeRepo;
-        private GenericRepository<City> _cityRepo;
-        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager , RoleManager<IdentityRole> roleManager)  
+        private GeneralSettingsRepository _generalSettingsRepo;
+        private GenericRepository<Order> _orderRepo;
+        public UnitOfWork(ShippingDBContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.db = db;
             _userManager = userManager;
@@ -37,7 +41,13 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         }
         #endregion
 
+
+        #region Props
+
+        #endregion
+
         #region Branch
+
         public GenericRepository<Branch> BranchRepo
         {
             get
@@ -49,6 +59,27 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
                 return _branchRepo;
             }
         }
+
+
+        public GenericRepository<Seller> SellerRepo
+        {
+            get
+            {
+                if (_sellerRepo == null)
+                {
+                    _sellerRepo = new GenericRepository<Seller>(db);
+                }
+                return _sellerRepo;
+            }
+        }
+
+
+
+
+
+
+
+
         public UserManager<ApplicationUser> UserManager => _userManager;
         #endregion
 
@@ -57,7 +88,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         {
             get
             {
-                if(_governorateRepo == null)
+                if (_governorateRepo == null)
                 {
                     _governorateRepo = new GenericRepository<Governorate>(db);
                 }
@@ -77,6 +108,7 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         //    }
         //}
 
+        
         #region RolePermissions
         public RolePermissionsRepository RolePermissionsRepo
         {
@@ -96,11 +128,54 @@ namespace Shipping.DataAccessLayer.UnitOfWorks
         {
             get
             {
-                if(_employeeRepo == null)
+                if (_employeeRepo == null)
                 {
-                 _employeeRepo = new GenericRepository<Employee>(db);
+                    _employeeRepo = new GenericRepository<Employee>(db);
                 }
                 return _employeeRepo;
+            }
+        }
+        #endregion
+
+        #region GeneralSettings
+        public GeneralSettingsRepository GeneralSettingsRepo
+        {
+            get
+            {
+                if (_generalSettingsRepo == null)
+                {
+                    _generalSettingsRepo = new GeneralSettingsRepository(db);
+                }
+                return _generalSettingsRepo;
+            }
+        }
+        #endregion
+        
+        #region DeliveryMan
+        public DeliveryManRepository DeliveryManRepo
+        {
+            get
+            {
+                if (_deliveryManRepo == null)
+                {
+                    _deliveryManRepo = new DeliveryManRepository(db);
+                }
+                return _deliveryManRepo;
+            }
+        }
+        #endregion
+        
+
+        #region Order
+        public GenericRepository<Order> OrderRepo
+        {
+            get
+            {
+                if (_orderRepo == null)
+                {
+                    _orderRepo = new GenericRepository<Order>(db);
+                }
+                return _orderRepo;
             }
         }
         #endregion

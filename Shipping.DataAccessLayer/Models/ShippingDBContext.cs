@@ -12,16 +12,16 @@ namespace Shipping.DataAccessLayer.Models
 {
     public class ShippingDBContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Seller> Sellers { get; set; }
-        public DbSet<DeliveryAgent> DeliveryAgent { get; set; }
-        public DbSet<RolePermissions> RolePermissions { get; set; }
-        public DbSet<Governorate> Governorates { get; set; }
-        public DbSet<City> Cities { get; set; }
-        public DbSet<Branch> Branches { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<GeneralSetting> GeneralSettings { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Seller> Sellers { get; set; }
+        public virtual DbSet<DeliveryAgent> DeliveryAgent { get; set; }
+        public virtual DbSet<RolePermissions> RolePermissions { get; set; }
+        public virtual DbSet<Governorate> Governorates { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<Branch> Branches { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<GeneralSetting> GeneralSettings { get; set; }
         
 
 
@@ -41,6 +41,7 @@ namespace Shipping.DataAccessLayer.Models
             string DeliveryAgentRoleId = "DeliveryAgent-ROLE-001";
 
             string EmployeeUserId = "Employee-USER-001";
+            string SellerUserId = "Seller-USER-001";
 
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
@@ -86,6 +87,25 @@ namespace Shipping.DataAccessLayer.Models
                 IsDeleted = false
             });
 
+            modelBuilder.Entity<ApplicationUser>().HasData( new ApplicationUser{
+                Id = SellerUserId,
+                UserName = "seller",
+                NormalizedUserName = "SELLER",
+                Email = "seller@shipping.com",
+                NormalizedEmail = "SELLER@SHIPPING.COM",
+                EmailConfirmed = true,
+                //Admin@123
+                PasswordHash = "AQAAAAIAAYagAAAAEIjJh6/LXD2Bg+3MJGc+CmiaE471FJWBEmlTQ/1OhqkFw0NIgG/beU7wkTfmnuQ/sQ==",
+                SecurityStamp = "STATIC-SECURITY-STAMP-001",
+                ConcurrencyStamp = "STATIC-CONCURRENCY-STAMP-001",
+                FirstName = "Seller",
+                LastName = "User",
+                PhoneNumber = "01026299485",
+                CreatedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc),
+                IsDeleted = false
+
+            });
+
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             {
                 UserId = EmployeeUserId,
@@ -97,13 +117,46 @@ namespace Shipping.DataAccessLayer.Models
                 RoleId = AdminRoleId
             });
 
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                UserId = SellerUserId,
+                RoleId = SellerRoleId
+            });
+
             modelBuilder.Entity<Employee>().HasData(new Employee
             {
                 Id = 1,
                 UserId = EmployeeUserId,
                 SpecificRole = "Admin"
             });
-
+            modelBuilder.Entity<Governorate>().HasData(new Governorate
+            {
+                Id = 1,
+                Name = "Qaloubia",
+            });
+            modelBuilder.Entity<City>().HasData(new City
+            {
+                Id = 1,
+                Name = "Qalyub",
+                NormalPrice = 50.00m,
+                PickupPrice = 30.00m,
+                GovernorateId = 1 // Assuming a governorate with Id 1 exists
+            });
+            modelBuilder.Entity<Branch>().HasData(new Branch
+            {
+                Id = 1,
+                Name = "Main Branch",
+                CityId = 1 // Assuming a city with Id 1 exists
+            });
+            modelBuilder.Entity<Seller>().HasData(new Seller
+            {
+                Id = 1,
+                StoreName = "Main Store",
+                Address = "123 Main St, City Center",
+                CancelledOrderPercentage = 0.05m,
+                CityId = 1, // Assuming a city with Id 1 exists
+                UserId = SellerUserId
+            });
 
             modelBuilder.Entity<City>()
             .HasMany(c => c.DeliveryAgents)
@@ -121,14 +174,18 @@ namespace Shipping.DataAccessLayer.Models
                     .HasForeignKey("CitiesId")
                     .OnDelete(DeleteBehavior.NoAction)
             );
+            //Seed General Settings
 
-            // Seed RolePermissions for "Employee" role with full access to all departments
-            int permissionId = 1;
+            modelBuilder.Entity<GeneralSetting>().HasData(
+                new GeneralSetting { Id = 1, DefaultWeight = 10, ExtraPriceKg = 5, ExtraPriceVillage = 20,
+                    ModifiedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc), Fast = .2m, Express = .5m , EmployeeId = 1 }
+                );
+
+            
             foreach (var dept in System.Enum.GetValues(typeof(Shipping.DataAccessLayer.Enum.Department)).Cast<Shipping.DataAccessLayer.Enum.Department>())
             {
                 modelBuilder.Entity<RolePermissions>().HasData(new RolePermissions
                 {
-                    Id = permissionId++,
                     RoleName = "Employee",
                     Department = dept,
                     View = true,
@@ -138,7 +195,11 @@ namespace Shipping.DataAccessLayer.Models
                 });
             }
 
+            //composite key Role Permissions
+            modelBuilder.Entity<RolePermissions>()
+                .HasKey(rp => new { rp.RoleName, rp.Department });
 
+           
         }
     }
 }

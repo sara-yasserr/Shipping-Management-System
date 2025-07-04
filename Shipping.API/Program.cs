@@ -1,4 +1,3 @@
-
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +22,7 @@ namespace Shipping.API
             builder.Services.AddDbContext<ShippingDBContext>(options =>
                 options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("ShippingCS")));
 
+            // Identity 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ShippingDBContext>()
                 .AddDefaultTokenProviders();
@@ -46,6 +46,26 @@ namespace Shipping.API
             //            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
             //    };
             //});
+            // Authentication by Jwt
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
+            });
 
             builder.Services.AddAuthorization();
 
@@ -67,6 +87,8 @@ namespace Shipping.API
             builder.Services.AddScoped<JwtHelper>();
             builder.Services.AddScoped<UnitOfWork>();
             builder.Services.AddScoped<CityService>();
+
+            builder.Services.AddScoped<SellerService>();    
             builder.Services.AddScoped<IGovernorateService,GovernorateService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
@@ -75,6 +97,15 @@ namespace Shipping.API
 
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
+
+            builder.Services.AddScoped< IGeneralSettingsService,GeneralSettingsService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+
+
+
+            builder.Services.AddScoped<IGovernorateService, GovernorateService>();
+            builder.Services.AddScoped<IDeliveryManService, DeliveryManService>();
+            
 
             var app = builder.Build();
 

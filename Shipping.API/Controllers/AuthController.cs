@@ -60,6 +60,7 @@ namespace Shipping.API.Controllers
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 PhoneNumber = dto.Phone,
+
                 CreatedAt = DateTime.Now
             };
 

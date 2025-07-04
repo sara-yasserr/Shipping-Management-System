@@ -10,7 +10,7 @@ namespace Shipping.DataAccessLayer.Enum
     public enum OrderType
     {
         [Display(Name = "Normal")]
-        Normal,
+        Normal = 1,
         [Display(Name = "Pickup")]
         Pickup
     }

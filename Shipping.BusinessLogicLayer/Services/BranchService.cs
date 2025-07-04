@@ -22,7 +22,7 @@ namespace Shipping.BusinessLogicLayer.Services
         }
         public List<ReadBranch> GetAllBranch()
         {
-            var branches = _unitOfWork.BranchRepo.GetAll();
+            var branches = _unitOfWork.BranchRepo.GetAll().ToList();
             return _mapper.Map<List<ReadBranch>>(branches);
         }
         public Branch? GetBranchById(int id)

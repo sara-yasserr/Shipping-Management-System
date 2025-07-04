@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
+using Microsoft.AspNetCore.Authorization;
+using Azure.Messaging;
 
 namespace Shipping.API.Controllers
 {
@@ -17,12 +19,16 @@ namespace Shipping.API.Controllers
             _governorateService = governorateService;
         }
 
+        // Get all gov active and not active 
         [HttpGet]
+        //   GET /api/Governorate
         public IActionResult GetAll()
         {
             return Ok(_governorateService.GetAll());
         }
 
+        //get gov by id
+        //   GET /api/Governorate/5
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -32,6 +38,9 @@ namespace Shipping.API.Controllers
             return Ok(result);
         }
 
+
+        //add gov
+        //  POST /api/Governorate
         [HttpPost]
         public IActionResult Add(AddGovernorateDto dto)
         {
@@ -41,6 +50,9 @@ namespace Shipping.API.Controllers
             return Ok();
         }
 
+
+        //Edit gov
+        // PUT /api/Governorate/{id}
         [HttpPut("{id}")]
         public IActionResult Edit(int id, AddGovernorateDto dto)
         {
@@ -50,13 +62,31 @@ namespace Shipping.API.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+
+        //soft delete
+        [HttpDelete("SoftDelete/{id}")]
+        //api/Governorate/SoftDelete/5
+        public IActionResult SoftDelete( int id)
         {
-            var success = _governorateService.DeleteGovernorate(id);
+            var success = _governorateService.SoftDeleteGovernorate(id);
             if (!success)
                 return NotFound();
             return Ok();
         }
+
+
+        //hard delete
+        //api/Governorate/HardDelete/5
+        //[Authorize(Roles = "Admin")] //delete from DB only if he is adminnn
+        [HttpDelete("HardDelete/{id}")]
+        public IActionResult HardDeleteGovernorate(int id)
+        {
+            var success = _governorateService.HardDeleteGovernorate(id);
+            if (!success)
+                return NotFound();
+            return Ok();
+        }
+   
+ 
     }
 }
