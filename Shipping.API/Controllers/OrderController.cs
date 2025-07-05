@@ -25,7 +25,7 @@ namespace Shipping.API.Controllers
             var orders = await _orderService.GetAllOrdersAsync(pagination);
             return Ok(orders);
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ReadOrderDTO>> GetOrderById(int id)
         {
             var order = await _orderService.GetOrderById(id);
