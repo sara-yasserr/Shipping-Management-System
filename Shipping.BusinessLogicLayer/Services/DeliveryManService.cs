@@ -1,15 +1,11 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using AutoMapper;
-using System;
-using Shipping.BusinessLogicLayer.Helper;
-using Shipping.BusinessLogicLayer.DTOs;
 
 namespace Shipping.BusinessLogicLayer.Services
 {
@@ -19,7 +15,7 @@ namespace Shipping.BusinessLogicLayer.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IRoleService _roleService;
         private readonly IMapper _mapper;
-        
+
         public DeliveryManService(UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager,
             IRoleService roleService, IMapper mapper)
         {
@@ -53,7 +49,7 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
             if (deliveryMan == null) return null;
-            
+
             return _mapper.Map<ReadDeliveryMan>(deliveryMan);
         }
 
@@ -61,29 +57,29 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             try
             {
-              
+
                 var deliveryMan = _mapper.Map<DeliveryAgent>(dto);
 
-              
+
                 var user = deliveryMan.User;
                 var result = await _userManager.CreateAsync(user, dto.Password);
                 if (!result.Succeeded)
                     throw new Exception("Failed to create user: " + string.Join(", ", result.Errors.Select(e => e.Description)));
 
-                
+
                 deliveryMan.UserId = user.Id;
 
-                
+
                 await _unitOfWork.DeliveryManRepo.AddAsync(deliveryMan);
                 await _unitOfWork.SaveAsync();
 
-             
+
                 if (dto.CityIds?.Any() == true)
                 {
                     await _unitOfWork.DeliveryManRepo.UpdateDeliveryManCities(deliveryMan.Id, dto.CityIds);
                 }
 
-                
+
                 await _userManager.AddToRoleAsync(user, "DeliveryAgent");
 
                 return (true, deliveryMan.Id);
@@ -100,13 +96,13 @@ namespace Shipping.BusinessLogicLayer.Services
             {
                 var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
                 if (deliveryMan == null) return false;
-                
+
                 // Update delivery man using mapping
                 _mapper.Map(dto, deliveryMan);
-                
+
                 // Update cities
                 await _unitOfWork.DeliveryManRepo.UpdateDeliveryManCities(id, dto.CityIds);
-                
+
                 // Update password only if a new password is provided
                 if (!string.IsNullOrEmpty(dto.Password))
                 {
@@ -116,10 +112,10 @@ namespace Shipping.BusinessLogicLayer.Services
                     if (!result.Succeeded)
                         throw new Exception("Failed to update password: " + string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
-                
+
                 _unitOfWork.DeliveryManRepo.Update(deliveryMan);
                 await _unitOfWork.SaveAsync();
-                
+
                 return true;
             }
             catch
@@ -128,7 +124,7 @@ namespace Shipping.BusinessLogicLayer.Services
             }
         }
 
-      
+
         public async Task<bool> SoftDeleteAsync(int id)
         {
             try
@@ -178,14 +174,14 @@ namespace Shipping.BusinessLogicLayer.Services
             {
                 var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);
                 if (deliveryMan == null) return false;
-                
+
                 // Check if delivery man has active orders
                 var activeOrders = deliveryMan.Orders?.Where(o => o.IsActive).ToList();
                 if (activeOrders?.Any() == true)
                 {
                     throw new System.Exception($"Cannot delete delivery man. There are {activeOrders.Count} active orders assigned to this delivery man. Please reassign or complete these orders first.");
                 }
-                
+
                 // Check if delivery man has any orders (even deleted ones)
                 var totalOrders = deliveryMan.Orders?.Count ?? 0;
                 if (totalOrders > 0)
@@ -196,11 +192,11 @@ namespace Shipping.BusinessLogicLayer.Services
                     await _unitOfWork.SaveAsync();
                     throw new System.Exception($"Delivery man has {totalOrders} orders in history. The delivery man was not deleted but cities were cleared.");
                 }
-                
+
                 // No orders found - safe to hard delete
                 _unitOfWork.DeliveryManRepo.Delete(deliveryMan);
                 await _unitOfWork.SaveAsync();
-                
+
                 return true;
             }
             catch
@@ -209,4 +205,4 @@ namespace Shipping.BusinessLogicLayer.Services
             }
         }
     }
-} 
+}

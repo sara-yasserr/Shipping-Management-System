@@ -10,6 +10,8 @@ namespace Shipping.DataAccessLayer.Models
         // Foreign Keys
         [ForeignKey("Branch")]
         public int BranchId { get; set; }
+        [ForeignKey("User")]
+        public string UserId { get; set; }
 
         // Navigation Properties
         public virtual Branch Branch { get; set; }

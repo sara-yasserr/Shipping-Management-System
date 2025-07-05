@@ -16,11 +16,11 @@ namespace Shipping.DataAccessLayer.Models
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<GeneralSetting> GeneralSettings { get; set; }
-        
 
 
 
-        public ShippingDBContext(DbContextOptions<ShippingDBContext> options): base(options)
+
+        public ShippingDBContext(DbContextOptions<ShippingDBContext> options) : base(options)
         {
         }
 
@@ -81,7 +81,8 @@ namespace Shipping.DataAccessLayer.Models
                 IsDeleted = false
             });
 
-            modelBuilder.Entity<ApplicationUser>().HasData( new ApplicationUser{
+            modelBuilder.Entity<ApplicationUser>().HasData(new ApplicationUser
+            {
                 Id = SellerUserId,
                 UserName = "seller",
                 NormalizedUserName = "SELLER",
@@ -171,11 +172,20 @@ namespace Shipping.DataAccessLayer.Models
             //Seed General Settings
 
             modelBuilder.Entity<GeneralSetting>().HasData(
-                new GeneralSetting { Id = 1, DefaultWeight = 10, ExtraPriceKg = 5, ExtraPriceVillage = 20,
-                    ModifiedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc), Fast = .2m, Express = .5m , EmployeeId = 1 }
+                new GeneralSetting
+                {
+                    Id = 1,
+                    DefaultWeight = 10,
+                    ExtraPriceKg = 5,
+                    ExtraPriceVillage = 20,
+                    ModifiedAt = new DateTime(2025, 6, 25, 0, 0, 0, DateTimeKind.Utc),
+                    Fast = .2m,
+                    Express = .5m,
+                    EmployeeId = 1
+                }
                 );
 
-            
+
             foreach (var dept in System.Enum.GetValues(typeof(Shipping.DataAccessLayer.Enum.Department)).Cast<Shipping.DataAccessLayer.Enum.Department>())
             {
                 modelBuilder.Entity<RolePermissions>().HasData(new RolePermissions
@@ -193,69 +203,9 @@ namespace Shipping.DataAccessLayer.Models
             modelBuilder.Entity<RolePermissions>()
                 .HasKey(rp => new { rp.RoleName, rp.Department });
 
-           
+
         }
 
-        public DbSet<Branch> branches { get; set; }
-        public DbSet<City> cities { get; set; }
-        public DbSet<DeliveryAgent> deliveryAgents { get; set; }
-        public DbSet<Employee> employees { get; set; }
-        public DbSet<GeneralSetting> generalSettings { get; set; }
-        public DbSet<Governorate> governorates { get; set; }
-        public DbSet<Order> orders { get; set; }
-        public DbSet<Product> products { get; set; }
-        public DbSet<Seller> sellers { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-
-
-            modelBuilder.Entity<City>()
-                .HasMany(c => c.DeliveryAgents)
-                .WithMany(d => d.Cities)
-                .UsingEntity<Dictionary<string, object>>(
-                    "CityDeliveryAgent",
-                    j => j
-                        .HasOne<DeliveryAgent>()
-                        .WithMany()
-                        .HasForeignKey("DeliveryAgentsId")
-                        .OnDelete(DeleteBehavior.Restrict),
-                    j => j
-                        .HasOne<City>()
-                        .WithMany()
-                        .HasForeignKey("CitiesId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                );
-
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.City)
-                .WithMany()
-                .HasForeignKey(o => o.CityId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.DeliveryAgent)
-                .WithMany(d => d.Orders)
-                .HasForeignKey(o => o.DeliveryAgentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Branch)
-                .WithMany()
-                .HasForeignKey(o => o.BranchId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Seller)
-                .WithMany()
-                .HasForeignKey(o => o.SellerId)
-                .OnDelete(DeleteBehavior.Restrict);
-        }
     }
 }

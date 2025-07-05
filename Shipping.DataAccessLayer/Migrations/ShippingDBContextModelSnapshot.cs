@@ -37,7 +37,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("DeliveryAgentsId");
 
-                    b.ToTable("CityDeliveryAgent");
+                    b.ToTable("CityDeliveryAgent", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -364,7 +364,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("Branches");
+                    b.ToTable("Branches", (string)null);
 
                     b.HasData(
                         new
@@ -405,7 +405,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("GovernorateId");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
 
                     b.HasData(
                         new
@@ -440,7 +440,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DeliveryAgent");
+                    b.ToTable("DeliveryAgent", (string)null);
                 });
 
             modelBuilder.Entity("Shipping.DataAccessLayer.Models.Employee", b =>
@@ -468,7 +468,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
 
                     b.HasData(
                         new
@@ -509,7 +509,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("GeneralSettings");
+                    b.ToTable("GeneralSettings", (string)null);
 
                     b.HasData(
                         new
@@ -543,7 +543,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Governorates");
+                    b.ToTable("Governorates", (string)null);
 
                     b.HasData(
                         new
@@ -640,7 +640,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Shipping.DataAccessLayer.Models.Product", b =>
@@ -672,7 +672,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Shipping.DataAccessLayer.Models.RolePermissions", b =>
@@ -702,7 +702,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermissions");
+                    b.ToTable("RolePermissions", (string)null);
 
                     b.HasData(
                         new
@@ -820,7 +820,7 @@ namespace Shipping.DataAccessLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Sellers");
+                    b.ToTable("Sellers", (string)null);
 
                     b.HasData(
                         new
