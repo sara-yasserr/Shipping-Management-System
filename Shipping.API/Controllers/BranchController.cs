@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.BranchDTOs;
+using Shipping.BusinessLogicLayer.Helper;
+using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
 
@@ -11,43 +14,45 @@ namespace Shipping.API.Controllers
     [ApiController]
     public class BranchController : ControllerBase
     {
-        private readonly UnitOfWork unitOfWork;
-        private readonly IMapper mapper;
-        public BranchController(UnitOfWork unitOfWork, IMapper mapper)
+        private readonly IBranchService branchService;
+        public BranchController(IBranchService branchService)
         {
-            this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
+            this.branchService = branchService;
         }
+
         [HttpGet]
-        public List<Branch> GetAll()
+        public ActionResult<PagedResponse<ReadBranch>> GetAll([FromQuery] PaginationDTO pagination)
         {
-            return unitOfWork.BranchRepo.GetAll();
+            var result = branchService.GetAllBranch(pagination);
+            return Ok(result);
         }
+
         [HttpGet("{id:int}")]
         public ActionResult<Branch> GetById(int id)
         {
-            var branch = unitOfWork.BranchRepo.GetById(id);
-            if (branch == null)
+            var branchDTO = branchService.GetBranchDTOById(id);
+            if (branchDTO == null)
             {
                 return NotFound();
             }
-            var branchDTO = mapper.Map<ReadBranch>(branch);
-            return Ok(branch);
+            return Ok(branchDTO);
         }
+
         [HttpPost]
-        public ActionResult<ReadBranch> Post(AddBranch branchDTO)
+        public ActionResult<AddBranch> Post(AddBranch branchDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var branch = mapper.Map<Branch>(branchDTO);
-            return CreatedAtAction(nameof(GetById), new { id = branch.Id }, mapper.Map<ReadBranch>(branch));
+            var branch = branchService.AddBranch(branchDTO);
+            return CreatedAtAction(nameof(GetById), new { id = branch.Id }, branchDTO);
         }
+
         [HttpPut("{id:int}")]
         public ActionResult<ReadBranch> Put(int id, AddBranch branchDTO)
         {
-            var branch = unitOfWork.BranchRepo.GetById(id);
+            var branch = branchService.GetBranchById(id); ;
             if (branch == null)
             {
                 return NotFound();
@@ -56,22 +61,37 @@ namespace Shipping.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            mapper.Map(branchDTO, branch);
-            unitOfWork.BranchRepo.Update(branch);
-            unitOfWork.Save();
-            return Ok(mapper.Map<ReadBranch>(branch));
+            branchService.UpdateBranch(branchDTO, branch);
+            return Ok();
         }
-        [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        [HttpDelete("Soft/{id:int}")]
+        public ActionResult SoftDelete(int id)
         {
-            var branch = unitOfWork.BranchRepo.GetById(id);
+            var branch = branchService.GetBranchById(id);
             if (branch == null)
             {
                 return NotFound();
             }
-            unitOfWork.BranchRepo.Delete(branch);
-            unitOfWork.Save();
+            branchService.SoftDelete(branch);
             return NoContent();
+        }
+        [HttpDelete("Hard/{id:int}")]
+        public ActionResult HardDelete(int id)
+        {
+            var branch = branchService.GetBranchById(id);
+            if (branch == null)
+            {
+                return NotFound();
+            }
+            branchService.HardDelete(branch);
+            return NoContent();
+        }
+
+        [HttpPut("Activate/{id:int}")]
+        public ActionResult Activate(int id)
+        {
+            branchService.ActivateBranch(id);
+            return Ok();
         }
     }
 }

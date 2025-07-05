@@ -1,12 +1,16 @@
-
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Shipping.API.Middleware;
 using Shipping.BusinessLogicLayer.Helper;
+using Shipping.BusinessLogicLayer.Interfaces;
+using Shipping.BusinessLogicLayer.Services;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
+
 
 namespace Shipping.API
 {
@@ -21,10 +25,31 @@ namespace Shipping.API
             builder.Services.AddDbContext<ShippingDBContext>(options =>
                 options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("ShippingCS")));
 
+            // Identity 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ShippingDBContext>()
                 .AddDefaultTokenProviders();
 
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateLifetime = true,
+            //        ValidateIssuerSigningKey = true,
+            //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            //        ValidAudience = builder.Configuration["Jwt:Audience"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(
+            //            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            //    };
+            //});
+            // Authentication by Jwt
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,10 +89,31 @@ namespace Shipping.API
             });
             builder.Services.AddScoped<JwtHelper>();
             builder.Services.AddScoped<UnitOfWork>();
+            builder.Services.AddScoped<CityService>();
+
+            builder.Services.AddScoped<SellerService>();    
+            builder.Services.AddScoped<IGovernorateService,GovernorateService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
+            builder.Services.AddScoped<IBranchService, BranchService>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IPermissionCheckerService, PermissionCheckerService>();
+
+            builder.Services.AddScoped< IGeneralSettingsService,GeneralSettingsService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+
+
+
+            builder.Services.AddScoped<IGovernorateService, GovernorateService>();
+            builder.Services.AddScoped<IDeliveryManService, DeliveryManService>();
+
+            builder.Services.AddCustomRateLimiting();
 
             var app = builder.Build();
 
-
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -77,6 +123,8 @@ namespace Shipping.API
             app.UseCors(AllowAllOrigins);
 
             app.UseHttpsRedirection();
+            app.UseRateLimiter();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

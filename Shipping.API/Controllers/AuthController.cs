@@ -59,8 +59,8 @@ namespace Shipping.API.Controllers
                 Email = dto.Email,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
-                Phone = dto.Phone,
-                IsActive = true,
+                PhoneNumber = dto.Phone,
+
                 CreatedAt = DateTime.Now
             };
 
@@ -71,7 +71,7 @@ namespace Shipping.API.Controllers
             }
 
 
-            var defaultRole = "User";
+            var defaultRole = "Seller";
             if (!await _roleManager.RoleExistsAsync(defaultRole))
             {
                 await _roleManager.CreateAsync(new IdentityRole(defaultRole));
