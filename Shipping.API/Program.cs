@@ -1,13 +1,16 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Shipping.API.Middleware;
 using Shipping.BusinessLogicLayer.Helper;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.BusinessLogicLayer.Services;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
+
 
 namespace Shipping.API
 {
@@ -105,11 +108,12 @@ namespace Shipping.API
 
             builder.Services.AddScoped<IGovernorateService, GovernorateService>();
             builder.Services.AddScoped<IDeliveryManService, DeliveryManService>();
-            
+
+            builder.Services.AddCustomRateLimiting();
 
             var app = builder.Build();
 
-           
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -120,6 +124,8 @@ namespace Shipping.API
             app.UseCors(AllowAllOrigins);
 
             app.UseHttpsRedirection();
+            app.UseRateLimiter();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
@@ -19,9 +21,9 @@ namespace Shipping.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<ReadEmployeeDTO>> GetAll()
+        public ActionResult<PagedResponse<ReadEmployeeDTO>> GetAll([FromQuery] PaginationDTO pagination)
         {
-            var employeesDTO = employeeService.GetAllEmployees();
+            var employeesDTO = employeeService.GetAllEmployees(pagination);
             if (employeesDTO == null)
             {
                 return NotFound("No Employees Found");

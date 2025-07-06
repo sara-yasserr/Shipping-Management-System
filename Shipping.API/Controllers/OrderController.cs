@@ -20,7 +20,7 @@ namespace Shipping.API.Controllers
             _orderService = orderService;
         }
         [HttpGet]
-        public async Task<ActionResult<List<ReadOrderDTO>>> GetAllOrdersAsync([FromQuery] PaginationDTO pagination)
+        public async Task<ActionResult<PagedResponse<ReadOrderDTO>>> GetAllOrdersAsync([FromQuery] PaginationDTO pagination)
         {
             var orders = await _orderService.GetAllOrdersAsync(pagination);
             return Ok(orders);

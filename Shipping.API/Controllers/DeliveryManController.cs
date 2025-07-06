@@ -3,6 +3,7 @@ using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
 using Shipping.BusinessLogicLayer.Interfaces;
 using System.Threading.Tasks;
 using System.Linq;
+using Shipping.BusinessLogicLayer.DTOs;
 
 namespace Shipping.API.Controllers
 {
@@ -17,11 +18,11 @@ namespace Shipping.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery]PaginationDTO pagination)
         {
             try
             {
-                var result = await _service.GetAllAsync();
+                var result = await _service.GetAllAsync(pagination);
                 return Ok(result);
             }
             catch (System.Exception ex)
