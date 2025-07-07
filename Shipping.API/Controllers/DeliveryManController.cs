@@ -17,7 +17,7 @@ namespace Shipping.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("paginated")]
         public async Task<IActionResult> GetAll([FromQuery]PaginationDTO pagination)
         {
             try
@@ -29,6 +29,15 @@ namespace Shipping.API.Controllers
             {
                 return StatusCode(500, new { error = "Internal server error", details = ex.Message });
             }
+        }
+        [HttpGet]
+        public ActionResult<List<ReadDeliveryMan>> GetAll()
+        {
+            var result = _service.GetAll();
+            if (result == null) {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

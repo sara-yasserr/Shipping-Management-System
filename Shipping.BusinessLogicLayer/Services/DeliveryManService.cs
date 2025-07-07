@@ -48,7 +48,11 @@ namespace Shipping.BusinessLogicLayer.Services
             };
             return result;
         }
-
+        public List<ReadDeliveryMan> GetAll()
+        {
+            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes().Where(dm => dm.User.IsDeleted == false).ToList();
+            return _mapper.Map<List<ReadDeliveryMan>>(deliveryMen);
+        }
         public async Task<ReadDeliveryMan> GetByIdAsync(int id)
         {
             var deliveryMan = _unitOfWork.DeliveryManRepo.GetByIdWithIncludes(id);

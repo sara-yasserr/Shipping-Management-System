@@ -30,6 +30,10 @@ namespace Shipping.API.Controllers
         public ActionResult<List<ReadBranch>> GetAll()
         {
             var result = branchService.GetAllBranch();
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
         [HttpGet("{id:int}")]

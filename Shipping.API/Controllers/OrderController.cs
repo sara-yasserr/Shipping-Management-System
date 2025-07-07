@@ -85,11 +85,11 @@ namespace Shipping.API.Controllers
 
         //Change Order Status
         [HttpPut("changeStatus/{orderId}")]
-        public async Task<IActionResult> ChangeOrderStatus(int orderId, OrderStatus newStatus)
+        public async Task<IActionResult> ChangeOrderStatus(int orderId, [FromBody] ChangeOrderStatusDto newStatusDTO)
         {
             try
             {
-                await _orderService.ChangeOrderStatus(orderId, newStatus);
+                await _orderService.ChangeOrderStatus(orderId, newStatusDTO.NewStatus);
                 return NoContent();
             }
             catch (Exception ex)

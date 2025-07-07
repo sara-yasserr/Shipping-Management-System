@@ -19,6 +19,10 @@ namespace Shipping.API.Controllers
         [HttpGet]
         public IActionResult GetAll() {
             var roles = roleService.GetAllRoles();
+            if (roles == null)
+            {
+                return NotFound();
+            }
             return Ok(roles);
         }
 
