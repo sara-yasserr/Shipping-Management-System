@@ -10,7 +10,7 @@ namespace Shipping.BusinessLogicLayer.Interfaces
     public interface IDeliveryManService
     {
         Task<PagedResponse<ReadDeliveryMan>> GetAllAsync( PaginationDTO pagination);
-        Task<List<ReadDeliveryMan>> GetAllWithoutPaginationAsync();
+        public List<ReadDeliveryMan> GetAll();
         Task<ReadDeliveryMan> GetByIdAsync(int id);
         Task<(bool success, int deliveryManId)> AddAsync(AddDeliveryMan dto);
         Task<bool> UpdateAsync(int id, UpdateDeliveryMan dto);

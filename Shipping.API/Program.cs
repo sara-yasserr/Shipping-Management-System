@@ -119,6 +119,7 @@ namespace Shipping.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
                 app.MapOpenApi();
+                app.UseDeveloperExceptionPage();
             }
             app.UseCors(AllowAllOrigins);
 

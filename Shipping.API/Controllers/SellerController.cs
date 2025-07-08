@@ -20,7 +20,7 @@ namespace Shipping.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("paginated")]
         public ActionResult<PagedResponse<SellerDTO>> GetAll([FromQuery] PaginationDTO pagination)
         {
             return Ok(_service.GetAll(pagination));
@@ -34,7 +34,7 @@ namespace Shipping.API.Controllers
             return Ok(seller);
         }
 
-        [HttpGet("without-pagination")]
+        [HttpGet]
         public ActionResult<List<SellerDTO>> GetAllWithoutPagination()
         {
             return Ok(_service.GetAllWithoutPagination());

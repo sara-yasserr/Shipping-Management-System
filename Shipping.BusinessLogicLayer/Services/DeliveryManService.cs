@@ -49,7 +49,7 @@ namespace Shipping.BusinessLogicLayer.Services
             return result;
         }
 
-        public async Task<List<ReadDeliveryMan>> GetAllWithoutPaginationAsync()
+        public List<ReadDeliveryMan> GetAll()
         {
             var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes().Where(dm => dm.User.IsDeleted == false).ToList();
             return _mapper.Map<List<ReadDeliveryMan>>(deliveryMen);

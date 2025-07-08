@@ -17,7 +17,7 @@ namespace Shipping.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("paginated")]
         public async Task<IActionResult> GetAll([FromQuery]PaginationDTO pagination)
         {
             try
@@ -31,12 +31,12 @@ namespace Shipping.API.Controllers
             }
         }
 
-        [HttpGet("without-pagination")]
+        [HttpGet]
         public async Task<IActionResult> GetAllWithoutPagination()
         {
             try
             {
-                var result = await _service.GetAllWithoutPaginationAsync();
+                var result =  _service.GetAll();
                 return Ok(result);
             }
             catch (System.Exception ex)

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Shipping.BusinessLogicLayer.DTOs.OrderDTOs;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.PermissionDTOs;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
@@ -21,9 +24,31 @@ namespace Shipping.BusinessLogicLayer.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<List<string>> GetAllRolesAsync()
+        public List<string?> GetAllRoles()
         {
             return _unitOfWork._roleManager.Roles.Select(r => r.Name).ToList();
+        }
+
+        public PagedResponse<string> GetAllPaginated(PaginationDTO pagination)
+        {
+            var roles = GetAllRoles();
+            var count = roles.Count();
+
+            var pagedOrders = roles
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToList();
+
+            var result = new PagedResponse<string>
+            {
+                Items = pagedOrders,
+                TotalCount = count,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize,
+                TotalPages = (int)Math.Ceiling((double)count / pagination.PageSize)
+            };
+
+            return result;
         }
         public async Task<IdentityResult> CreateRoleAsync(string roleName)
         {
@@ -67,8 +92,10 @@ namespace Shipping.BusinessLogicLayer.Services
             if (role == null)
                 return IdentityResult.Failed(new IdentityError { Description = "Role not found." });
 
-            return await _unitOfWork._roleManager.DeleteAsync(role);
+            var result = await _unitOfWork._roleManager.DeleteAsync(role);
+            return result;
         }
+
         public async Task<List<PermissionDTO>> GetPermissionsForRoleAsync(string roleName)
         {
             var permissions =  _unitOfWork.RolePermissionsRepo

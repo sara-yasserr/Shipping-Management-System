@@ -41,7 +41,7 @@ namespace Shipping.BusinessLogicLayer.Services
             return result;
         }
 
-        public List<ReadBranch> GetAllWithoutPagination()
+        public List<ReadBranch> GetAllBranch()
         {
             var branches = _unitOfWork.BranchRepo.GetAll().Where(b => b.IsDeleted == false).ToList();
             return _mapper.Map<List<ReadBranch>>(branches);

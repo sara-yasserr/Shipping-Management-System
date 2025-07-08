@@ -20,7 +20,7 @@ namespace Shipping.API.Controllers
             this.employeeService = employeeService;
         }
 
-        [HttpGet]
+        [HttpGet("paginated")]
         public ActionResult<PagedResponse<ReadEmployeeDTO>> GetAll([FromQuery] PaginationDTO pagination)
         {
             var employeesDTO = employeeService.GetAllEmployees(pagination);
@@ -30,11 +30,10 @@ namespace Shipping.API.Controllers
             }
             return Ok(employeesDTO);
         }
-
-        [HttpGet("without-pagination")]
-        public ActionResult<List<ReadEmployeeDTO>> GetAllWithoutPagination()
+        [HttpGet]
+        public ActionResult<List<ReadEmployeeDTO>> GetAll()
         {
-            var employeesDTO = employeeService.GetAllEmployeesWithoutPagination();
+            var employeesDTO = employeeService.GetAllEmployee();
             if (employeesDTO == null)
             {
                 return NotFound("No Employees Found");
