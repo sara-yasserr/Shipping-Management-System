@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
@@ -21,10 +23,29 @@ namespace Shipping.BusinessLogicLayer.Services
             _mapper = mapper;
         }
 
-        public List<ReadEmployeeDTO> GetAllEmployees()
+        public PagedResponse<ReadEmployeeDTO> GetAllEmployees(PaginationDTO pagination)
         {
-            var employees = _unitOfWork.EmployeeRepo.GetAll().ToList();
-            return _mapper.Map<List<ReadEmployeeDTO>>(employees);
+            var employees = _unitOfWork.EmployeeRepo.GetAll().Where(e => e.User.IsDeleted == false);
+            var Count = employees.Count();
+            var pagedEmployees = employees
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToList();
+            var result = new PagedResponse<ReadEmployeeDTO>
+            {
+                Items = _mapper.Map<List<ReadEmployeeDTO>>(pagedEmployees),
+                TotalCount = Count,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize,
+                TotalPages = (int)Math.Ceiling((double)Count / pagination.PageSize)
+            };
+
+            return result;
+        }
+        public List<ReadEmployeeDTO> GetAllEmployee()
+        {
+           var employees = _unitOfWork.EmployeeRepo.GetAll().Where(e => e.User.IsDeleted == false).ToList();
+           return _mapper.Map<List<ReadEmployeeDTO>>(employees);
         }
         public Employee? GetEmployeeById(int id)
         {

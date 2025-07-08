@@ -104,4 +104,9 @@ namespace Shipping.BusinessLogicLayer.DTOs.OrderDTOs
         int OrderCityId,
         int SellerCityId
     );
+
+    public class ChangeOrderStatusDto
+    {
+        public OrderStatus NewStatus { get; set; }
+    }
 }

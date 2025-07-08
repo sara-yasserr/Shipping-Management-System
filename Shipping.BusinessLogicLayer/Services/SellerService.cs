@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.Seller;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
 using System;
@@ -27,16 +29,37 @@ namespace Shipping.BusinessLogicLayer.Services
 
        
 
-        public List<SellerDTO> GetAll()
+        public PagedResponse<SellerDTO> GetAll(PaginationDTO pagination)
+        {
+            var sellers = _unitOfWork.SellerRepo.GetAll()
+                            .Where(s => s.User != null && s.User.IsDeleted != true);
+            var count = sellers.Count();
+            var pagedSellers = sellers
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToList();
+            var data = _mapper.Map<List<SellerDTO>>(pagedSellers);
+            var result = new PagedResponse<SellerDTO>
+            {
+                Items = data,
+                TotalCount = count,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize,
+                TotalPages = (int)Math.Ceiling((double)count / pagination.PageSize)
+            };
+
+            return result;
+        }
+
+        public List<SellerDTO> GetAllWithoutPagination()
         {
             var sellers = _unitOfWork.SellerRepo.GetAll()
                             .Where(s => s.User != null && s.User.IsDeleted != true)
                             .ToList();
-
             return _mapper.Map<List<SellerDTO>>(sellers);
         }
 
-      
+
 
         public SellerDTO? GetById(int id)
         {

@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shipping.BusinessLogicLayer.DTOs;
+using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
+using Shipping.BusinessLogicLayer.Helper;
+using Shipping.DataAccessLayer.Models;
 
 namespace Shipping.BusinessLogicLayer.Interfaces
 {
     public interface IGovernorateService
     {
         bool AddGovernorate(AddGovernorateDto dto);
-        List<ReadGovernorateDto> GetAll();
+        PagedResponse<ReadGovernorateDto> GetAll(PaginationDTO pagination);
+        public List<ReadGovernorateDto> GetAll();
         ReadGovernorateDto GetById(int id);
         bool EditGovernorate(int id, AddGovernorateDto dto);
         bool SoftDeleteGovernorate(int id);
         bool HardDeleteGovernorate(int id);
+        void ActiveGovernorate(int id);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Shipping.BusinessLogicLayer.DTOs.City;
+﻿using Shipping.BusinessLogicLayer.DTOs;
+using Shipping.BusinessLogicLayer.DTOs.City;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
 using System;
@@ -21,13 +23,18 @@ namespace Shipping.BusinessLogicLayer.Services
         }
 
 
-        public List<CityDTO> GetAll()
+        public PagedResponse<CityDTO> GetAll(PaginationDTO pagination)
         {
 
-           var cities =  _unitofwork.CityRepo.GetAll();
+            var cities =  _unitofwork.CityRepo.GetAll().Where(c => c.IsDeleted == false);
+            var count = cities.Count();
+            var pagedCities = cities
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToList();
 
 
-            return cities.Select(c => new CityDTO
+            var data =  pagedCities.Select(c => new CityDTO
             {
                 Id = c.Id,  
                 Name = c.Name,
@@ -36,8 +43,31 @@ namespace Shipping.BusinessLogicLayer.Services
                 GovernorateName=c.Governorate.Name
 
             }).ToList();
+
+            var result = new PagedResponse<CityDTO>
+            {
+                TotalCount = count,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize,
+                TotalPages = (int)Math.Ceiling((double)count / pagination.PageSize),
+                Items = data
+            };
+            return result;
+
         }
 
+        public List<CityDTO> GetAllWithOutPagination()
+        {
+            var cities = _unitofwork.CityRepo.GetAll().Where(c => c.IsDeleted == false).ToList();
+            return cities.Select(c => new CityDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                NormalPrice = c.NormalPrice,
+                PickupPrice = c.PickupPrice,
+                GovernorateName = c.Governorate.Name
+            }).ToList();
+        }
 
         public CityDTO? GetById(int id)
         {

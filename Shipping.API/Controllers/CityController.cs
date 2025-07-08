@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.City;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.BusinessLogicLayer.Services;
 
 namespace Shipping.API.Controllers
@@ -17,18 +19,31 @@ namespace Shipping.API.Controllers
             _cityService = cityService;
         }
 
-        [HttpGet]
-        public ActionResult<List<CityDTO>> GetAll()
+        [HttpGet("paginated")]
+        public ActionResult<PagedResponse<CityDTO>> GetAll([FromQuery] PaginationDTO pagination)
         {
-            return Ok(_cityService.GetAll());
+            return Ok(_cityService.GetAll(pagination));
+        }
+
+        [HttpGet]
+        public ActionResult<List<CityDTO>> GetAllWithoutPagination()
+        {
+            return Ok(_cityService.GetAllWithOutPagination());
         }
 
         [HttpGet("{id}")]
         public ActionResult<CityDTO> GetById(int id)
         {
-            var city = _cityService.GetById(id);
-            if (city == null) return NotFound();
-            return Ok(city);
+            try
+            {
+                var city = _cityService.GetById(id);
+                if (city == null) return NotFound();
+                return Ok(city);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the city.");
+            }
         }
 
         [HttpPost]

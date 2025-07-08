@@ -3,6 +3,7 @@ using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
 using Shipping.BusinessLogicLayer.Interfaces;
 using System.Threading.Tasks;
 using System.Linq;
+using Shipping.BusinessLogicLayer.DTOs;
 
 namespace Shipping.API.Controllers
 {
@@ -16,12 +17,26 @@ namespace Shipping.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetAll([FromQuery]PaginationDTO pagination)
         {
             try
             {
-                var result = await _service.GetAllAsync();
+                var result = await _service.GetAllAsync(pagination);
+                return Ok(result);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, new { error = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllWithoutPagination()
+        {
+            try
+            {
+                var result =  _service.GetAll();
                 return Ok(result);
             }
             catch (System.Exception ex)
