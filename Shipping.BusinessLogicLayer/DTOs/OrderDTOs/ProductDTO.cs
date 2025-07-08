@@ -6,9 +6,19 @@ using System.Threading.Tasks;
 
 namespace Shipping.BusinessLogicLayer.DTOs.OrderDTOs
 {
-    public record ReadProductDTO
+    public class ReadProductDTO
+    {
+        public ReadProductDTO() { }
+        public int ProductId;
+        public string Name;
+        public decimal Price;
+        public decimal Weight;
+        public int Quantity;
+        public int OrderId;
+    }
+
+    public record UpdateProductDTO
     (
-        int ProductId,
         string Name,
         decimal Price,
         decimal Weight,
