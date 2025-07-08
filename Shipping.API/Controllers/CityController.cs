@@ -19,10 +19,16 @@ namespace Shipping.API.Controllers
             _cityService = cityService;
         }
 
-        [HttpGet]
+        [HttpGet("paginated")]
         public ActionResult<PagedResponse<CityDTO>> GetAll([FromQuery] PaginationDTO pagination)
         {
             return Ok(_cityService.GetAll(pagination));
+        }
+
+        [HttpGet]
+        public ActionResult<List<CityDTO>> GetAllWithoutPagination()
+        {
+            return Ok(_cityService.GetAllWithOutPagination());
         }
 
         [HttpGet("{id}")]

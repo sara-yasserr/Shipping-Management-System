@@ -56,6 +56,18 @@ namespace Shipping.BusinessLogicLayer.Services
 
         }
 
+        public List<CityDTO> GetAllWithOutPagination()
+        {
+            var cities = _unitofwork.CityRepo.GetAll().Where(c => c.IsDeleted == false).ToList();
+            return cities.Select(c => new CityDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                NormalPrice = c.NormalPrice,
+                PickupPrice = c.PickupPrice,
+                GovernorateName = c.Governorate.Name
+            }).ToList();
+        }
 
         public CityDTO? GetById(int id)
         {

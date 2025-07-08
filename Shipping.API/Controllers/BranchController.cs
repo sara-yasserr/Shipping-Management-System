@@ -26,6 +26,7 @@ namespace Shipping.API.Controllers
             var result = branchService.GetAllBranch(pagination);
             return Ok(result);
         }
+
         [HttpGet]
         public ActionResult<List<ReadBranch>> GetAll()
         {

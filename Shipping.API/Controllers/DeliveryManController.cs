@@ -30,14 +30,19 @@ namespace Shipping.API.Controllers
                 return StatusCode(500, new { error = "Internal server error", details = ex.Message });
             }
         }
+
         [HttpGet]
-        public ActionResult<List<ReadDeliveryMan>> GetAll()
+        public async Task<IActionResult> GetAllWithoutPagination()
         {
-            var result = _service.GetAll();
-            if (result == null) {
-                return NotFound();
+            try
+            {
+                var result =  _service.GetAll();
+                return Ok(result);
             }
-            return Ok(result);
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, new { error = "Internal server error", details = ex.Message });
+            }
         }
 
         [HttpGet("{id}")]

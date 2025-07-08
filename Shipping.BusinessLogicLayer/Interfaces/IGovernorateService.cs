@@ -7,6 +7,7 @@ using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Shipping.BusinessLogicLayer.Helper;
+using Shipping.DataAccessLayer.Models;
 
 namespace Shipping.BusinessLogicLayer.Interfaces
 {

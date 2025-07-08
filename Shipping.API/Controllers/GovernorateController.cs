@@ -27,6 +27,7 @@ namespace Shipping.API.Controllers
         {
             return Ok(_governorateService.GetAll(pagination));
         }
+
         [HttpGet]
         public ActionResult<List<ReadDeliveryMan>> GetAll()
         {
@@ -37,6 +38,7 @@ namespace Shipping.API.Controllers
             }
             return Ok(result);
         }
+
         //get gov by id
         //   GET /api/Governorate/5
         [HttpGet("{id}")]
