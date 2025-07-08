@@ -20,13 +20,22 @@ namespace Shipping.API.Controllers
             this.branchService = branchService;
         }
 
-        [HttpGet]
+        [HttpGet("paginated")]
         public ActionResult<PagedResponse<ReadBranch>> GetAll([FromQuery] PaginationDTO pagination)
         {
             var result = branchService.GetAllBranch(pagination);
             return Ok(result);
         }
-
+        [HttpGet]
+        public ActionResult<List<ReadBranch>> GetAll()
+        {
+            var result = branchService.GetAllBranch();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
         [HttpGet("{id:int}")]
         public ActionResult<Branch> GetById(int id)
         {

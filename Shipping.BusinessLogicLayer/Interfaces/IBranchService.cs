@@ -14,6 +14,7 @@ namespace Shipping.BusinessLogicLayer.Interfaces
     public interface IBranchService
     {
         public PagedResponse<ReadBranch> GetAllBranch( PaginationDTO pagination);
+        public List<ReadBranch> GetAllBranch();
         public Branch? GetBranchById(int id);
         public ReadBranch? GetBranchDTOById(int id);
         public Branch AddBranch(AddBranch addBranchDTO);
