@@ -27,6 +27,14 @@ namespace Shipping.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("without-pagination")]
+        public IActionResult GetAllBranches()
+        {
+            var branches = branchService.GetAllWithoutPagination();
+            return Ok(branches);
+        }
+
+
         [HttpGet("{id:int}")]
         public ActionResult<Branch> GetById(int id)
         {

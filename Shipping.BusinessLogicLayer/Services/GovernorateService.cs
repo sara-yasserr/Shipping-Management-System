@@ -58,6 +58,11 @@ namespace Shipping.BusinessLogicLayer.Services
             return result;
         }
 
+        public List<ReadGovernorateDto> GetAllGovernrates()
+        {
+            var result = _mapper.Map<List<ReadGovernorateDto>>(_unitOfWork.GovernorateRepo.GetAll().ToList());
+            return result;
+        }
         public ReadGovernorateDto GetById(int id)
         {
             var governorate = _unitOfWork.GovernorateRepo.GetById(id);

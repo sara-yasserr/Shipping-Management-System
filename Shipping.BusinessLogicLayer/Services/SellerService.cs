@@ -51,7 +51,15 @@ namespace Shipping.BusinessLogicLayer.Services
             return result;
         }
 
-      
+        public List<SellerDTO> GetAllWithoutPagination()
+        {
+            var sellers = _unitOfWork.SellerRepo.GetAll()
+                            .Where(s => s.User != null && s.User.IsDeleted != true)
+                            .ToList();
+            return _mapper.Map<List<SellerDTO>>(sellers);
+        }
+
+
 
         public SellerDTO? GetById(int id)
         {

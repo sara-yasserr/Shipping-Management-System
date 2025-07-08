@@ -27,6 +27,13 @@ namespace Shipping.API.Controllers
             return Ok(_governorateService.GetAll(pagination));
         }
 
+        [HttpGet("without-pagination")]
+        public IActionResult GetAll()
+        {
+            return Ok(_governorateService.GetAllGovernrates());
+        }
+
+
         //get gov by id
         //   GET /api/Governorate/5
         [HttpGet("{id}")]

@@ -34,7 +34,12 @@ namespace Shipping.API.Controllers
             return Ok(seller);
         }
 
-       
+        [HttpGet("without-pagination")]
+        public ActionResult<List<SellerDTO>> GetAllWithoutPagination()
+        {
+            return Ok(_service.GetAllWithoutPagination());
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Add(AddSellerDTO dto)

@@ -42,6 +42,12 @@ namespace Shipping.BusinessLogicLayer.Services
 
             return result;
         }
+
+        public List<ReadEmployeeDTO> GetAllEmployeesWithoutPagination()
+        {
+            var employees = _unitOfWork.EmployeeRepo.GetAll().Where(e => e.User.IsDeleted == false).ToList();
+            return _mapper.Map<List<ReadEmployeeDTO>>(employees);
+        }
         public Employee? GetEmployeeById(int id)
         {
             var employee = _unitOfWork.EmployeeRepo.GetById(id);

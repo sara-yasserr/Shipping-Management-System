@@ -25,6 +25,12 @@ namespace Shipping.API.Controllers
             return Ok(_cityService.GetAll(pagination));
         }
 
+        [HttpGet("without-pagination")]
+        public ActionResult<List<CityDTO>> GetAllWithoutPagination()
+        {
+            return Ok(_cityService.GetAllWithOutPagination());
+        }
+
         [HttpGet("{id}")]
         public ActionResult<CityDTO> GetById(int id)
         {

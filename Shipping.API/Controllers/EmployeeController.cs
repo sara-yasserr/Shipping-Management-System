@@ -31,6 +31,17 @@ namespace Shipping.API.Controllers
             return Ok(employeesDTO);
         }
 
+        [HttpGet("without-pagination")]
+        public ActionResult<List<ReadEmployeeDTO>> GetAllWithoutPagination()
+        {
+            var employeesDTO = employeeService.GetAllEmployeesWithoutPagination();
+            if (employeesDTO == null)
+            {
+                return NotFound("No Employees Found");
+            }
+            return Ok(employeesDTO);
+        }
+
         [HttpGet("{id:int}")]
         public ActionResult<ReadEmployeeDTO> GetById(int id)
         {

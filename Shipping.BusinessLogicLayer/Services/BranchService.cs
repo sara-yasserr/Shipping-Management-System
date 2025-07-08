@@ -40,6 +40,12 @@ namespace Shipping.BusinessLogicLayer.Services
             };
             return result;
         }
+
+        public List<ReadBranch> GetAllWithoutPagination()
+        {
+            var branches = _unitOfWork.BranchRepo.GetAll().Where(b => b.IsDeleted == false).ToList();
+            return _mapper.Map<List<ReadBranch>>(branches);
+        }
         public Branch? GetBranchById(int id)
         {
             var branch = _unitOfWork.BranchRepo.GetById(id);

@@ -50,6 +50,12 @@ namespace Shipping.BusinessLogicLayer.Services
             return result;
         }
 
+        public async Task<List<ReadOrderDTO>> GetAllWithoutPagination()
+        {
+            var orders = _unitOfWork.OrderRepo.GetAll().Where(o => o.IsDeleted == false).ToList();
+            return _mapper.Map<List<ReadOrderDTO>>(orders);
+        }
+
         public async Task<ReadOrderDTO> GetOrderById(int id)
         {
             var order = _unitOfWork.OrderRepo.GetById(id);

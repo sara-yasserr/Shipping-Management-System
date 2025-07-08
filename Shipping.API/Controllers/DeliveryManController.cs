@@ -31,6 +31,20 @@ namespace Shipping.API.Controllers
             }
         }
 
+        [HttpGet("without-pagination")]
+        public async Task<IActionResult> GetAllWithoutPagination()
+        {
+            try
+            {
+                var result = await _service.GetAllWithoutPaginationAsync();
+                return Ok(result);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, new { error = "Internal server error", details = ex.Message });
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

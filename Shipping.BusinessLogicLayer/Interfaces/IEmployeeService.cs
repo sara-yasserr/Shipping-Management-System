@@ -13,6 +13,7 @@ namespace Shipping.BusinessLogicLayer.Interfaces
     public interface IEmployeeService
     {
         public PagedResponse<ReadEmployeeDTO> GetAllEmployees(PaginationDTO pagination);
+        public List<ReadEmployeeDTO> GetAllEmployeesWithoutPagination();
         public Employee? GetEmployeeById(int id);
         public ReadEmployeeDTO? GetEmployeeDTOById(int id);
         public Task<Employee> AddEmployee(AddEmployeeDTO addEmployeeDTO);

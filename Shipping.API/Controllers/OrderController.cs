@@ -25,6 +25,14 @@ namespace Shipping.API.Controllers
             var orders = await _orderService.GetAllOrdersAsync(pagination);
             return Ok(orders);
         }
+
+        [HttpGet("without-pagiantion")]
+        public async Task<ActionResult<List<ReadOrderDTO>>> GetAllOrdersWithoutPaginationAsync()
+        {
+            var orders = await _orderService.GetAllWithoutPagination();
+            return Ok(orders);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ReadOrderDTO>> GetOrderById(int id)
         {
@@ -175,7 +183,6 @@ namespace Shipping.API.Controllers
             var paymentTypes = await _orderService.GetPaymentTypesAsync();
             return Ok(paymentTypes);
         }
-
         //Order Status Count
         [HttpGet("statusCount")]
         public async Task<ActionResult<EnumDTO>> GetOrderStatusCount(OrderStatus status)
@@ -191,7 +198,6 @@ namespace Shipping.API.Controllers
             var counts = await _orderService.GetAllOrderStatusCounts(pagination);
             return Ok(counts);
         }
-
         //Get Order Status Count for Seller
         [HttpGet("statusCountForSeller/{sellerId}")]
         public async Task<ActionResult<EnumDTO>> GetOrderStatusCountForSeller(int sellerId, OrderStatus status)
