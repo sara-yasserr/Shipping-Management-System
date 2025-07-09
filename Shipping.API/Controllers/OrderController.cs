@@ -34,7 +34,7 @@ namespace Shipping.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadOrderDTO>> GetOrderById(int id)
+        public async Task<ActionResult<ReadOneOrderDTO>> GetOrderById(int id)
         {
             var order = await _orderService.GetOrderById(id);
             if (order == null) return NotFound();

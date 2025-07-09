@@ -237,7 +237,34 @@ namespace Shipping.BusinessLogicLayer.Helper
                 src.TotalWeight
             ));
 
-            
+            CreateMap<Order, ReadOneOrderDTO>()
+    .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.Id))
+    .ForMember(dest => dest.CustomerCityName, opt => opt.MapFrom(src => src.City.Name))
+    .ForMember(dest => dest.SellerName, opt => opt.MapFrom(src => src.Seller != null && src.Seller.User != null
+        ? $"{src.Seller.User.FirstName} {src.Seller.User.LastName}" : null))
+    .ForMember(dest => dest.SellerCityName, opt => opt.MapFrom(src => src.Seller.City.Name))
+    .ForMember(dest => dest.DeliveryAgentName, opt => opt.MapFrom(src => src.DeliveryAgent != null && src.DeliveryAgent.User != null
+        ? $"{src.DeliveryAgent.User.FirstName} {src.DeliveryAgent.User.LastName}" : null))
+    .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch.Name))
+    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+    .ForMember(dest => dest.ShippingType, opt => opt.MapFrom(src => src.ShippingType.ToString()))
+    .ForMember(dest => dest.OrderType, opt => opt.MapFrom(src => src.OrderType.ToString()))
+    .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType.ToString()))
+    .ForMember(dest => dest.Products, opt => opt.MapFrom(src =>
+        src.Products.Select(p => new Product
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Price = p.Price,
+            Weight = p.Weight,
+            Quantity = p.Quantity,
+            OrderId = p.OrderId
+        }).ToList()));
+
+
+
+
+
 
             // Product → ProductDTO
             CreateMap<ProductDTO, Product>()

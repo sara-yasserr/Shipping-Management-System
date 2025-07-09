@@ -15,7 +15,7 @@ namespace Shipping.BusinessLogicLayer.Interfaces
     {
         Task<PagedResponse<ReadOrderDTO>> GetAllOrdersAsync(PaginationDTO pagination); //
         Task<List<ReadOrderDTO>> GetAllWithoutPagination();//
-        Task<ReadOrderDTO> GetOrderById(int id); //
+        Task<ReadOneOrderDTO> GetOrderById(int id); //
         Task AddOrder(AddOrderDTO orderDTO); //
         Task UpdateOrder(UpdateOrderDTO updateOrderDTO); //
         Task SoftDeleteOrder(int id); //

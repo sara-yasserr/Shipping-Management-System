@@ -75,7 +75,7 @@ namespace Shipping.DataAccessLayer.Models
         public virtual DeliveryAgent? DeliveryAgent { get; set; }
         public virtual City City { get; set; }
         public virtual Branch? Branch { get; set; }
-        public virtual List<Product> Products { get; set; } = new List<Product>();
+        public virtual List<Product> Products { get; set; }
     }
 
 }
