@@ -61,7 +61,11 @@ namespace Shipping.BusinessLogicLayer.Services
             var order = _unitOfWork.OrderRepo.GetById(id);
             var product = order.Products;
             var mapped = _mapper.Map<ReadOneOrderDTO>(order);
-            return _mapper.Map<ReadOneOrderDTO>(order);
+            mapped.deliveryManId = order.DeliveryAgentId;
+            mapped.StatusId = (int)order.Status;
+            mapped.ShippingTypeID = (int)order.ShippingType;
+            mapped.PaymentTypeId = (int)order.PaymentType;
+            return mapped;
         }
 
         public async Task AddOrder(AddOrderDTO orderDTO)
