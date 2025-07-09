@@ -68,14 +68,20 @@ namespace Shipping.BusinessLogicLayer.DTOs.OrderDTOs
         public string? CustomerCityName { get; set; }
         public string? SellerName { get; set; }
         public string? SellerCityName { get; set; }
+        public int? deliveryManId { get; set; }
         public string? DeliveryAgentName { get; set; }
         public string? BranchName { get; set; }
         public bool isShippedToVillage { get; set; }
         public string Address { get; set; }
         public DateTime CreationDate { get; set; }
+        public int StatusId { get; set; }
         public string Status { get; set; }
+        public int ShippingTypeID { get; set; }
+
         public string ShippingType { get; set; }
         public string OrderType { get; set; }
+        public int PaymentTypeId { get; set; }
+
         public string PaymentType { get; set; }
         public bool IsPickup { get; set; }
         public bool IsActive { get; set; }
