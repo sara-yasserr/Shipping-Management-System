@@ -166,9 +166,8 @@ namespace Shipping.BusinessLogicLayer.Services
                 }
                 await _unitOfWork.SaveAsync();
 
-                // Delete the delivery man
-                _unitOfWork.DeliveryManRepo.Delete(deliveryMan);
-                await _unitOfWork.SaveAsync();
+                // استخدم دالة HardDelete الجديدة
+                await _unitOfWork.DeliveryManRepo.HardDeleteDeliveryMan(id);
 
                 return true;
             }

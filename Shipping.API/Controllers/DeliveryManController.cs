@@ -134,7 +134,7 @@ namespace Shipping.API.Controllers
             }
         }
 
-           [HttpDelete("{id}/soft")]
+           [HttpDelete("SoftDelete/{id}")]
         public async Task<IActionResult> SoftDelete(int id)
         {
             if (id <= 0)
@@ -158,7 +158,7 @@ namespace Shipping.API.Controllers
             }
         }
 
-        [HttpDelete("{id}/hard")]
+        [HttpDelete("HardDelete/{id}")]
         public async Task<IActionResult> HardDelete(int id)
         {
             if (id <= 0)

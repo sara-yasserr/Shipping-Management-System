@@ -44,7 +44,6 @@ namespace Shipping.DataAccessLayer.Repositories.Custom
             if (deliveryMan != null)
             {
                 deliveryMan.User.IsDeleted = true;
-                deliveryMan.Cities.Clear();
                 _db.DeliveryAgent.Update(deliveryMan);
                 await _db.SaveChangesAsync();
             }
@@ -67,6 +66,25 @@ namespace Shipping.DataAccessLayer.Repositories.Custom
                     deliveryMan.Cities.AddRange(cities);
                 }
                 _db.DeliveryAgent.Update(deliveryMan);
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        // دالة HardDelete جديدة لمسح المندوب واليوزر المرتبط به فعليًا
+        public async Task HardDeleteDeliveryMan(int deliveryManId)
+        {
+            var deliveryMan = await _db.DeliveryAgent
+                .Include(d => d.User)
+                .FirstOrDefaultAsync(d => d.Id == deliveryManId);
+
+            if (deliveryMan != null)
+            {
+                // حذف الـ user المرتبط لو موجود
+                if (deliveryMan.User != null)
+                {
+                    _db.Users.Remove(deliveryMan.User);
+                }
+                _db.DeliveryAgent.Remove(deliveryMan);
                 await _db.SaveChangesAsync();
             }
         }
