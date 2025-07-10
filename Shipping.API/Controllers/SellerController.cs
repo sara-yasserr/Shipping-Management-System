@@ -46,11 +46,13 @@ namespace Shipping.API.Controllers
         {
             var result = await _service.AddAsync(dto);
 
-            if (!result)
-                return BadRequest("Failed to create seller.");
+            if (!result.Succeeded)
+                return BadRequest(new { message = "Failed to create seller." }); // <-- مهم
 
-            return Ok("Seller created successfully.");
+            return Ok(new { message = "Seller created successfully." }); // <-- مهم
         }
+
+
 
 
         [HttpPut("Update")]

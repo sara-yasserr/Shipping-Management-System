@@ -72,8 +72,14 @@ namespace Shipping.BusinessLogicLayer.Services
         }
 
 
-        public async Task<bool> AddAsync(AddSellerDTO dto)
+        public async Task<IdentityResult> AddAsync(AddSellerDTO dto)
         {
+            if (await _userManager.FindByNameAsync(dto.UserName) != null)
+                return IdentityResult.Failed(new IdentityError { Description = "Username already exists." });
+
+            if (await _userManager.FindByEmailAsync(dto.Email) != null)
+                return IdentityResult.Failed(new IdentityError { Description = "Email already exists." });
+
             var user = new ApplicationUser
             {
                 UserName = dto.UserName,
@@ -86,13 +92,7 @@ namespace Shipping.BusinessLogicLayer.Services
 
             var result = await _userManager.CreateAsync(user, dto.Password);
             if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                {
-                    Console.WriteLine(error.Description);
-                }
-                return false;
-            }
+                return result;
 
             await _userManager.AddToRoleAsync(user, "Seller");
 
@@ -102,8 +102,9 @@ namespace Shipping.BusinessLogicLayer.Services
             _unitOfWork.SellerRepo.Add(seller);
             await _unitOfWork.SaveAsync();
 
-            return true;
+            return IdentityResult.Success;
         }
+
 
 
         public async Task<bool> UpdateAsync(UpdateSellerDTO dto)
