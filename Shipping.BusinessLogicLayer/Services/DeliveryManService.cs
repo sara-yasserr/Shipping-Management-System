@@ -31,13 +31,13 @@ namespace Shipping.BusinessLogicLayer.Services
 
         public async Task<PagedResponse<ReadDeliveryMan>> GetAllAsync(PaginationDTO pagination)
         {
-            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes().Where(dm => dm.User.IsDeleted == false);
+            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes(); // No filter on IsDeleted
             var Count = deliveryMen.Count();
             var pagedDeliveryMen = deliveryMen
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)
                 .ToList();
-            var data = _mapper.Map<List<ReadDeliveryMan>>(deliveryMen);
+            var data = _mapper.Map<List<ReadDeliveryMan>>(pagedDeliveryMen);
             var result = new PagedResponse<ReadDeliveryMan>
             {
                 Items = data,
@@ -51,7 +51,7 @@ namespace Shipping.BusinessLogicLayer.Services
 
         public List<ReadDeliveryMan> GetAll()
         {
-            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes().Where(dm => dm.User.IsDeleted == false).ToList();
+            var deliveryMen = _unitOfWork.DeliveryManRepo.GetAllWithIncludes().ToList(); // No filter on IsDeleted
             return _mapper.Map<List<ReadDeliveryMan>>(deliveryMen);
         }
 
@@ -168,15 +168,20 @@ namespace Shipping.BusinessLogicLayer.Services
                 }
                 await _unitOfWork.SaveAsync();
 
-                // Delete the delivery man
-                _unitOfWork.DeliveryManRepo.Delete(deliveryMan);
+                // Remove all CityDeliveryAgent links for this delivery man
+                var cityLinks = _unitOfWork.db.Set<Dictionary<string, object>>("CityDeliveryAgent")
+                    .Where(x => (int)x["DeliveryAgentsId"] == id);
+                _unitOfWork.db.Set<Dictionary<string, object>>("CityDeliveryAgent").RemoveRange(cityLinks);
                 await _unitOfWork.SaveAsync();
+
+                // Now delete the delivery man
+                await _unitOfWork.DeliveryManRepo.HardDeleteDeliveryMan(id);
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception("HardDelete Error: " + ex.Message, ex);
             }
         }
 

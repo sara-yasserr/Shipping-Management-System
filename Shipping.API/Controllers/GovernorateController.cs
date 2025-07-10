@@ -6,7 +6,7 @@ using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Messaging;
 using Shipping.BusinessLogicLayer.DTOs;
-using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
+using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 
 namespace Shipping.API.Controllers
 {
@@ -29,7 +29,7 @@ namespace Shipping.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<ReadDeliveryMan>> GetAll()
+        public ActionResult<List<ReadGovernorateDto>> GetAll()
         {
             var result = _governorateService.GetAll();
             if (result == null)
