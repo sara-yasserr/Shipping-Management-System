@@ -125,7 +125,7 @@ namespace Shipping.API
             app.UseCors(AllowAllOrigins);
 
             app.UseHttpsRedirection();
-            app.UseRateLimiter();
+            //app.UseRateLimiter();
 
             app.UseAuthentication();
             app.UseAuthorization();
