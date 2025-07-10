@@ -79,9 +79,13 @@ namespace Shipping.DataAccessLayer.Repositories.Custom
 
             if (deliveryMan != null)
             {
-                // حذف الـ user المرتبط لو موجود
                 if (deliveryMan.User != null)
                 {
+                    // Remove all user roles for this user
+                    var userRoles = _db.Set<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>()
+                        .Where(ur => ur.UserId == deliveryMan.User.Id);
+                    _db.Set<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>().RemoveRange(userRoles);
+
                     _db.Users.Remove(deliveryMan.User);
                 }
                 _db.DeliveryAgent.Remove(deliveryMan);
