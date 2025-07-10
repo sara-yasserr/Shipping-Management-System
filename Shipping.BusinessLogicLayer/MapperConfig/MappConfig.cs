@@ -99,12 +99,10 @@ namespace Shipping.BusinessLogicLayer.Helper
                 {
                     UserName = src.UserName,
                     Email = src.Email,
-                    PasswordHash = src.Password,
                     FirstName = src.FirstName,
                     LastName = src.LastName,
                     PhoneNumber = src.PhoneNumber
                 };
-                dest.UserId = dest.User.Id;
             });
             #endregion
 
