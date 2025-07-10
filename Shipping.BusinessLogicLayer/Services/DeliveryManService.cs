@@ -80,8 +80,7 @@ namespace Shipping.BusinessLogicLayer.Services
                 deliveryMan.UserId = user.Id;
 
                 
-                await _unitOfWork.DeliveryManRepo.AddAsync(deliveryMan);
-                await _unitOfWork.SaveAsync();
+                
 
              
                 if (dto.CityIds?.Any() == true)
@@ -91,6 +90,9 @@ namespace Shipping.BusinessLogicLayer.Services
 
                 
                 await _userManager.AddToRoleAsync(user, "DeliveryAgent");
+
+                await _unitOfWork.DeliveryManRepo.AddAsync(deliveryMan);
+                await _unitOfWork.SaveAsync();
 
                 return (true, deliveryMan.Id);
             }
