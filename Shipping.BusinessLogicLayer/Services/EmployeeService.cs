@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs;
 using Shipping.BusinessLogicLayer.Helper;
@@ -17,10 +18,12 @@ namespace Shipping.BusinessLogicLayer.Services
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public EmployeeService(UnitOfWork unitOfWork, IMapper mapper)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public EmployeeService(UnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public PagedResponse<ReadEmployeeDTO> GetAllEmployees(PaginationDTO pagination)
@@ -65,13 +68,20 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var employee = _mapper.Map<Employee>(addEmployeeDTO);
 
+            var user = employee.User;
+
+            
+            await _userManager.CreateAsync(user , addEmployeeDTO.Password);
+
+            employee.UserId = user.Id;
+
             await _unitOfWork.EmployeeRepo.AddAsync(employee);
             await _unitOfWork.SaveAsync();
 
             // add user role "Employee" by Default
-            await _unitOfWork.UserManager.AddToRoleAsync(employee.User, "Employee");
+            await _unitOfWork.UserManager.AddToRoleAsync(user, "Employee");
             // add the other specified role ex:("Admin", "HR" ..etc)
-            await _unitOfWork.UserManager.AddToRoleAsync(employee.User, addEmployeeDTO.SpecificRole);
+            await _unitOfWork.UserManager.AddToRoleAsync(user, addEmployeeDTO.SpecificRole);
             return employee;
         }
         public async Task UpdateEmployee(AddEmployeeDTO updateEmployeeDTO,Employee employee)
