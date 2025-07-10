@@ -44,7 +44,6 @@ namespace Shipping.DataAccessLayer.Repositories.Custom
             if (deliveryMan != null)
             {
                 deliveryMan.User.IsDeleted = true;
-                deliveryMan.Cities.Clear();
                 _db.DeliveryAgent.Update(deliveryMan);
                 await _db.SaveChangesAsync();
             }
@@ -67,6 +66,29 @@ namespace Shipping.DataAccessLayer.Repositories.Custom
                     deliveryMan.Cities.AddRange(cities);
                 }
                 _db.DeliveryAgent.Update(deliveryMan);
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        // دالة HardDelete جديدة لمسح المندوب واليوزر المرتبط به فعليًا
+        public async Task HardDeleteDeliveryMan(int deliveryManId)
+        {
+            var deliveryMan = await _db.DeliveryAgent
+                .Include(d => d.User)
+                .FirstOrDefaultAsync(d => d.Id == deliveryManId);
+
+            if (deliveryMan != null)
+            {
+                if (deliveryMan.User != null)
+                {
+                    // Remove all user roles for this user
+                    var userRoles = _db.Set<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>()
+                        .Where(ur => ur.UserId == deliveryMan.User.Id);
+                    _db.Set<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>().RemoveRange(userRoles);
+
+                    _db.Users.Remove(deliveryMan.User);
+                }
+                _db.DeliveryAgent.Remove(deliveryMan);
                 await _db.SaveChangesAsync();
             }
         }

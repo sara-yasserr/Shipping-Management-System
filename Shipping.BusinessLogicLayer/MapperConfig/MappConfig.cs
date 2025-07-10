@@ -182,7 +182,7 @@ namespace Shipping.BusinessLogicLayer.Helper
                     dest.User.PhoneNumber = src.PhoneNumber;
                     dest.User.FirstName = src.Name?.Split(' ').FirstOrDefault() ?? src.Name;
                     dest.User.LastName = src.Name?.Contains(' ') == true ? src.Name.Substring(src.Name.IndexOf(' ') + 1) : string.Empty;
-                    dest.User.IsDeleted = !src.IsDeleted;
+                    dest.User.IsDeleted = src.IsDeleted;
                 }
             });
             #endregion

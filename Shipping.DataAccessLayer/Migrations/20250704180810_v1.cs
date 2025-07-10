@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Shipping.DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class V1 : Migration
+    public partial class v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -110,7 +110,8 @@ namespace Shipping.DataAccessLayer.Migrations
                         name: "FK_RolePermissions_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -321,7 +322,8 @@ namespace Shipping.DataAccessLayer.Migrations
                         name: "FK_Employees_Branches_BranchId",
                         column: x => x.BranchId,
                         principalTable: "Branches",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -338,12 +340,14 @@ namespace Shipping.DataAccessLayer.Migrations
                         name: "FK_CityDeliveryAgent_Cities_CitiesId",
                         column: x => x.CitiesId,
                         principalTable: "Cities",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_CityDeliveryAgent_DeliveryAgent_DeliveryAgentsId",
                         column: x => x.DeliveryAgentsId,
                         principalTable: "DeliveryAgent",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -392,7 +396,8 @@ namespace Shipping.DataAccessLayer.Migrations
                         name: "FK_Orders_DeliveryAgent_DeliveryAgentId",
                         column: x => x.DeliveryAgentId,
                         principalTable: "DeliveryAgent",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Orders_Sellers_SellerId",
                         column: x => x.SellerId,

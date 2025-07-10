@@ -12,8 +12,8 @@ using Shipping.DataAccessLayer.Models;
 namespace Shipping.DataAccessLayer.Migrations
 {
     [DbContext(typeof(ShippingDBContext))]
-    [Migration("20250701183136_V1")]
-    partial class V1
+    [Migration("20250704180810_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -4,6 +4,7 @@ using Shipping.BusinessLogicLayer.Interfaces;
 using System.Threading.Tasks;
 using System.Linq;
 using Shipping.BusinessLogicLayer.DTOs;
+using System.Collections.Generic;
 
 namespace Shipping.API.Controllers
 {
@@ -134,7 +135,7 @@ namespace Shipping.API.Controllers
             }
         }
 
-           [HttpDelete("{id}/soft")]
+           [HttpDelete("SoftDelete/{id}")]
         public async Task<IActionResult> SoftDelete(int id)
         {
             if (id <= 0)
@@ -158,7 +159,7 @@ namespace Shipping.API.Controllers
             }
         }
 
-        [HttpDelete("{id}/hard")]
+        [HttpDelete("HardDelete/{id}")]
         public async Task<IActionResult> HardDelete(int id)
         {
             if (id <= 0)
@@ -176,10 +177,22 @@ namespace Shipping.API.Controllers
             }
             catch (System.Exception ex)
             {
-                if (ex.Message.Contains("not found"))
-                    return NotFound(new { error = ex.Message });
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new {
+                    error = GetFullExceptionMessage(ex),
+                    stack = ex.StackTrace
+                });
             }
+        }
+
+        private string GetFullExceptionMessage(System.Exception ex)
+        {
+            var messages = new List<string>();
+            while (ex != null)
+            {
+                messages.Add(ex.Message);
+                ex = ex.InnerException;
+            }
+            return string.Join(" | ", messages);
         }
     }
 } 

@@ -108,6 +108,7 @@ namespace Shipping.API
 
             builder.Services.AddScoped<IGovernorateService, GovernorateService>();
             builder.Services.AddScoped<IDeliveryManService, DeliveryManService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
 
             builder.Services.AddCustomRateLimiting();
 

@@ -74,7 +74,6 @@ namespace Shipping.BusinessLogicLayer.Services
 
         public async Task<bool> AddAsync(AddSellerDTO dto)
         {
-            
             var user = new ApplicationUser
             {
                 UserName = dto.UserName,
@@ -90,7 +89,7 @@ namespace Shipping.BusinessLogicLayer.Services
             {
                 foreach (var error in result.Errors)
                 {
-                    Console.WriteLine(error.Description); 
+                    Console.WriteLine(error.Description);
                 }
                 return false;
             }
@@ -101,7 +100,7 @@ namespace Shipping.BusinessLogicLayer.Services
             seller.UserId = user.Id;
 
             _unitOfWork.SellerRepo.Add(seller);
-           await _unitOfWork.SaveAsync();    
+            await _unitOfWork.SaveAsync();
 
             return true;
         }

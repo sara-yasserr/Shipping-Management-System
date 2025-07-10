@@ -26,4 +26,8 @@
     <PackageReference Include="System.Threading.RateLimiting" Version="9.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
