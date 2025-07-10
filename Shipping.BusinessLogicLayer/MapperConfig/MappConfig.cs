@@ -57,7 +57,11 @@ namespace Shipping.BusinessLogicLayer.Helper
 
 
 
-            CreateMap<Seller, AddSellerDTO>().ReverseMap();
+            CreateMap<AddSellerDTO, Seller>()
+                .ForMember(dest => dest.UserId, opt => opt.Ignore());
+
+            CreateMap<Seller, AddSellerDTO>();
+
             CreateMap<Seller, UpdateSellerDTO>().ReverseMap();
 
 
