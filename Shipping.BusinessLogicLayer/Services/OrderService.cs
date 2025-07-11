@@ -315,6 +315,10 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var orders = _unitOfWork.OrderRepo.GetAll()
                 .Where(o => o.DeliveryAgentId == deliveryAgentId && o.IsDeleted == false);
+                
+            if (pagination.Status.HasValue)
+                orders = orders.Where(o => (int)o.Status == pagination.Status.Value);
+
             var count = orders.Count();
             var pagedOrders = orders
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
@@ -337,6 +341,11 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var orders = _unitOfWork.OrderRepo.GetAll()
                 .Where(o => o.SellerId == sellerId && o.IsDeleted == false);
+
+            // فلترة بالـ status لو موجود
+            if (pagination.Status.HasValue)
+                orders = orders.Where(o => (int)o.Status == pagination.Status.Value);
+
             var count = orders.Count();
             var pagedOrders = orders
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
