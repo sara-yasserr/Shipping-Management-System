@@ -6,6 +6,7 @@ using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Messaging;
 using Shipping.BusinessLogicLayer.DTOs;
+using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 
 namespace Shipping.API.Controllers
 {
@@ -21,10 +22,21 @@ namespace Shipping.API.Controllers
         }
 
         // Get all gov active and not active 
-        [HttpGet]
+        [HttpGet("paginated")]
         public IActionResult GetAll([FromQuery] PaginationDTO pagination)
         {
             return Ok(_governorateService.GetAll(pagination));
+        }
+
+        [HttpGet]
+        public ActionResult<List<ReadGovernorateDto>> GetAll()
+        {
+            var result = _governorateService.GetAll();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
         //get gov by id

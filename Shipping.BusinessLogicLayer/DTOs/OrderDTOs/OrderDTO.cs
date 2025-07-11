@@ -1,4 +1,5 @@
 ﻿using Shipping.DataAccessLayer.Enum;
+using Shipping.DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +59,40 @@ namespace Shipping.BusinessLogicLayer.DTOs.OrderDTOs
         decimal TotalWeight
 
     );
+    public class ReadOneOrderDTO
+    {
+        public int OrderID { get; set; }
+        public string? Notes { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerPhone { get; set; }
+        public string? CustomerCityName { get; set; }
+        public string? SellerName { get; set; }
+        public string? SellerCityName { get; set; }
+        public int? deliveryManId { get; set; }
+        public string? DeliveryAgentName { get; set; }
+        public string? BranchName { get; set; }
+        public bool isShippedToVillage { get; set; }
+        public string Address { get; set; }
+        public DateTime CreationDate { get; set; }
+        public int StatusId { get; set; }
+        public string Status { get; set; }
+        public int ShippingTypeID { get; set; }
+
+        public string ShippingType { get; set; }
+        public string OrderType { get; set; }
+        public int PaymentTypeId { get; set; }
+
+        public string PaymentType { get; set; }
+        public bool IsPickup { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
+        public decimal ShippingCost { get; set; }
+        public decimal TotalCost { get; set; }
+        public decimal TotalWeight { get; set; }
+        public List<Product> Products { get; set; }
+
+        public ReadOneOrderDTO() { } // ضروري
+    }
 
     public record AddOrderDTO
     (
@@ -104,4 +139,9 @@ namespace Shipping.BusinessLogicLayer.DTOs.OrderDTOs
         int OrderCityId,
         int SellerCityId
     );
+
+    public class ChangeOrderStatusDto
+    {
+        public OrderStatus NewStatus { get; set; }
+    }
 }

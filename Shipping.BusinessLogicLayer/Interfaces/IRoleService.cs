@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.PermissionDTOs;
+using Shipping.BusinessLogicLayer.Helper;
 using Shipping.DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,8 @@ namespace Shipping.BusinessLogicLayer.Interfaces
 {
     public interface IRoleService
     {
-        Task<List<string>> GetAllRolesAsync();
+        List<string?> GetAllRoles();
+        PagedResponse<string> GetAllPaginated(PaginationDTO pagination);
         Task<IdentityResult> CreateRoleAsync(string roleName);
         Task<bool> RoleExistsAsync(string roleName);
         Task<IdentityRole?> GetRoleByNameAsync(string roleName);

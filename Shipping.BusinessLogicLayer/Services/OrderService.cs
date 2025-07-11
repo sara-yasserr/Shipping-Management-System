@@ -30,6 +30,7 @@ namespace Shipping.BusinessLogicLayer.Services
         public async Task<PagedResponse<ReadOrderDTO>> GetAllOrdersAsync(PaginationDTO pagination)
         {
             var orders = _unitOfWork.OrderRepo.GetAll().Where(o=> o.IsDeleted == false);
+            //var orders = _unitOfWork.OrderRepo.GetAll();
             var count = orders.Count();
 
             var pagedOrders = orders
@@ -50,10 +51,22 @@ namespace Shipping.BusinessLogicLayer.Services
             return result;
         }
 
-        public async Task<ReadOrderDTO> GetOrderById(int id)
+        public async Task<List<ReadOrderDTO>> GetAllWithoutPagination()
+        {
+            var orders = _unitOfWork.OrderRepo.GetAll().Where(o => o.IsDeleted == false).ToList();
+            return _mapper.Map<List<ReadOrderDTO>>(orders);
+        }
+
+        public async Task<ReadOneOrderDTO> GetOrderById(int id)
         {
             var order = _unitOfWork.OrderRepo.GetById(id);
-            return _mapper.Map<ReadOrderDTO>(order);
+            var product = order.Products;
+            var mapped = _mapper.Map<ReadOneOrderDTO>(order);
+            mapped.deliveryManId = order.DeliveryAgentId;
+            mapped.StatusId = (int)order.Status;
+            mapped.ShippingTypeID = (int)order.ShippingType;
+            mapped.PaymentTypeId = (int)order.PaymentType;
+            return mapped;
         }
 
         public async Task AddOrder(AddOrderDTO orderDTO)
@@ -291,7 +304,7 @@ namespace Shipping.BusinessLogicLayer.Services
             _unitOfWork.OrderRepo.Update(order);
             await _unitOfWork.SaveAsync();
         }
-
+        //Change to user UserID
         //Get Orders By Delivery Agent Id
         public async Task<PagedResponse<ReadOrderDTO>> GetOrdersByDeliveryAgentIdAsync(int deliveryAgentId , PaginationDTO pagination)
         {
@@ -313,6 +326,7 @@ namespace Shipping.BusinessLogicLayer.Services
             };
             return result;
         }
+        //Change to user UserID
         //Get Orders By Seller Id
         public async Task<PagedResponse<ReadOrderDTO>> GetOrdersBySellerIdAsync(int sellerId , PaginationDTO pagination)
         {

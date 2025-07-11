@@ -19,14 +19,22 @@ namespace Shipping.API.Controllers
         {
             _orderService = orderService;
         }
-        [HttpGet]
+        [HttpGet("paginated")]
         public async Task<ActionResult<PagedResponse<ReadOrderDTO>>> GetAllOrdersAsync([FromQuery] PaginationDTO pagination)
         {
             var orders = await _orderService.GetAllOrdersAsync(pagination);
             return Ok(orders);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<ReadOrderDTO>>> GetAllOrdersWithoutPaginationAsync()
+        {
+            var orders = await _orderService.GetAllWithoutPagination();
+            return Ok(orders);
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadOrderDTO>> GetOrderById(int id)
+        public async Task<ActionResult<ReadOneOrderDTO>> GetOrderById(int id)
         {
             var order = await _orderService.GetOrderById(id);
             if (order == null) return NotFound();
@@ -85,11 +93,11 @@ namespace Shipping.API.Controllers
 
         //Change Order Status
         [HttpPut("changeStatus/{orderId}")]
-        public async Task<IActionResult> ChangeOrderStatus(int orderId, OrderStatus newStatus)
+        public async Task<IActionResult> ChangeOrderStatus(int orderId, [FromBody] ChangeOrderStatusDto newStatusDTO)
         {
             try
             {
-                await _orderService.ChangeOrderStatus(orderId, newStatus);
+                await _orderService.ChangeOrderStatus(orderId, newStatusDTO.NewStatus);
                 return NoContent();
             }
             catch (Exception ex)
@@ -175,7 +183,6 @@ namespace Shipping.API.Controllers
             var paymentTypes = await _orderService.GetPaymentTypesAsync();
             return Ok(paymentTypes);
         }
-
         //Order Status Count
         [HttpGet("statusCount")]
         public async Task<ActionResult<EnumDTO>> GetOrderStatusCount(OrderStatus status)
@@ -191,7 +198,6 @@ namespace Shipping.API.Controllers
             var counts = await _orderService.GetAllOrderStatusCounts(pagination);
             return Ok(counts);
         }
-
         //Get Order Status Count for Seller
         [HttpGet("statusCountForSeller/{sellerId}")]
         public async Task<ActionResult<EnumDTO>> GetOrderStatusCountForSeller(int sellerId, OrderStatus status)

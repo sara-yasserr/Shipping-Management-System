@@ -52,12 +52,16 @@ namespace Shipping.BusinessLogicLayer.Helper
                 dest.FullName = src.User.FirstName + " " + src.User.LastName;
                 dest.Email = src.User.Email;
                 dest.PhoneNumber = src.User.PhoneNumber;
-
+                dest.UserId = src.UserId;
             }).ReverseMap();
 
 
 
-            CreateMap<Seller, AddSellerDTO>().ReverseMap();
+            CreateMap<AddSellerDTO, Seller>()
+                .ForMember(dest => dest.UserId, opt => opt.Ignore());
+
+            CreateMap<Seller, AddSellerDTO>();
+
             CreateMap<Seller, UpdateSellerDTO>().ReverseMap();
 
 
@@ -87,6 +91,8 @@ namespace Shipping.BusinessLogicLayer.Helper
                 dest.LastName = src.User.LastName;
                 dest.PhoneNumber = src.User.PhoneNumber;
                 dest.CreatedAt = src.User.CreatedAt;
+                dest.IsDeleted = src.User.IsDeleted;
+                dest.Password = src.User.PasswordHash;
             });
 
             CreateMap<AddEmployeeDTO, Employee>().AfterMap((src, dest) =>
@@ -97,12 +103,10 @@ namespace Shipping.BusinessLogicLayer.Helper
                 {
                     UserName = src.UserName,
                     Email = src.Email,
-                    PasswordHash = src.Password,
                     FirstName = src.FirstName,
                     LastName = src.LastName,
                     PhoneNumber = src.PhoneNumber
                 };
-                dest.UserId = dest.User.Id;
             });
             #endregion
 
@@ -154,8 +158,8 @@ namespace Shipping.BusinessLogicLayer.Helper
                    src.Cities != null ? src.Cities.Select(c => c.Id).ToList() : null))
                .ForMember(dest => dest.ActiveOrdersCount, opt => opt.MapFrom(src =>
                    src.Orders != null ? src.Orders.Count(o => o.IsActive) : 0))
-               .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.User.IsDeleted));
-
+               .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.User.IsDeleted))
+               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
             CreateMap<AddDeliveryMan, DeliveryAgent>().AfterMap((src, dest) =>
             {
                 dest.BranchId = src.BranchId;
@@ -182,7 +186,7 @@ namespace Shipping.BusinessLogicLayer.Helper
                     dest.User.PhoneNumber = src.PhoneNumber;
                     dest.User.FirstName = src.Name?.Split(' ').FirstOrDefault() ?? src.Name;
                     dest.User.LastName = src.Name?.Contains(' ') == true ? src.Name.Substring(src.Name.IndexOf(' ') + 1) : string.Empty;
-                    dest.User.IsDeleted = !src.IsDeleted;
+                    dest.User.IsDeleted = src.IsDeleted;
                 }
             });
             #endregion
@@ -235,7 +239,34 @@ namespace Shipping.BusinessLogicLayer.Helper
                 src.TotalWeight
             ));
 
-            
+            CreateMap<Order, ReadOneOrderDTO>()
+    .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.Id))
+    .ForMember(dest => dest.CustomerCityName, opt => opt.MapFrom(src => src.City.Name))
+    .ForMember(dest => dest.SellerName, opt => opt.MapFrom(src => src.Seller != null && src.Seller.User != null
+        ? $"{src.Seller.User.FirstName} {src.Seller.User.LastName}" : null))
+    .ForMember(dest => dest.SellerCityName, opt => opt.MapFrom(src => src.Seller.City.Name))
+    .ForMember(dest => dest.DeliveryAgentName, opt => opt.MapFrom(src => src.DeliveryAgent != null && src.DeliveryAgent.User != null
+        ? $"{src.DeliveryAgent.User.FirstName} {src.DeliveryAgent.User.LastName}" : null))
+    .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch.Name))
+    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+    .ForMember(dest => dest.ShippingType, opt => opt.MapFrom(src => src.ShippingType.ToString()))
+    .ForMember(dest => dest.OrderType, opt => opt.MapFrom(src => src.OrderType.ToString()))
+    .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType.ToString()))
+    .ForMember(dest => dest.Products, opt => opt.MapFrom(src =>
+        src.Products.Select(p => new Product
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Price = p.Price,
+            Weight = p.Weight,
+            Quantity = p.Quantity,
+            OrderId = p.OrderId
+        }).ToList()));
+
+
+
+
+
 
             // Product → ProductDTO
             CreateMap<ProductDTO, Product>()

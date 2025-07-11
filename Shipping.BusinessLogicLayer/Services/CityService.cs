@@ -27,6 +27,8 @@ namespace Shipping.BusinessLogicLayer.Services
         {
 
             var cities =  _unitofwork.CityRepo.GetAll().Where(c => c.IsDeleted == false);
+            //var cities = _unitofwork.CityRepo.GetAll();
+
             var count = cities.Count();
             var pagedCities = cities
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
@@ -56,6 +58,18 @@ namespace Shipping.BusinessLogicLayer.Services
 
         }
 
+        public List<CityDTO> GetAllWithOutPagination()
+        {
+            var cities = _unitofwork.CityRepo.GetAll().Where(c => c.IsDeleted == false).ToList();
+            return cities.Select(c => new CityDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                NormalPrice = c.NormalPrice,
+                PickupPrice = c.PickupPrice,
+                GovernorateName = c.Governorate.Name
+            }).ToList();
+        }
 
         public CityDTO? GetById(int id)
         {
@@ -95,6 +109,19 @@ namespace Shipping.BusinessLogicLayer.Services
             city.PickupPrice = dto.PickupPrice;
             city.GovernorateId = dto.GovernorateId;
 
+            _unitofwork.CityRepo.Update(city);
+            _unitofwork.Save();
+        }
+
+        //Soft Delete
+
+        public void SoftDelete(int id)
+        {
+            var city = _unitofwork.CityRepo.GetById(id);
+            if (city == null) {
+                throw new Exception("City Not Found");
+            }
+            city.IsDeleted = true;
             _unitofwork.CityRepo.Update(city);
             _unitofwork.Save();
         }

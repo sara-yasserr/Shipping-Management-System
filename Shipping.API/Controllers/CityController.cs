@@ -19,10 +19,16 @@ namespace Shipping.API.Controllers
             _cityService = cityService;
         }
 
-        [HttpGet]
+        [HttpGet("paginated")]
         public ActionResult<PagedResponse<CityDTO>> GetAll([FromQuery] PaginationDTO pagination)
         {
             return Ok(_cityService.GetAll(pagination));
+        }
+
+        [HttpGet]
+        public ActionResult<List<CityDTO>> GetAllWithoutPagination()
+        {
+            return Ok(_cityService.GetAllWithOutPagination());
         }
 
         [HttpGet("{id}")]
@@ -59,6 +65,16 @@ namespace Shipping.API.Controllers
             _cityService.Update(dto);
             return Ok();
         }
+
+        [HttpDelete("Soft/{id}")]
+        public IActionResult SoftDelete(int id)
+        {
+            var city = _cityService.GetById(id);
+            if (city == null) return NotFound();
+            _cityService.SoftDelete(id);
+            return NoContent();
+        }
+
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)

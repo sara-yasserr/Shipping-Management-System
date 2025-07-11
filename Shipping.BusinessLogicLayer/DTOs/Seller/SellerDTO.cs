@@ -22,7 +22,7 @@ namespace Shipping.BusinessLogicLayer.DTOs.Seller
         public string Address { get; set; }
         public decimal CancelledOrderPercentage { get; set; }
 
-
+        public string UserId { get; set; }
        
        
         

@@ -75,7 +75,34 @@ namespace Shipping.API
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Description = "Enter the Bearer Authorization : 'Bearer Generated-JWT-Token'",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme
+                }
+            },
+            new string[] {}
+        }
+    });
+            });
+
+
             builder.Services.AddAutoMapper(typeof(MappConfig));
 
             builder.Services.AddCors(options =>
@@ -108,6 +135,7 @@ namespace Shipping.API
 
             builder.Services.AddScoped<IGovernorateService, GovernorateService>();
             builder.Services.AddScoped<IDeliveryManService, DeliveryManService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
 
             builder.Services.AddCustomRateLimiting();
 
@@ -118,12 +146,14 @@ namespace Shipping.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
                 app.MapOpenApi();
+                app.UseDeveloperExceptionPage();
             }
             app.UseCors(AllowAllOrigins);
 
             app.UseHttpsRedirection();
-            app.UseRateLimiter();
+            //app.UseRateLimiter();
 
             app.UseAuthentication();
             app.UseAuthorization();

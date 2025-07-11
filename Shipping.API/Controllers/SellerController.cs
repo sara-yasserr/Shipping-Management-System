@@ -20,13 +20,13 @@ namespace Shipping.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("paginated")]
         public ActionResult<PagedResponse<SellerDTO>> GetAll([FromQuery] PaginationDTO pagination)
         {
             return Ok(_service.GetAll(pagination));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public ActionResult<SellerDTO> GetById(int id)
         {
             var seller = _service.GetById(id);
@@ -34,18 +34,36 @@ namespace Shipping.API.Controllers
             return Ok(seller);
         }
 
-       
+        [HttpGet("{UserId}")]
+        public IActionResult GetByUserId(string UserId)
+        {
+            var seller = _service.GetByUserId(UserId);
+
+            if (seller == null)
+                return NotFound();
+
+            return Ok(seller);
+        }
+
+        [HttpGet]
+        public ActionResult<List<SellerDTO>> GetAllWithoutPagination()
+        {
+            return Ok(_service.GetAllWithoutPagination());
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Add(AddSellerDTO dto)
         {
             var result = await _service.AddAsync(dto);
 
-            if (!result)
-                return BadRequest("Failed to create seller.");
+            if (!result.Succeeded)
+                return BadRequest(new { message = "Failed to create seller." }); // <-- مهم
 
-            return Ok("Seller created successfully.");
+            return Ok(new { message = "Seller created successfully." }); // <-- مهم
         }
+
+
 
 
         [HttpPut("Update")]
@@ -65,8 +83,17 @@ namespace Shipping.API.Controllers
         }
 
 
-        
 
+        [HttpGet("getId/{UserId}")]
+        public IActionResult GetSellerId(string UserId)
+        {
+            var seller = _service.GetByUserId(UserId);
+
+            if (seller == null)
+                return NotFound();
+
+            return Ok(seller.Id);
+        }
 
     }
 }

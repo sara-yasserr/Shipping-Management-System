@@ -41,6 +41,7 @@ namespace Shipping.BusinessLogicLayer.Services
         public PagedResponse<ReadGovernorateDto> GetAll(PaginationDTO pagination)
         {
             var governorates = _unitOfWork.GovernorateRepo.GetAll();
+            //var governorates = _unitOfWork.GovernorateRepo.GetAll().Where(g => g.IsDeleted == false);
             var count = governorates.Count();
             var pagedGovernorates = governorates
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
@@ -58,6 +59,11 @@ namespace Shipping.BusinessLogicLayer.Services
             return result;
         }
 
+        public List<ReadGovernorateDto> GetAll()
+        {
+            var governorates = _unitOfWork.GovernorateRepo.GetAll();
+           return _mapper.Map<List<ReadGovernorateDto>>(governorates);
+        }
         public ReadGovernorateDto GetById(int id)
         {
             var governorate = _unitOfWork.GovernorateRepo.GetById(id);

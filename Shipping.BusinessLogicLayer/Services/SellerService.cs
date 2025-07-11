@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Shipping.BusinessLogicLayer.DTOs;
+using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
 using Shipping.BusinessLogicLayer.DTOs.Seller;
 using Shipping.BusinessLogicLayer.Helper;
 using Shipping.DataAccessLayer.Models;
@@ -33,6 +34,8 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var sellers = _unitOfWork.SellerRepo.GetAll()
                             .Where(s => s.User != null && s.User.IsDeleted != true);
+
+            //var sellers = _unitOfWork.SellerRepo.GetAll().Where(s => s.User != null);
             var count = sellers.Count();
             var pagedSellers = sellers
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
@@ -51,7 +54,15 @@ namespace Shipping.BusinessLogicLayer.Services
             return result;
         }
 
-      
+        public List<SellerDTO> GetAllWithoutPagination()
+        {
+            var sellers = _unitOfWork.SellerRepo.GetAll()
+                            .Where(s => s.User != null && s.User.IsDeleted != true)
+                            .ToList();
+            return _mapper.Map<List<SellerDTO>>(sellers);
+        }
+
+
 
         public SellerDTO? GetById(int id)
         {
@@ -64,9 +75,14 @@ namespace Shipping.BusinessLogicLayer.Services
         }
 
 
-        public async Task<bool> AddAsync(AddSellerDTO dto)
+        public async Task<IdentityResult> AddAsync(AddSellerDTO dto)
         {
-            
+            if (await _userManager.FindByNameAsync(dto.UserName) != null)
+                return IdentityResult.Failed(new IdentityError { Description = "Username already exists." });
+
+            if (await _userManager.FindByEmailAsync(dto.Email) != null)
+                return IdentityResult.Failed(new IdentityError { Description = "Email already exists." });
+
             var user = new ApplicationUser
             {
                 UserName = dto.UserName,
@@ -79,13 +95,7 @@ namespace Shipping.BusinessLogicLayer.Services
 
             var result = await _userManager.CreateAsync(user, dto.Password);
             if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                {
-                    Console.WriteLine(error.Description); 
-                }
-                return false;
-            }
+                return result;
 
             await _userManager.AddToRoleAsync(user, "Seller");
 
@@ -93,10 +103,11 @@ namespace Shipping.BusinessLogicLayer.Services
             seller.UserId = user.Id;
 
             _unitOfWork.SellerRepo.Add(seller);
-           await _unitOfWork.SaveAsync();    
+            await _unitOfWork.SaveAsync();
 
-            return true;
+            return IdentityResult.Success;
         }
+
 
 
         public async Task<bool> UpdateAsync(UpdateSellerDTO dto)
@@ -153,10 +164,11 @@ namespace Shipping.BusinessLogicLayer.Services
         //    return true;
         //}
 
-        
-
-     
-
+        public SellerDTO GetByUserId(string UserId)
+        {
+            var seller = _unitOfWork.SellerRepo.GetAll().FirstOrDefault(s => s.UserId == UserId);
+            return _mapper.Map<SellerDTO>(seller);
+        }
 
 
     }

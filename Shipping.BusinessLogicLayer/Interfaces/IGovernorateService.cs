@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shipping.BusinessLogicLayer.DTOs;
+using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
 using Shipping.BusinessLogicLayer.DTOs.GovernorateDTOs;
 using Shipping.BusinessLogicLayer.Helper;
+using Shipping.DataAccessLayer.Models;
 
 namespace Shipping.BusinessLogicLayer.Interfaces
 {
@@ -13,6 +15,7 @@ namespace Shipping.BusinessLogicLayer.Interfaces
     {
         bool AddGovernorate(AddGovernorateDto dto);
         PagedResponse<ReadGovernorateDto> GetAll(PaginationDTO pagination);
+        public List<ReadGovernorateDto> GetAll();
         ReadGovernorateDto GetById(int id);
         bool EditGovernorate(int id, AddGovernorateDto dto);
         bool SoftDeleteGovernorate(int id);

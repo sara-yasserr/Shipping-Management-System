@@ -12,8 +12,6 @@ namespace Shipping.BusinessLogicLayer.DTOs.Seller
         public string Address { get; set; }
         public decimal CancelledOrderPercentage { get; set; }
         public int CityId { get; set; }
-
-
         public string UserName { get; set; }
 
         public string Email { get; set; }
