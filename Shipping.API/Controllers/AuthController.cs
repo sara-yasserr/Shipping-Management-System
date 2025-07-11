@@ -70,6 +70,17 @@ namespace Shipping.API.Controllers
                 return BadRequest(result.Errors);
             }
 
+            var seller = new Seller
+            {
+                UserId = user.Id,
+                Address = dto.Address,
+                StoreName = dto.StoreName,
+                CityId = (int)dto.cityId,
+                CancelledOrderPercentage =  0.5m
+            };
+
+            unitOfWork.SellerRepo.Add(seller);
+            unitOfWork.Save();
 
             var defaultRole = "Seller";
             if (!await _roleManager.RoleExistsAsync(defaultRole))
@@ -77,6 +88,7 @@ namespace Shipping.API.Controllers
                 await _roleManager.CreateAsync(new IdentityRole(defaultRole));
             }
             await unitOfWork.UserManager.AddToRoleAsync(user, defaultRole);
+            
 
             return Ok(new { message = "User Created Successfully", user.Id });
         }
