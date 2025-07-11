@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Shipping.BusinessLogicLayer.DTOs;
+using Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs;
 using Shipping.BusinessLogicLayer.DTOs.Seller;
 using Shipping.BusinessLogicLayer.Helper;
 using Shipping.DataAccessLayer.Models;
@@ -33,6 +34,8 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var sellers = _unitOfWork.SellerRepo.GetAll()
                             .Where(s => s.User != null && s.User.IsDeleted != true);
+
+            //var sellers = _unitOfWork.SellerRepo.GetAll().Where(s => s.User != null);
             var count = sellers.Count();
             var pagedSellers = sellers
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
@@ -161,10 +164,11 @@ namespace Shipping.BusinessLogicLayer.Services
         //    return true;
         //}
 
-        
-
-     
-
+        public SellerDTO GetByUserId(string UserId)
+        {
+            var seller = _unitOfWork.SellerRepo.GetAll().FirstOrDefault(s => s.UserId == UserId);
+            return _mapper.Map<SellerDTO>(seller);
+        }
 
 
     }

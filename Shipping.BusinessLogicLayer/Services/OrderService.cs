@@ -35,6 +35,7 @@ namespace Shipping.BusinessLogicLayer.Services
             if (pagination.Status.HasValue)
                 orders = orders.Where(o => (int)o.Status == pagination.Status.Value);
 
+            //var orders = _unitOfWork.OrderRepo.GetAll();
             var count = orders.Count();
 
             var pagedOrders = orders
@@ -308,7 +309,7 @@ namespace Shipping.BusinessLogicLayer.Services
             _unitOfWork.OrderRepo.Update(order);
             await _unitOfWork.SaveAsync();
         }
-
+        //Change to user UserID
         //Get Orders By Delivery Agent Id
         public async Task<PagedResponse<ReadOrderDTO>> GetOrdersByDeliveryAgentIdAsync(int deliveryAgentId , PaginationDTO pagination)
         {
@@ -330,6 +331,7 @@ namespace Shipping.BusinessLogicLayer.Services
             };
             return result;
         }
+        //Change to user UserID
         //Get Orders By Seller Id
         public async Task<PagedResponse<ReadOrderDTO>> GetOrdersBySellerIdAsync(int sellerId , PaginationDTO pagination)
         {

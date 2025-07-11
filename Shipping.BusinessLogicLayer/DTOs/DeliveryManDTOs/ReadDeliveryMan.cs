@@ -16,6 +16,7 @@ namespace Shipping.BusinessLogicLayer.DTOs.DeliveryManDTOs
 
         public int? ActiveOrdersCount { get; set; }
         public bool IsDeleted {get; set;}
+        public string UserId { get; set; }
      
     }
 } 

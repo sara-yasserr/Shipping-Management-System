@@ -46,7 +46,7 @@ namespace Shipping.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
             if (id <= 0)
@@ -66,6 +66,16 @@ namespace Shipping.API.Controllers
             }
         }
 
+        [HttpGet("{UserId}")]
+        public IActionResult GetByUserId(string UserId)
+        {
+            var delivery = _service.GetByUserId(UserId);
+
+            if (delivery == null)
+                return NotFound();
+
+            return Ok(delivery);
+        }
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddDeliveryMan dto)
         {
@@ -193,6 +203,17 @@ namespace Shipping.API.Controllers
                 ex = ex.InnerException;
             }
             return string.Join(" | ", messages);
+        }
+
+        [HttpGet("getId/{UserId}")]
+        public IActionResult GetSellerId(string UserId)
+        {
+            var delivery = _service.GetByUserId(UserId);
+
+            if (delivery == null)
+                return NotFound();
+
+            return Ok(delivery.Id);
         }
     }
 } 

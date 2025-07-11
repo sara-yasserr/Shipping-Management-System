@@ -52,7 +52,7 @@ namespace Shipping.BusinessLogicLayer.Helper
                 dest.FullName = src.User.FirstName + " " + src.User.LastName;
                 dest.Email = src.User.Email;
                 dest.PhoneNumber = src.User.PhoneNumber;
-
+                dest.UserId = src.UserId;
             }).ReverseMap();
 
 
@@ -158,8 +158,8 @@ namespace Shipping.BusinessLogicLayer.Helper
                    src.Cities != null ? src.Cities.Select(c => c.Id).ToList() : null))
                .ForMember(dest => dest.ActiveOrdersCount, opt => opt.MapFrom(src =>
                    src.Orders != null ? src.Orders.Count(o => o.IsActive) : 0))
-               .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.User.IsDeleted));
-
+               .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.User.IsDeleted))
+               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
             CreateMap<AddDeliveryMan, DeliveryAgent>().AfterMap((src, dest) =>
             {
                 dest.BranchId = src.BranchId;
