@@ -103,27 +103,6 @@ namespace Shipping.API
             });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             builder.Services.AddAutoMapper(typeof(MappConfig));
 
             builder.Services.AddCors(options =>
