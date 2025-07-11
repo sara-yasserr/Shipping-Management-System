@@ -41,13 +41,12 @@ namespace Shipping.API.Controllers
         {
             try
             {
-                // استخرج UserId من الـ Claims
+                
                 var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId" || c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
                     return Unauthorized();
                 string userId = userIdClaim.Value;
 
-                // هات الـ DeliveryAgent بناءً على UserId
                 var deliveryAgent = _dashboardService.GetDeliveryAgentByUserId(userId);
                 if (deliveryAgent == null)
                     return NotFound("Delivery agent not found.");

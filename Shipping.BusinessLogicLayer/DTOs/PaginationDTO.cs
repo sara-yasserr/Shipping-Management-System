@@ -10,5 +10,6 @@ namespace Shipping.BusinessLogicLayer.DTOs
     {
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+        public int? Status { get; set; } // لدعم الفلترة بالـ status
     }
 }
