@@ -122,5 +122,57 @@ namespace Shipping.BusinessLogicLayer.Services
 
             return dashboardData;
         }
+
+        public OrderStatusCountsDTO GetOrderStatusCountsForDeliveryAgent(int deliveryAgentId)
+        {
+            var orders = _unitOfWork.OrderRepo.GetAll()
+                .Where(o => !o.IsDeleted && o.DeliveryAgentId == deliveryAgentId)
+                .ToList();
+
+            return new OrderStatusCountsDTO
+            {
+                New = orders.Count(o => o.Status == OrderStatus.Pending),
+                Pending = orders.Count(o => o.Status == OrderStatus.AcceptedByDeliveryCompany),
+                DeliveredToAgent = orders.Count(o => o.Status == OrderStatus.DeliveredToDeliveryMan),
+                Delivered = orders.Count(o => o.Status == OrderStatus.Delivered),
+                CancelledByReceiver = orders.Count(o => o.Status == OrderStatus.CanceledByCustomer),
+                PartiallyDelivered = orders.Count(o => o.Status == OrderStatus.PartiallyDelivered),
+                Postponed = orders.Count(o => o.Status == OrderStatus.Postponed),
+                NotReachable = orders.Count(o => o.Status == OrderStatus.CanNotBeReached),
+                RefusedWithPartialPayment = orders.Count(o => o.Status == OrderStatus.RejectWithPartiallyPaid),
+                RefusedWithoutPayment = orders.Count(o => o.Status == OrderStatus.RejectWithoutPayment)
+            };
+        }
+
+        public OrderStatusCountsDTO GetOrderStatusCountsForSeller(int sellerId)
+        {
+            var orders = _unitOfWork.OrderRepo.GetAll()
+                .Where(o => !o.IsDeleted && o.SellerId == sellerId)
+                .ToList();
+
+            return new OrderStatusCountsDTO
+            {
+                New = orders.Count(o => o.Status == OrderStatus.Pending),
+                Pending = orders.Count(o => o.Status == OrderStatus.AcceptedByDeliveryCompany),
+                DeliveredToAgent = orders.Count(o => o.Status == OrderStatus.DeliveredToDeliveryMan),
+                Delivered = orders.Count(o => o.Status == OrderStatus.Delivered),
+                CancelledByReceiver = orders.Count(o => o.Status == OrderStatus.CanceledByCustomer),
+                PartiallyDelivered = orders.Count(o => o.Status == OrderStatus.PartiallyDelivered),
+                Postponed = orders.Count(o => o.Status == OrderStatus.Postponed),
+                NotReachable = orders.Count(o => o.Status == OrderStatus.CanNotBeReached),
+                RefusedWithPartialPayment = orders.Count(o => o.Status == OrderStatus.RejectWithPartiallyPaid),
+                RefusedWithoutPayment = orders.Count(o => o.Status == OrderStatus.RejectWithoutPayment)
+            };
+        }
+
+        public Shipping.DataAccessLayer.Models.DeliveryAgent? GetDeliveryAgentByUserId(string userId)
+        {
+            return _unitOfWork.DeliveryManRepo.GetAll().FirstOrDefault(d => d.UserId == userId);
+        }
+
+        public Shipping.DataAccessLayer.Models.Seller? GetSellerByUserId(string userId)
+        {
+            return _unitOfWork.SellerRepo.GetAll().FirstOrDefault(s => s.UserId == userId);
+        }
     }
 }
