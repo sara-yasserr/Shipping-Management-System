@@ -33,6 +33,8 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var sellers = _unitOfWork.SellerRepo.GetAll()
                             .Where(s => s.User != null && s.User.IsDeleted != true);
+
+            //var sellers = _unitOfWork.SellerRepo.GetAll().Where(s => s.User != null);
             var count = sellers.Count();
             var pagedSellers = sellers
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
