@@ -26,11 +26,22 @@ namespace Shipping.API.Controllers
             return Ok(_service.GetAll(pagination));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public ActionResult<SellerDTO> GetById(int id)
         {
             var seller = _service.GetById(id);
             if (seller == null) return NotFound();
+            return Ok(seller);
+        }
+
+        [HttpGet("{UserId}")]
+        public IActionResult GetByUserId(string UserId)
+        {
+            var seller = _service.GetByUserId(UserId);
+
+            if (seller == null)
+                return NotFound();
+
             return Ok(seller);
         }
 
@@ -72,8 +83,17 @@ namespace Shipping.API.Controllers
         }
 
 
-        
 
+        [HttpGet("getId/{UserId}")]
+        public IActionResult GetSellerId(string UserId)
+        {
+            var seller = _service.GetByUserId(UserId);
+
+            if (seller == null)
+                return NotFound();
+
+            return Ok(seller.Id);
+        }
 
     }
 }
