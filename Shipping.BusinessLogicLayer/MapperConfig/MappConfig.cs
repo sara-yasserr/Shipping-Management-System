@@ -115,9 +115,7 @@ namespace Shipping.BusinessLogicLayer.Helper
             #endregion
 
             #region General Settings
-            CreateMap<GeneralSetting, ReadGeneralSettingsDTO>()
-            .ForMember(dest => dest.Employee, opt => opt.MapFrom(src => src.Employee.User.FirstName + " " + src.Employee.User.LastName)).ReverseMap();
-
+            CreateMap<GeneralSetting, ReadGeneralSettingsDTO>().ReverseMap();
             CreateMap<UpdateGeneralSettingsDTO, GeneralSetting>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => 1))
             .ForMember(dest => dest.ModifiedAt, opt => opt.MapFrom(_ => DateTime.Now))
