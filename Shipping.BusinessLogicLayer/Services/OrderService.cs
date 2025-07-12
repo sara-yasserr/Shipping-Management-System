@@ -30,7 +30,13 @@ namespace Shipping.BusinessLogicLayer.Services
         public async Task<PagedResponse<ReadOrderDTO>> GetAllOrdersAsync(PaginationDTO pagination)
         {
             var orders = _unitOfWork.OrderRepo.GetAll().Where(o=> o.IsDeleted == false);
-            //var orders = _unitOfWork.OrderRepo.GetAll();
+
+
+            // فلترة بالـ status لو موجود
+            if (pagination.Status.HasValue)
+                orders = orders.Where(o => (int)o.Status == pagination.Status.Value);
+
+
             var count = orders.Count();
 
             var pagedOrders = orders
