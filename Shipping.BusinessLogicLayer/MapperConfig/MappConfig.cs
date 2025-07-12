@@ -53,6 +53,7 @@ namespace Shipping.BusinessLogicLayer.Helper
                 dest.Email = src.User.Email;
                 dest.PhoneNumber = src.User.PhoneNumber;
                 dest.UserId = src.UserId;
+                dest.IsDeleted = src.User.IsDeleted;
             }).ReverseMap();
 
 
@@ -98,14 +99,15 @@ namespace Shipping.BusinessLogicLayer.Helper
             CreateMap<AddEmployeeDTO, Employee>().AfterMap((src, dest) =>
             {
                 dest.BranchId = src.BranchId;
-
+                
                 dest.User = new ApplicationUser
                 {
                     UserName = src.UserName,
                     Email = src.Email,
                     FirstName = src.FirstName,
                     LastName = src.LastName,
-                    PhoneNumber = src.PhoneNumber
+                    PhoneNumber = src.PhoneNumber,
+                    IsDeleted = src.IsDeleted
                 };
             });
             #endregion

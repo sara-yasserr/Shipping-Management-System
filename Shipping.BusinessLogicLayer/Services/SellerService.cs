@@ -33,7 +33,7 @@ namespace Shipping.BusinessLogicLayer.Services
         public PagedResponse<SellerDTO> GetAll(PaginationDTO pagination)
         {
             var sellers = _unitOfWork.SellerRepo.GetAll()
-                            .Where(s => s.User != null && s.User.IsDeleted != true);
+                            .Where(s => s.User != null);
 
             //var sellers = _unitOfWork.SellerRepo.GetAll().Where(s => s.User != null);
             var count = sellers.Count();
@@ -68,7 +68,7 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var seller = _unitOfWork.SellerRepo.GetById(id);
 
-            if (seller == null || seller.User == null || seller.User.IsDeleted == true)
+            if (seller == null || seller.User == null )
                 return null;
 
             return _mapper.Map<SellerDTO>(seller);
@@ -110,21 +110,32 @@ namespace Shipping.BusinessLogicLayer.Services
 
 
 
-        public async Task<bool> UpdateAsync(UpdateSellerDTO dto)
+        public async Task<bool> UpdateAsync(int id,UpdateSellerDTO dto)
         {
-            var seller = _unitOfWork.SellerRepo.GetById(dto.Id);
+            var seller = _unitOfWork.SellerRepo.GetById(id);
 
-            if (seller == null || seller.User == null || seller.User.IsDeleted == true)
-                return false;
-
+            //if (seller == null || seller.User == null )
+            //    return false;
+            var passHashed = seller.User.PasswordHash;
             var user = seller.User;
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
             user.PhoneNumber = dto.PhoneNumber;
-            
+            user.IsDeleted = dto.IsDeleted;
             await _userManager.UpdateAsync(user);
-
+            
             _mapper.Map(dto, seller);
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+                if (!result.Succeeded)
+                    throw new Exception("Failed to update password: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+            else
+            {
+                seller.User.PasswordHash = passHashed;
+            }
             _unitOfWork.SellerRepo.Update(seller);
             await _unitOfWork.SaveAsync();
 

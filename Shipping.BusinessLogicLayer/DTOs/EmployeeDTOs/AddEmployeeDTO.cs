@@ -18,8 +18,8 @@ namespace Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs
         [EmailAddress(ErrorMessage = "Invalid email format")]
         [StringLength(100, ErrorMessage = "Email cannot exceed 100 characters")]
         public string? Email { get; set; }
-        [Required(ErrorMessage = "Password is required")]
-        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters")]
+        
+        //[StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters")]
         public string? Password { get; set; }
         [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
         [Display(Name = "First Name")]
@@ -32,5 +32,6 @@ namespace Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs
         public string? PhoneNumber { get; set; }
         [Required(ErrorMessage = "Role is required")]
         public string? SpecificRole { get; set; } = "Admin";
+        public bool? IsDeleted { get; set; } = false;
     }
 }

@@ -282,6 +282,11 @@ namespace Shipping.BusinessLogicLayer.Services
                 throw new Exception("Order not found");
             }
             order.Status = newStatus;
+            if(newStatus == OrderStatus.Pending)
+            {
+                order.DeliveryAgentId = null;
+                order.DeliveryAgent = null;
+            }
             _unitOfWork.OrderRepo.Update(order);
             await _unitOfWork.SaveAsync();
         }
