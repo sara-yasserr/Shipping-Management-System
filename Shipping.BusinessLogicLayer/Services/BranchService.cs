@@ -25,6 +25,7 @@ namespace Shipping.BusinessLogicLayer.Services
         public PagedResponse<ReadBranch> GetAllBranch(PaginationDTO pagination)
         {
             var branches = _unitOfWork.BranchRepo.GetAll().Where(b => b.IsDeleted == false);
+            //var branches = _unitOfWork.BranchRepo.GetAll();
             var count = branches.Count();
             var pagedBranches = branches.Skip((pagination.PageNumber - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)

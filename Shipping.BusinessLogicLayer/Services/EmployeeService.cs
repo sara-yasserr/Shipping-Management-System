@@ -29,6 +29,8 @@ namespace Shipping.BusinessLogicLayer.Services
         public PagedResponse<ReadEmployeeDTO> GetAllEmployees(PaginationDTO pagination)
         {
             var employees = _unitOfWork.EmployeeRepo.GetAll().Where(e => e.User.IsDeleted == false);
+            //var employees = _unitOfWork.EmployeeRepo.GetAll();
+            
             var Count = employees.Count();
             var pagedEmployees = employees
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)

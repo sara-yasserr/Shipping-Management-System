@@ -221,5 +221,11 @@ namespace Shipping.BusinessLogicLayer.Services
                 throw;
             }
         }
+
+        public ReadDeliveryMan GetByUserId(string UserId)
+        {
+           var deliveryAgent= _unitOfWork.DeliveryManRepo.GetAll().FirstOrDefault(s => s.UserId == UserId);
+            return _mapper.Map<ReadDeliveryMan>(deliveryAgent);
+        }
     }
 } 

@@ -66,6 +66,16 @@ namespace Shipping.API.Controllers
             return Ok();
         }
 
+        [HttpDelete("Soft/{id}")]
+        public IActionResult SoftDelete(int id)
+        {
+            var city = _cityService.GetById(id);
+            if (city == null) return NotFound();
+            _cityService.SoftDelete(id);
+            return NoContent();
+        }
+
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

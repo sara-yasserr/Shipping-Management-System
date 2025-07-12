@@ -31,9 +31,11 @@ namespace Shipping.BusinessLogicLayer.Services
         {
             var orders = _unitOfWork.OrderRepo.GetAll().Where(o=> o.IsDeleted == false);
 
+
             // فلترة بالـ status لو موجود
             if (pagination.Status.HasValue)
                 orders = orders.Where(o => (int)o.Status == pagination.Status.Value);
+
 
             var count = orders.Count();
 
@@ -308,7 +310,7 @@ namespace Shipping.BusinessLogicLayer.Services
             _unitOfWork.OrderRepo.Update(order);
             await _unitOfWork.SaveAsync();
         }
-
+        //Change to user UserID
         //Get Orders By Delivery Agent Id
         public async Task<PagedResponse<ReadOrderDTO>> GetOrdersByDeliveryAgentIdAsync(int deliveryAgentId , PaginationDTO pagination)
         {
@@ -330,6 +332,7 @@ namespace Shipping.BusinessLogicLayer.Services
             };
             return result;
         }
+        //Change to user UserID
         //Get Orders By Seller Id
         public async Task<PagedResponse<ReadOrderDTO>> GetOrdersBySellerIdAsync(int sellerId , PaginationDTO pagination)
         {
