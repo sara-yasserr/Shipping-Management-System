@@ -13,5 +13,7 @@ namespace Shipping.BusinessLogicLayer.DTOs.City
         public decimal NormalPrice { get; set; }
         public decimal PickupPrice { get; set; }
         public string GovernorateName { get; set; }
+        public bool? IsDeleted { get; set; }
+
     }
 }
