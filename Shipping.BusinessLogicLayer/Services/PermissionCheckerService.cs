@@ -55,5 +55,49 @@ namespace Shipping.BusinessLogicLayer.Services
                 _ => false
             };
         }
+
+        public async Task<Dictionary<string, List<string>>> GetUserPermissions(ApplicationUser user)
+        {
+            var permissionsMap = new Dictionary<string, List<string>>();
+
+            var roles = await _unitOfWork.UserManager.GetRolesAsync(user);
+
+            // إذا كان الموظف فقط، نعطيه صلاحيات كاملة لكل الأقسام
+            if (roles.Count == 1 && roles.Contains("Employee"))
+            {
+                foreach (Department dept in Enum.GetValues(typeof(Department)))
+                {
+                    permissionsMap[dept.ToString()] = new List<string> { "Add", "Edit", "Delete", "View" };
+                }
+                return permissionsMap;
+            }
+
+            foreach (Department dept in Enum.GetValues(typeof(Department)))
+            {
+                var permissionList = new List<string>();
+
+                foreach (var role in roles.Where(r => r != "Employee"))
+                {
+                    var permission = await _unitOfWork.RolePermissionsRepo.GetByRoleAndDepartment(role, dept);
+                    if (permission == null)
+                        continue;
+
+                    if (permission.Add && !permissionList.Contains("Add"))
+                        permissionList.Add("Add");
+                    if (permission.Edit && !permissionList.Contains("Edit"))
+                        permissionList.Add("Edit");
+                    if (permission.Delete && !permissionList.Contains("Delete"))
+                        permissionList.Add("Delete");
+                    if (permission.View && !permissionList.Contains("View"))
+                        permissionList.Add("View");
+                }
+
+                if (permissionList.Count > 0)
+                    permissionsMap[dept.ToString()] = permissionList;
+            }
+
+            return permissionsMap;
+        }
+
     }
 }

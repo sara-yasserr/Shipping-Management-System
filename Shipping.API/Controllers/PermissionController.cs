@@ -7,6 +7,7 @@ using Shipping.BusinessLogicLayer.DTOs.PermissionDTOs;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.Enum;
 using Shipping.DataAccessLayer.Models;
+using Shipping.DataAccessLayer.UnitOfWorks;
 
 namespace Shipping.API.Controllers
 {
@@ -14,13 +15,17 @@ namespace Shipping.API.Controllers
     [ApiController]
     public class PermissionController : ControllerBase
     {
+        private IPermissionCheckerService _permissionCheckerService;
         private readonly IPermissionService _permissionService;
         IMapper mapper;
+        UnitOfWork unitOfWork;
 
-        public PermissionController(IPermissionService permissionService, IMapper mapper)
+        public PermissionController( UnitOfWork unitOfWork, IPermissionService permissionService, IMapper mapper, IPermissionCheckerService permissionCheckerService)
         {
             _permissionService = permissionService;
             this.mapper = mapper;
+            this._permissionCheckerService = permissionCheckerService;
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet("{roleName}/{department}")]
@@ -40,6 +45,22 @@ namespace Shipping.API.Controllers
                 return NotFound();
 
             return Ok(permissions);
+        }
+
+        [HttpGet("secure/{department}")]
+        public async Task<IActionResult> SecureCheck(Department department)
+        {
+            var user = await unitOfWork._userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var hasPermission = await _permissionCheckerService.HasPermission(user, department, Permissions.View);
+
+            if (!hasPermission)
+                return Forbid(); // or return Unauthorized();
+
+            // Proceed with logic
+            return Ok("You have permission to view");
         }
 
 
