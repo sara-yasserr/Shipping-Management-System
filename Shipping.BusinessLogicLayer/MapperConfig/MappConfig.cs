@@ -283,7 +283,11 @@ namespace Shipping.BusinessLogicLayer.Helper
             CreateMap<UpdateOrderDTO, Order>()
             .ForMember(dest => dest.Products, opt => opt.Ignore())
             .ForMember(dest => dest.DeliveryAgentId, opt => opt.Ignore())
+
+            .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.CityId))
+            .ForMember(dest => dest.BranchId, opt => opt.MapFrom(src => src.BranchId))
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
 
 
 

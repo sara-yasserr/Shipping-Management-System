@@ -72,6 +72,7 @@ namespace Shipping.BusinessLogicLayer.Services
             mapped.StatusId = (int)order.Status;
             mapped.ShippingTypeID = (int)order.ShippingType;
             mapped.PaymentTypeId = (int)order.PaymentType;
+            mapped.OrderTypeId =   (int) order.OrderType;
             return mapped;
         }
 
@@ -112,6 +113,30 @@ namespace Shipping.BusinessLogicLayer.Services
 
             order.IsPickup = updateOrderDTO.IsPickup ?? order.IsPickup;
             order.IsActive = updateOrderDTO.IsActive ?? order.IsActive;
+
+
+            // Update City
+            if (updateOrderDTO.CityId != 0)
+            {
+                var city = _unitOfWork.CityRepo.GetById(updateOrderDTO.CityId);
+                if (city == null)
+                    throw new Exception("City not found");
+
+                order.CityId = updateOrderDTO.CityId;
+            }
+
+            // Update Branch
+            if (updateOrderDTO.BranchId != 0)
+            {
+                var branch = _unitOfWork.BranchRepo.GetById(updateOrderDTO.BranchId);
+                if (branch == null)
+                    throw new Exception("Branch not found");
+
+                order.BranchId = updateOrderDTO.BranchId;
+            }
+
+
+
             if (updateOrderDTO.DeliveryManId != 0)
             {
                 var deliveryAgentExists =  _unitOfWork.DeliveryManRepo.GetAll()
