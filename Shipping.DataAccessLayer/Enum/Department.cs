@@ -15,7 +15,6 @@ namespace Shipping.DataAccessLayer.Enum
         Governorates,
         Cities,
         Orders,
-        OrdersReports,
         GeneralSetting
     }
 }

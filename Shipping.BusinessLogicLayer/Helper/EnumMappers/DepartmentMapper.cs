@@ -18,7 +18,6 @@ namespace Shipping.BusinessLogicLayer.Helper.EnumMappers
             { Department.Governorates, "Governorates" },
             { Department.Cities, "Cities" },
             { Department.Orders, "Orders" },
-            { Department.OrdersReports, "Orders Reports" },
             { Department.GeneralSetting, "General Settings" }
         };
 

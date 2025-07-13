@@ -1,13 +1,16 @@
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shipping.API.Middleware;
 using Shipping.BusinessLogicLayer.Helper;
+using Shipping.BusinessLogicLayer.Helper.RolePermissionHelpers;
 using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.BusinessLogicLayer.Services;
+using Shipping.DataAccessLayer.Enum;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
 
@@ -114,6 +117,43 @@ namespace Shipping.API
                            .AllowAnyHeader();
                 });
             });
+
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin.Permissions.View", policy =>
+     policy.Requirements.Add(new DepartmentPermissionRequirement(PermissionType.View)));
+                options.AddPolicy("Permissions.View.All", policy =>
+     policy.RequireRole("Admin"));
+                options.AddPolicy("Admin.AllPermissions.Edit", policy =>
+    policy.RequireRole("Admin"));
+
+                options.AddPolicy("Admin.Permissions.Edit", policy =>
+                    policy.Requirements.Add(new DepartmentPermissionRequirement(PermissionType.Edit)));
+
+                options.AddPolicy("Admin.Permissions.Add", policy =>
+                    policy.Requirements.Add(new DepartmentPermissionRequirement(PermissionType.Add)));
+
+
+                // Department-specific policies
+                foreach (var department in Enum.GetValues<Department>())
+                {
+                    options.AddPolicy($"{department}.View",
+                        policy => policy.Requirements.Add(new DepartmentPermissionRequirement(department, PermissionType.View)));
+
+                    options.AddPolicy($"{department}.Add",
+                        policy => policy.Requirements.Add(new DepartmentPermissionRequirement(department, PermissionType.Add)));
+
+                    options.AddPolicy($"{department}.Edit",
+                        policy => policy.Requirements.Add(new DepartmentPermissionRequirement(department, PermissionType.Edit)));
+
+                    options.AddPolicy($"{department}.Delete",
+                        policy => policy.Requirements.Add(new DepartmentPermissionRequirement(department, PermissionType.Delete)));
+                }
+            });
+            builder.Services.AddScoped<IPermissionService, PermissionService>();
+            builder.Services.AddScoped<IAuthorizationHandler, DepartmentPermissionHandler>();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<JwtHelper>();
             builder.Services.AddScoped<UnitOfWork>();
             builder.Services.AddScoped<CityService>();
