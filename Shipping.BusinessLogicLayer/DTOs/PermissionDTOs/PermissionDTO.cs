@@ -9,8 +9,9 @@ namespace Shipping.BusinessLogicLayer.DTOs.PermissionDTOs
 {
     public class PermissionDTO
     {
+        public string RoleName { get; set; }
         public Department Department { get; set; }
-        public string DepartmentName { get; set; }
+        public string? DepartmentName { get; set; }
         public bool View { get; set; } = true;
         public bool Add { get; set; } = true;
         public bool Edit { get; set; } = true;

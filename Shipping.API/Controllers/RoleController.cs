@@ -38,7 +38,7 @@ namespace Shipping.API.Controllers
             var role= await roleService.GetRoleByNameAsync(name);
            return Ok(role);
         }
-        [HttpPost]
+        [HttpPost("{roleName:alpha}")]
         public async Task<IActionResult> Post(string roleName)
         {
             if (!ModelState.IsValid)
@@ -48,13 +48,13 @@ namespace Shipping.API.Controllers
             var result = await roleService.CreateRoleAsync(roleName);
             return Ok(result);
         }
-        [HttpPut]
+        [HttpPut("{oldRoleName}/{newRoleName}")]
         public IActionResult Put(string oldRoleName, string newRoleName)
         {
            return Ok(roleService.UpdateRole(oldRoleName,newRoleName));
         }
 
-        [HttpDelete]
+        [HttpDelete("{roleName}")]
         public async Task<IActionResult> Delete(string roleName) 
         {
             var result = await roleService.DeleteRoleAsync(roleName);
