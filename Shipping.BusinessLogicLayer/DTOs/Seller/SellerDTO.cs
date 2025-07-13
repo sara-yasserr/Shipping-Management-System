@@ -24,7 +24,7 @@ namespace Shipping.BusinessLogicLayer.DTOs.Seller
 
         public string UserId { get; set; }
        
-       
+       public bool? IsDeleted { get; set; }
         
     }
 }

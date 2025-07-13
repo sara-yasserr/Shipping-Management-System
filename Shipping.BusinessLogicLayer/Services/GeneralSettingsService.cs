@@ -22,14 +22,28 @@ namespace Shipping.BusinessLogicLayer.Services
         }
         public async Task<ReadGeneralSettingsDTO> GetGeneralSettingsAsync()
         {
-            var settings =  _unitOfWork.GeneralSettingsRepo.GetGeneralSettings();
+            var settings = _unitOfWork.GeneralSettingsRepo.GetGeneralSettings();
+
             if (settings == null)
-            {
                 throw new Exception("General settings not found.");
-            }
-            
-            return _mapper.Map<ReadGeneralSettingsDTO>(settings);;
+
+            string empName = settings.Employee?.User?.FirstName + " " + settings.Employee?.User?.LastName;
+
+            var result = new ReadGeneralSettingsDTO(
+                Id: settings.Id,
+                DefaultWeight: settings.DefaultWeight,
+                ExtraPriceKg: settings.ExtraPriceKg,
+                ExtraPriceVillage: settings.ExtraPriceVillage,
+                Fast: settings.Fast,
+                Express: settings.Express,
+                ModifiedAt: settings.ModifiedAt,
+                Employee: empName
+            );
+
+            return result;
         }
+
+
 
         public async Task UpdateGeneralSettingsAsync(UpdateGeneralSettingsDTO settings)
         {

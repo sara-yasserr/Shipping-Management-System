@@ -3,6 +3,7 @@ using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.UnitOfWorks;
 using Shipping.DataAccessLayer.Enum;
 using System.Linq;
+using System;
 
 namespace Shipping.BusinessLogicLayer.Services
 {
@@ -129,9 +130,13 @@ namespace Shipping.BusinessLogicLayer.Services
                 .Where(o => !o.IsDeleted && o.DeliveryAgentId == deliveryAgentId)
                 .ToList();
 
+         
+            var last48Hours = DateTime.Now.AddHours(-48);
+            var newOrdersCount = orders.Count(o => o.CreationDate >= last48Hours);
+
             return new OrderStatusCountsDTO
             {
-                New = orders.Count(o => o.Status == OrderStatus.Pending),
+                New = newOrdersCount, 
                 Pending = orders.Count(o => o.Status == OrderStatus.AcceptedByDeliveryCompany),
                 DeliveredToAgent = orders.Count(o => o.Status == OrderStatus.DeliveredToDeliveryMan),
                 Delivered = orders.Count(o => o.Status == OrderStatus.Delivered),

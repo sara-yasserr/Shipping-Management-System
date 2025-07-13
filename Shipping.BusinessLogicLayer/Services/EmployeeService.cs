@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Shipping.BusinessLogicLayer.DTOs;
 using Shipping.BusinessLogicLayer.DTOs.EmployeeDTOs;
 using Shipping.BusinessLogicLayer.Helper;
@@ -28,7 +29,7 @@ namespace Shipping.BusinessLogicLayer.Services
 
         public PagedResponse<ReadEmployeeDTO> GetAllEmployees(PaginationDTO pagination)
         {
-            var employees = _unitOfWork.EmployeeRepo.GetAll().Where(e => e.User.IsDeleted == false);
+            var employees = _unitOfWork.EmployeeRepo.GetAll();
             //var employees = _unitOfWork.EmployeeRepo.GetAll();
             
             var Count = employees.Count();
@@ -88,13 +89,65 @@ namespace Shipping.BusinessLogicLayer.Services
         }
         public async Task UpdateEmployee(AddEmployeeDTO updateEmployeeDTO,Employee employee)
         {
-            _mapper.Map(updateEmployeeDTO, employee);
+            var user = employee.User;
+            var passHashed = employee.User.PasswordHash;
+
+            //_mapper.Map(updateEmployeeDTO, employee);
+            employee.BranchId = updateEmployeeDTO.BranchId;
+            //employee.SpecificRole = updateEmployeeDTO.SpecificRole;
+            if (!string.IsNullOrWhiteSpace(updateEmployeeDTO.UserName) && user.UserName != updateEmployeeDTO.UserName)
+            {
+                var setUserNameResult = await _userManager.SetUserNameAsync(user, updateEmployeeDTO.UserName);
+                if (!setUserNameResult.Succeeded)
+                {
+                    throw new ApplicationException(
+                        $"Username update failure: {string.Join(", ", setUserNameResult.Errors.Select(e => e.Description))}");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(updateEmployeeDTO.Email) && user.Email != updateEmployeeDTO.Email)
+            {
+                var setEmailResult = await _userManager.SetEmailAsync(user, updateEmployeeDTO.Email);
+                if (!setEmailResult.Succeeded)
+                {
+                    throw new ApplicationException(
+                        $"Email update failure: {string.Join(", ", setEmailResult.Errors.Select(e => e.Description))}");
+                }
+            }
+            user.FirstName = updateEmployeeDTO.FirstName;
+            user.LastName = updateEmployeeDTO.LastName;
+            user.PhoneNumber = updateEmployeeDTO.PhoneNumber;
+            user.IsDeleted = updateEmployeeDTO.IsDeleted;
+            
             if (updateEmployeeDTO.SpecificRole != employee.SpecificRole)
             {
                 // remove the old role
-                await _unitOfWork.UserManager.RemoveFromRoleAsync(employee.User, employee.SpecificRole);
+                await _unitOfWork.UserManager.RemoveFromRoleAsync(user, employee.SpecificRole);
                 // add the new role
                 await _unitOfWork.UserManager.AddToRoleAsync(employee.User, updateEmployeeDTO.SpecificRole);
+                employee.SpecificRole = updateEmployeeDTO.SpecificRole;
+            }
+
+            if (!string.IsNullOrEmpty(updateEmployeeDTO.Password))
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, updateEmployeeDTO.Password);
+                if (!result.Succeeded)
+                {
+                    var newToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    result = await _userManager.ResetPasswordAsync(user, newToken, updateEmployeeDTO.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        throw new ApplicationException(
+                           $"Permanent password update failure: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+
+                    }
+                }
+            }
+            else
+            {
+                employee.User.PasswordHash = passHashed;
             }
             _unitOfWork.EmployeeRepo.Update(employee);
             await _unitOfWork.SaveAsync();

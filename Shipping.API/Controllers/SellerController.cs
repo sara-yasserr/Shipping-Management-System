@@ -66,12 +66,12 @@ namespace Shipping.API.Controllers
 
 
 
-        [HttpPut("Update")]
-        public async Task<IActionResult> Update(UpdateSellerDTO dto)
+        [HttpPut("Update/{id:int}")]
+        public async Task<IActionResult> Update(int id,UpdateSellerDTO dto)
         {
-            var result = await _service.UpdateAsync(dto);
+            var result = await _service.UpdateAsync(id,dto);
             if (!result) return NotFound("Seller not found.");
-            return Ok("✅ Seller updated successfully.");
+            return Ok();
         }
 
         [HttpDelete("SoftDelete/{id}")]
@@ -79,7 +79,7 @@ namespace Shipping.API.Controllers
         {
             var result = await _service.SoftDeleteAsync(id);
             if (!result) return NotFound("Seller not found or already deleted.");
-            return Ok("🗑️ Seller soft-deleted successfully.");
+            return Ok();
         }
 
 

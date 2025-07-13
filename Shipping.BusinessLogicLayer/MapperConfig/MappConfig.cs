@@ -53,6 +53,7 @@ namespace Shipping.BusinessLogicLayer.Helper
                 dest.Email = src.User.Email;
                 dest.PhoneNumber = src.User.PhoneNumber;
                 dest.UserId = src.UserId;
+                dest.IsDeleted = src.User.IsDeleted;
             }).ReverseMap();
 
 
@@ -98,14 +99,15 @@ namespace Shipping.BusinessLogicLayer.Helper
             CreateMap<AddEmployeeDTO, Employee>().AfterMap((src, dest) =>
             {
                 dest.BranchId = src.BranchId;
-
+                
                 dest.User = new ApplicationUser
                 {
                     UserName = src.UserName,
                     Email = src.Email,
                     FirstName = src.FirstName,
                     LastName = src.LastName,
-                    PhoneNumber = src.PhoneNumber
+                    PhoneNumber = src.PhoneNumber,
+                    IsDeleted = src.IsDeleted
                 };
             });
             #endregion
@@ -115,9 +117,7 @@ namespace Shipping.BusinessLogicLayer.Helper
             #endregion
 
             #region General Settings
-            CreateMap<GeneralSetting, ReadGeneralSettingsDTO>()
-            .ForMember(dest => dest.Employee, opt => opt.MapFrom(src => src.Employee.User.FirstName + " " + src.Employee.User.LastName)).ReverseMap();
-
+            CreateMap<GeneralSetting, ReadGeneralSettingsDTO>().ReverseMap();
             CreateMap<UpdateGeneralSettingsDTO, GeneralSetting>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => 1))
             .ForMember(dest => dest.ModifiedAt, opt => opt.MapFrom(_ => DateTime.Now))
