@@ -23,5 +23,12 @@ namespace Shipping.DataAccessLayer.Repositories.Custom
                 .FirstOrDefaultAsync(rp => rp.RoleName == roleName && rp.Department == department);
             
         }
+        public async Task<List<RolePermissions>> GetByRoleNameAsync(string roleName)
+        {
+            return await _context.RolePermissions
+                .Where(rp => rp.RoleName == roleName)
+                .ToListAsync();
+        }
+
     }
 }

@@ -12,5 +12,6 @@ namespace Shipping.BusinessLogicLayer.Interfaces
     {
         Task<bool> HasPermission(ApplicationUser user, Department department, Permissions permissionType);
         Task<bool> HasPermission(string roleName, Department department, Permissions permissionType);
+        Task<Dictionary<string, List<string>>> GetUserPermissions(ApplicationUser user);
     }
 }

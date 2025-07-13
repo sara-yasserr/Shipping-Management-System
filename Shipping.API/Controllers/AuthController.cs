@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Shipping.BusinessLogicLayer.DTOs.AuthDTOs;
 using Shipping.BusinessLogicLayer.Helper;
+using Shipping.BusinessLogicLayer.Interfaces;
 using Shipping.DataAccessLayer.Models;
 using Shipping.DataAccessLayer.UnitOfWorks;
+
 namespace Shipping.API.Controllers
 {
     [Route("api/[controller]")]
@@ -13,40 +15,43 @@ namespace Shipping.API.Controllers
         private readonly UnitOfWork unitOfWork;
         private readonly JwtHelper _jwtHelper;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IPermissionCheckerService _permissionChecker;
 
-        public AuthController(UnitOfWork unitOfWork, JwtHelper jwtHelper, RoleManager<IdentityRole> roleManager)
+        public AuthController(
+            UnitOfWork unitOfWork,
+            JwtHelper jwtHelper,
+            RoleManager<IdentityRole> roleManager,
+            IPermissionCheckerService permissionChecker)
         {
             this.unitOfWork = unitOfWork;
             this._jwtHelper = jwtHelper;
             this._roleManager = roleManager;
+            this._permissionChecker = permissionChecker;
         }
-        [HttpPost]
+
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(new { message = "Invaild Request Data" });
-            }
+                return BadRequest(new { message = "Invalid Request Data" });
 
-            var userFromDB = await unitOfWork.UserManager.FindByNameAsync(loginDTO.userName);
-            if (userFromDB == null)
-            {
-                return NotFound("User not found");
-            }
-            var isPasswordvaild = await unitOfWork.UserManager.CheckPasswordAsync(userFromDB, loginDTO.password);
-            if (!isPasswordvaild)
-            {
-                return Unauthorized(new { message = "Invalid UserName or Password" });
-            }
+            var user = await unitOfWork.UserManager.FindByNameAsync(loginDTO.userName);
+            if (user == null)
+                return NotFound(new { message = "User not found" });
 
-            var roles = await unitOfWork.UserManager.GetRolesAsync(userFromDB);
+            var isPasswordValid = await unitOfWork.UserManager.CheckPasswordAsync(user, loginDTO.password);
+            if (!isPasswordValid)
+                return Unauthorized(new { message = "Invalid username or password" });
 
-            var token = _jwtHelper.GenerateToken(userFromDB, roles);
+            var roles = await unitOfWork.UserManager.GetRolesAsync(user);
+            var permissions = await _permissionChecker.GetUserPermissions(user);
+
+            var token = _jwtHelper.GenerateToken(user, roles, permissions);
 
             return Ok(new { token });
         }
 
-        // For Test
+        // For Test Purpose: Create Seller
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDTO dto)
         {
@@ -60,15 +65,12 @@ namespace Shipping.API.Controllers
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 PhoneNumber = dto.Phone,
-
                 CreatedAt = DateTime.Now
             };
 
             var result = await unitOfWork.UserManager.CreateAsync(user, dto.Password);
             if (!result.Succeeded)
-            {
                 return BadRequest(result.Errors);
-            }
 
             var seller = new Seller
             {
@@ -76,23 +78,19 @@ namespace Shipping.API.Controllers
                 Address = dto.Address,
                 StoreName = dto.StoreName,
                 CityId = (int)dto.cityId,
-                CancelledOrderPercentage =  0.5m
+                CancelledOrderPercentage = 0.5m
             };
 
             unitOfWork.SellerRepo.Add(seller);
             unitOfWork.Save();
 
-            var defaultRole = "Seller";
+            const string defaultRole = "Seller";
             if (!await _roleManager.RoleExistsAsync(defaultRole))
-            {
                 await _roleManager.CreateAsync(new IdentityRole(defaultRole));
-            }
+
             await unitOfWork.UserManager.AddToRoleAsync(user, defaultRole);
-            
 
             return Ok(new { message = "User Created Successfully", user.Id });
         }
     }
-
-
 }

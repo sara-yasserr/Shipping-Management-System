@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Shipping.BusinessLogicLayer.Services
 {
@@ -52,13 +53,49 @@ namespace Shipping.BusinessLogicLayer.Services
         }
         public async Task<IdentityResult> CreateRoleAsync(string roleName)
         {
-            if ( await RoleExistsAsync(roleName))
+            if (await RoleExistsAsync(roleName))
             {
                 return IdentityResult.Failed(new IdentityError { Description = "Role already exists." });
-
             }
-            return await _unitOfWork._roleManager.CreateAsync(new IdentityRole(roleName));
+
+            // Create the role object
+            var role = new IdentityRole(roleName);
+            var result = await _unitOfWork._roleManager.CreateAsync(role);
+
+            if (!result.Succeeded)
+            {
+                return result;
+            }
+
+            // Use the created role's Id
+            string roleId = role.Id;
+
+            // Add default permissions (all false) for each department
+            foreach (var dept in Enum.GetValues(typeof(Shipping.DataAccessLayer.Enum.Department))
+                                     .Cast<Shipping.DataAccessLayer.Enum.Department>())
+            {
+                var rolePermission = new RolePermissions
+                {
+                    RoleName = roleName,
+                    Department = dept,
+                    View = false,
+                    Add = false,
+                    Edit = false,
+                    Delete = false
+                };
+
+                await _unitOfWork.RolePermissionsRepo.AddAsync(rolePermission);
+            }
+
+            // Save all changes
+            await _unitOfWork.SaveAsync();
+
+            return IdentityResult.Success;
         }
+
+
+
+
         public async Task<bool> RoleExistsAsync(string roleName)
         {
             return await _unitOfWork._roleManager.RoleExistsAsync(roleName);
@@ -92,9 +129,21 @@ namespace Shipping.BusinessLogicLayer.Services
             if (role == null)
                 return IdentityResult.Failed(new IdentityError { Description = "Role not found." });
 
+            // Delete all role permissions for this role
+            var rolePermissions = await _unitOfWork.RolePermissionsRepo.GetByRoleNameAsync(roleName);
+            foreach (var permission in rolePermissions)
+            {
+                _unitOfWork.RolePermissionsRepo.Delete(permission); // or Remove(permission)
+            }
+
+            await _unitOfWork.SaveAsync(); // save deletion before removing the role
+
             var result = await _unitOfWork._roleManager.DeleteAsync(role);
             return result;
         }
+
+
+
 
         public async Task<List<PermissionDTO>> GetPermissionsForRoleAsync(string roleName)
         {
