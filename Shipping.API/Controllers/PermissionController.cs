@@ -29,14 +29,14 @@ namespace Shipping.API.Controllers
         }
 
         [HttpGet("{roleName}/{department}")]
-        [Authorize(Policy = "Admin.Permissions.View")]
+        //[Authorize(Policy = "Admin.Permissions.View")]
         public async Task<ActionResult<RolePermissions>> GetPermissions(string roleName, Department department)
         {
             var permissions = await _permissionService.GetRolePermissionsAsync(roleName, department);
             if (permissions == null) return NotFound();
             return Ok(permissions);
         }
-        [Authorize(Policy = "Permissions.View.All")]
+        //[Authorize(Policy = "Permissions.View.All")]
         [HttpGet("{roleName}")]
         public async Task<IActionResult> GetAllPermissions(string roleName)
         {
@@ -65,7 +65,7 @@ namespace Shipping.API.Controllers
 
 
         [HttpPut]
-        [Authorize(Policy = "Admin.Permissions.Edit")]
+        //[Authorize(Policy = "Admin.Permissions.Edit")]
         public async Task<IActionResult> UpdatePermissions(PermissionDTO model)
         {
             try
@@ -80,7 +80,7 @@ namespace Shipping.API.Controllers
         }
 
         [HttpPut("bulk-update")]
-        [Authorize(Policy = "Admin.AllPermissions.Edit")]
+        //[Authorize(Policy = "Admin.AllPermissions.Edit")]
         public async Task<IActionResult> BulkUpdatePermissions([FromBody] List<PermissionDTO> permissions)
         {
             try
