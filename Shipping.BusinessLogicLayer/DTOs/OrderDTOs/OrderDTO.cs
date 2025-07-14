@@ -79,6 +79,9 @@ namespace Shipping.BusinessLogicLayer.DTOs.OrderDTOs
         public int ShippingTypeID { get; set; }
 
         public string ShippingType { get; set; }
+
+        public int OrderTypeId { get; set; }
+
         public string OrderType { get; set; }
         public int PaymentTypeId { get; set; }
 
@@ -123,6 +126,8 @@ namespace Shipping.BusinessLogicLayer.DTOs.OrderDTOs
         ShippingType? ShippingType,
         OrderType? OrderType,
         PaymentType? PaymentType,
+        int CityId,
+        int BranchId,
         bool? IsPickup,
         bool? IsActive,
         int? DeliveryManId,

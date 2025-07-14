@@ -26,7 +26,7 @@ namespace Shipping.BusinessLogicLayer.Services
         public PagedResponse<CityDTO> GetAll(PaginationDTO pagination)
         {
 
-            var cities =  _unitofwork.CityRepo.GetAll().Where(c => c.IsDeleted == false);
+            var cities = _unitofwork.CityRepo.GetAll();
             //var cities = _unitofwork.CityRepo.GetAll();
 
             var count = cities.Count();
@@ -42,8 +42,9 @@ namespace Shipping.BusinessLogicLayer.Services
                 Name = c.Name,
                 NormalPrice=c.NormalPrice,
                 PickupPrice=c.PickupPrice,
-                GovernorateName=c.Governorate.Name
-
+                GovernorateName=c.Governorate.Name,
+                IsDeleted=c.IsDeleted
+               
             }).ToList();
 
             var result = new PagedResponse<CityDTO>
@@ -67,7 +68,8 @@ namespace Shipping.BusinessLogicLayer.Services
                 Name = c.Name,
                 NormalPrice = c.NormalPrice,
                 PickupPrice = c.PickupPrice,
-                GovernorateName = c.Governorate.Name
+                GovernorateName = c.Governorate.Name,
+                IsDeleted = c.IsDeleted
             }).ToList();
         }
 
@@ -82,7 +84,8 @@ namespace Shipping.BusinessLogicLayer.Services
                 Name = city.Name,
                 NormalPrice = city.NormalPrice,
                 PickupPrice = city.PickupPrice,
-                GovernorateName = city.Governorate.Name
+                GovernorateName = city.Governorate.Name,
+                IsDeleted  = city.IsDeleted
             };
         }
 
@@ -108,6 +111,7 @@ namespace Shipping.BusinessLogicLayer.Services
             city.NormalPrice = dto.NormalPrice;
             city.PickupPrice = dto.PickupPrice;
             city.GovernorateId = dto.GovernorateId;
+            city.IsDeleted = (bool)dto.IsDeleted;
 
             _unitofwork.CityRepo.Update(city);
             _unitofwork.Save();
